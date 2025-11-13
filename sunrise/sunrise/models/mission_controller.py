@@ -93,24 +93,21 @@ class Subscription:
             "message_type": self.message_type.__name__,
             "qos_profile": self.qos_profile
         }
-    
+
 @dataclass
 class MissionControllerConfig:
-    node_name: str
     publishers: list[Publisher] = field(default_factory=list)
     subscriptions: list[Subscription] = field(default_factory=list)
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
-            json.get("node_name", "shape_node"),
             [Publisher.FromJSON(json) for json in json.get("publishers", [])],
             [Subscription.FromJSON(json) for json in json.get("subscriptions", [])]
         )
     
     def toJSON(self) -> dict:
         return {
-            "node_name": self.node_name,
             "publishers": [p.toJSON() for p in self.publishers],
             "subscriptions": [s.toJSON() for s in self.subscriptions],
         }

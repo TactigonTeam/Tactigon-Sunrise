@@ -1,0 +1,8 @@
+{
+    "teacher_config_path": "sunrise/config/teacher.json",
+    "student_config_path": "sunrise/config/student.json",
+    "mission_controller": {
+        "subscriptions": [],
+        "publisher": []
+    }
+}
