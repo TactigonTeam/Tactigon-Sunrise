@@ -21,7 +21,7 @@ class Skill:
     @classmethod
     def FromJSON(cls, json):
         return cls(
-            scope=json["scope"],
+            scope=SkillScope(json["scope"]),
             name=json["name"],
             payload=json["payload"],
             children=[Skill.FromJSON(c) for c in json.get("children", [])]
@@ -29,7 +29,7 @@ class Skill:
     
     def toJSON(self) -> dict:
         return dict(
-            scope=self.scope,
+            scope=self.scope.value,
             name=self.name,
             payload=self.payload,
             children=self.children

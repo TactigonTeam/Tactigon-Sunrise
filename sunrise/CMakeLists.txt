@@ -1,7 +1,14 @@
-find_package(rosidl_default_generators REQUIRED)
+cmake_minimum_required(VERSION 3.8)
+project(sunrise)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Skill.msg"
+find_package(ament_cmake REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(sunrise_msgs REQUIRED)
+
+install(
+  PROGRAMS
+    sunrise/main.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-ament_export_dependencies(rosidl_default_runtime)
+ament_package()

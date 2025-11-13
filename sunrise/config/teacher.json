@@ -1,3 +1,13 @@
 {
-    "skills": []
+    "skills": [
+        {
+            "scope": "braccio_robot",
+            "name": "position",
+            "payload": {
+                "x": 100,
+                "y": 100
+            },
+            "children": []
+        }
+    ]
 }

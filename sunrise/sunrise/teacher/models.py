@@ -14,7 +14,7 @@ class TeacherConfig:
     
     def toJSON(self) -> dict:
         return dict(
-            skills=[skill.toJSON for skill in self.skills]
+            skills=[skill.toJSON() for skill in self.skills]
         )
     
     def add_skill(self, skill: Skill, parent: str = "") -> bool:

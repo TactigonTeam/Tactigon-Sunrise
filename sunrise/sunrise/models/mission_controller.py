@@ -1,14 +1,19 @@
 from rclpy.node import QoSProfile
-from std_msgs import msg
+from rclpy.time import Time
 
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+from sunrise.sunrise import msg
+
+print(msg)
+
 @dataclass
 class Message:
     topic: str
     msg: Any
+    timestamp: Time
 
 class NodeActions(Enum):
     ADD_PUBLISHER = "add_publisher"
