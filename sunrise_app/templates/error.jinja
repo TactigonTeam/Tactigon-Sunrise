@@ -1,0 +1,24 @@
+{% extends "base.jinja" %}
+{% block style %}
+{% endblock %}
+{% block body %}
+    <div class="container p-4">
+        <div class="d-flex flex-column align-items-center justify-content-center m-3 gap-2">
+            <img src="{{ url_for('static', filename='images/error.gif') }}" width="300px">
+            <h4>OPS! An error occurred...</h4>
+            <p>
+                <b>Url: </b>[{{ method | upper }}]{{ url | safe}}.<br/>
+                <b>Args: </b>{{ args | safe }}<br/>
+                <b>Form: </b>{{ form | safe }}<br/>
+                <b>Error: </b>{{ error | safe}}.
+            </p>
+            <p>
+                Please send this screenshot to a <a href="mailto:developer@nextind.eu">developer</a>, hopefully we can reproduce the error and help you!
+            </p>
+            <p>
+                In the meantime, you can
+            </p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go back</a>
+        </div>
+    </div>
+{% endblock %}

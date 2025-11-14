@@ -1,0 +1,47 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "sunrise_app_setup",
+        "id": "KC0c-4-UPMw+xp*}1RaS",
+        "x": 30,
+        "y": 30,
+        "deletable": false
+      },
+      {
+        "type": "sunrise_app_function",
+        "id": "(6#O~za/m9f0x1/=LC:Y",
+        "x": 30,
+        "y": 150,
+        "deletable": false,
+        "inputs": {
+          "BODY": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "/_RJuT|FP+=rNLqlI8I`",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "hH?+1PMEr}=a.]UcN;r{",
+                    "fields": {
+                      "TEXT": "Tactigon"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "sunrise_app_close",
+        "id": "g[@vX?}52mCh[u8c.vOX",
+        "x": 30,
+        "y": 300,
+        "deletable": false
+      }
+    ]
+  }
+}

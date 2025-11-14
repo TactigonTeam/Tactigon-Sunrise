@@ -1,0 +1,750 @@
+{% extends "base.jinja" %}
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex flex-column flex-fill m-3 gap-3">
+    <div>
+        <h4>{{ current_config.name | capitalize }}</h4>
+        <p>{{ current_config.description| capitalize }}</p>
+    </div>
+    <div class="flex-fill" id="blocklyDiv"></div>
+    <form class="d-flex justify-content-end gap-3" id="update-program-form" action="{{ url_for('shapes.save_program', program_id=current_config.id) }}" method="POST">
+        <input id="generatedCode" type="hidden" name="generatedCode" />
+        <input id="state" type="hidden" name="state" />
+        <input id="subscriptions" type="hidden" name="subscriptions" />
+        <input id="ros2_subscriptions" type="hidden" name="ros2_subscriptions" />
+        <input id="ros2_publishers" type="hidden" name="ros2_publishers" />
+        <a href="{{ url_for('shapes.index', program_id=current_config.id) }}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+        <category name="Logic" colour="#5b80a5">
+            <block type="controls_if"></block>
+            <block type="logic_compare">
+                <field name="OP">EQ</field>
+            </block>
+            <block type="logic_operation">
+                <field name="OP">AND</field>
+            </block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean">
+                <field name="BOOL">TRUE</field>
+            </block>
+            <block type="logic_null"></block>
+            <block type="logic_ternary"></block>
+        </category>
+        <category name="Loops" colour="#5ba55b">
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="controls_for">
+                <field name="VAR" id="ib+^$,Vf-IJD_TssNfa)">i</field>
+                <value name="FROM">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="TO">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+                <value name="BY">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="controls_forEach">
+                <field name="VAR" id="|%hE(^mjA-(({p0c0H$E">j</field>
+            </block>
+            <block type="controls_flow_statements">
+                <field name="FLOW">BREAK</field>
+            </block>
+        </category>
+        <category name="Math" colour="#5b67a5">
+            <block type="math_number">
+                <field name="NUM">0</field>
+            </block>
+            <block type="math_arithmetic">
+                <field name="OP">ADD</field>
+                <value name="A">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="B">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_single">
+                <field name="OP">ROOT</field>
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">9</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_trig">
+                <field name="OP">SIN</field>
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">45</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_constant">
+                <field name="CONSTANT">PI</field>
+            </block>
+            <block type="math_number_property">
+                <mutation divisor_input="false"></mutation>
+                <field name="PROPERTY">EVEN</field>
+                <value name="NUMBER_TO_CHECK">
+                    <shadow type="math_number">
+                        <field name="NUM">0</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_round">
+                <field name="OP">ROUND</field>
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">3.1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_on_list">
+                <mutation op="SUM"></mutation>
+                <field name="OP">SUM</field>
+            </block>
+            <block type="math_modulo">
+                <value name="DIVIDEND">
+                    <shadow type="math_number">
+                        <field name="NUM">64</field>
+                    </shadow>
+                </value>
+                <value name="DIVISOR">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_constrain">
+                <value name="VALUE">
+                    <shadow type="math_number">
+                        <field name="NUM">50</field>
+                    </shadow>
+                </value>
+                <value name="LOW">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="HIGH">
+                    <shadow type="math_number">
+                        <field name="NUM">100</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_random_int">
+                <value name="FROM">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="TO">
+                    <shadow type="math_number">
+                        <field name="NUM">100</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_random_float"></block>
+        </category>
+        <category name="Text" colour="#5ba58c">
+            <block type="text">
+                <field name="TEXT"></field>
+            </block>
+            <block type="text_join">
+                <mutation items="2"></mutation>
+            </block>
+            <block type="text_append">
+                <field name="VAR" id="4E_E9dA-=5qj?;-O985A">item</field>
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT"></field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_length">
+                <value name="VALUE">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_isEmpty">
+                <value name="VALUE">
+                    <shadow type="text">
+                        <field name="TEXT"></field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_indexOf">
+                <field name="END">FIRST</field>
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR" id="-v5AaI^/2b0X-7yr#h^P">text</field>
+                    </block>
+                </value>
+                <value name="FIND">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_charAt">
+                <mutation at="true"></mutation>
+                <field name="WHERE">FROM_START</field>
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR" id="-v5AaI^/2b0X-7yr#h^P">text</field>
+                    </block>
+                </value>
+            </block>
+            <block type="text_getSubstring">
+                <mutation at1="true" at2="true"></mutation>
+                <field name="WHERE1">FROM_START</field>
+                <field name="WHERE2">FROM_START</field>
+                <value name="STRING">
+                    <block type="variables_get">
+                        <field name="VAR" id="-v5AaI^/2b0X-7yr#h^P">text</field>
+                    </block>
+                </value>
+            </block>
+            <block type="text_changeCase">
+                <field name="CASE">UPPERCASE</field>
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_trim">
+                <field name="MODE">BOTH</field>
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            {# <block type="text_print">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block> #}
+            <block type="text_prompt_ext">
+                <mutation type="TEXT"></mutation>
+                <field name="TYPE">TEXT</field>
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+        <category name="Lists" colour="#745ba5">
+            <block type="lists_create_with">
+                <mutation items="0"></mutation>
+            </block>
+            <block type="lists_create_with">
+                <mutation items="3"></mutation>
+            </block>
+            <block type="lists_repeat">
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">5</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="lists_length"></block>
+            <block type="lists_isEmpty"></block>
+            <block type="lists_indexOf">
+                <field name="END">FIRST</field>
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR" id="!VuW@WL*,2C+6-f{ydGO">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_getIndex">
+                <mutation statement="false" at="true"></mutation>
+                <field name="MODE">GET</field>
+                <field name="WHERE">FROM_START</field>
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR" id="!VuW@WL*,2C+6-f{ydGO">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_setIndex">
+                <mutation at="true"></mutation>
+                <field name="MODE">SET</field>
+                <field name="WHERE">FROM_START</field>
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR" id="!VuW@WL*,2C+6-f{ydGO">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_getSublist">
+                <mutation at1="true" at2="true"></mutation>
+                <field name="WHERE1">FROM_START</field>
+                <field name="WHERE2">FROM_START</field>
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR" id="!VuW@WL*,2C+6-f{ydGO">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_split">
+                <mutation mode="SPLIT"></mutation>
+                <field name="MODE">SPLIT</field>
+                <value name="DELIM">
+                    <shadow type="text">
+                        <field name="TEXT">,</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="lists_sort">
+                <field name="TYPE">NUMERIC</field>
+                <field name="DIRECTION">1</field>
+            </block>
+        </category>
+        <category name="Dictionaries" colour="#636363">
+            <block type="get_dict_property">
+                <value name="key">
+                    <shadow type="text">
+                        <field name="key"></field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+        <sep></sep>
+        <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
+        <category name="Functions" colour="#995ba5" custom="PROCEDURE"></category>
+        {% if zion_config %}
+            <sep></sep>
+            <category name="Zion API" colour="#6665DD">
+                <block type="device_list">
+                </block>
+                <block type="scope_list">
+                </block>
+                <block type="alarm_severity_list">
+                </block>
+                <block type="alarm_search_status_list">
+                </block>
+                <block type="device_last_telemetry">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="keys">
+                        <shadow type="text">
+                            <field name="keys"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="device_attr">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="scope">
+                        <shadow type="scope_list">
+                            <field name="scope"></field>
+                        </shadow>
+                    </value>
+                    <value name="keys">
+                        <shadow type="text">
+                            <field name="keys"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="device_alarm">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="severity">
+                        <shadow type="alarm_severity_list">
+                            <field name="severity"></field>
+                        </shadow>
+                    </value>
+                    <value name="search_status">
+                        <shadow type="alarm_search_status_list">
+                            <field name="search_status"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="send_device_last_telemetry">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="key">
+                        <shadow type="text">
+                            <field name="key"></field>
+                        </shadow>
+                    </value>
+                    <value name="payload">
+                        <shadow type="text">
+                            <field name="payload"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="send_device_attr">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="scope">
+                        <shadow type="scope_list">
+                            <field name="scope"></field>
+                        </shadow>
+                    </value>
+                    <value name="key">
+                        <shadow type="text">
+                            <field name="key"></field>
+                        </shadow>
+                    </value>
+                    <value name="payload">
+                        <shadow type="text">
+                            <field name="payload"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="send_device_alarm">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="name">
+                        <shadow type="text">
+                            <field name="name"></field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="delete_device_attr">
+                    <value name="device">
+                        <shadow type="device_list">
+                            <field name="device"></field>
+                        </shadow>
+                    </value>
+                    <value name="scope">
+                        <shadow type="scope_list">
+                            <field name="scope"></field>
+                        </shadow>
+                    </value>
+                    <value name="key">
+                        <shadow type="text">
+                            <field name="key"></field>
+                        </shadow>
+                    </value>
+                </block>
+            </category>
+        {% endif %}
+        {% if has_ros2 %}
+            <sep></sep>
+            <category name="ROS 2" colour="#6665DD">
+                <block type="ros2_command">
+                </block>
+                <block type="ros2_subscribe">
+                    <value name="topic">
+                        <shadow type="text"></shadow>
+                    </value>
+                    <value name="message_type">
+                        <shadow type="ros2_message_type">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_publish">
+                    <value name="payload">
+                        <shadow type="text">
+                        </shadow>
+                    </value>
+                    <value name="topic">
+                        <shadow type="text">
+                        </shadow>
+                    </value>
+                    <value name="message_type">
+                        <shadow type="ros2_message_type">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_type"></block>
+            </category>
+        {% endif %}
+        {% if current_config.mqtt_config %}
+            <sep></sep>
+            <category name="MQTT" colour="#6665DD">
+                <block type="mqtt_subscribe">
+                    <value name="topic">
+                        <shadow type="text">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="mqtt_publish">
+                    <value name="payload">
+                        <shadow type="text">
+                        </shadow>
+                    </value>
+                    <value name="topic">
+                        <shadow type="text">
+                        </shadow>
+                    </value>
+                </block>
+            </category>
+        {% endif %}
+        <sep></sep>
+        <category name="Debug" colour="#bce261">
+            <block type="sunrise_app_debug">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+    </xml>
+</div>
+{% endblock %}
+
+{% block script %}
+
+<script src="{{url_for('shapes.static', filename='js/blockly_compressed.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_field_dependent_dropdown.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_blocks.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_msg_en.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_python.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/custom_blocks.js')}}"></script>
+
+<script>
+    function initializeBlockly() {
+        var options = {
+            toolbox: document.getElementById("toolbox"),
+            collapse: false,
+            comments: false,
+            disable: false,
+            maxBlocks: Infinity,
+            trashcan: true,
+            horizontalLayout: false,
+            toolboxPosition: 'start',
+            css: true,
+            rtl: false,
+            scrollbars: false,
+            sounds: true,
+            oneBasedIndex: true,
+            grid: {
+                spacing: 20,
+                length: 3,
+                colour: '#ccc',
+                snap: true
+            },
+            zoom: {
+                controls: true,
+                wheel: true,
+                pinch: true,
+                startScale: 1.3
+            },
+            move: {
+                scrollbars: {
+                    horizontal: true,
+                    vertical: true
+                },
+                drag: true,
+                wheel: false
+            }
+        };
+
+        var workspace = Blockly.inject('blocklyDiv', options);
+
+        {% if state %}
+            var initState = JSON.parse({{ state | tojson }});
+            Blockly.serialization.workspaces.load(initState, workspace);
+        {% endif %}
+
+        return workspace;
+    }
+
+    function checkFloatingBlocks(workspace){
+        const topBlocks = workspace.getTopBlocks(true);
+
+        for (i in topBlocks){           
+            if (functionBlockNames.indexOf(topBlocks[i].type) == -1){ 
+                return "Make sure all blocks are inside Loop or another function";
+            }
+        }
+        return "";
+    }
+
+    function checkVariablesName(workspace){
+        const variables = workspace.getAllVariableNames();
+        const errors = [];
+
+        for (let i in variables){
+            if (reservedWords.indexOf(variables[i]) > -1){
+                errors.push(`You cannot name a variable <b>${variables[i]}</b>, please rename it.`)
+            }
+        }
+
+        return errors;
+    }
+
+    function checkFunctionsName(workspace){
+        const functions = workspace
+            .getBlocksByType("procedures_defnoreturn")
+            .concat(
+                workspace.getBlocksByType("procedures_defreturn")
+            );
+        const errors = [];
+
+        for (n in functions){
+            if (reservedWords.indexOf(functions[n]) > -1){
+                errors.push(functions[n])
+            }
+        }
+
+        return errors;
+    }
+
+    function getSubscriptions(workspace){
+        const functions = workspace.getBlocksByType("mqtt_subscribe");
+
+        return functions.map(block => {
+            const topic = block.getInputTargetBlock("topic").getFieldValue("TEXT");
+            const payload_reference = block.getField("var_name").getVariable().name;
+            return {"topic": topic, "function": clean_topic_names(topic), "payload_reference": payload_reference};
+        });
+    }
+
+    function getRos2Publishers(workspace){
+        const functions = workspace.getBlocksByType("ros2_publish");
+
+        return functions.map(block => {
+            const topic = block.getInputTargetBlock("topic").getFieldValue("TEXT");
+            const message_type = block.getInputTargetBlock("message_type").getFieldValue("message_type");
+            return {"topic": topic, "message_type": message_type};
+        });
+    }
+
+    function getRos2Subscriptions(workspace){
+        const functions = workspace.getBlocksByType("ros2_subscribe");
+
+        return functions.map(block => {
+            const topic = block.getInputTargetBlock("topic").getFieldValue("TEXT");
+            const message_type = block.getInputTargetBlock("message_type").getFieldValue("message_type");
+            const payload_reference = block.getField("var_name").getVariable().name;
+            return {"topic": topic, "function": clean_topic_names(topic), "message_type": message_type, "payload_reference": payload_reference};
+        });
+    }
+    
+    function validateShape(workspace){
+
+        const errors_variables = checkVariablesName(workspace);
+        const errors = checkFunctionsName(workspace);
+        const floatingBlocksError = checkFloatingBlocks(workspace);
+
+        if (floatingBlocksError.length > 0) {
+            toast(floatingBlocksError, "danger");
+        }
+
+        for (let i in errors_variables){
+            toast(errors_variables[i], "danger");
+        }
+
+        for (let i in errors){
+            toast(errors[i], "danger");
+        }
+
+        return errors.length == 0 && errors_variables.length == 0 && floatingBlocksError.length == 0;
+    }
+
+    function setGeneratedCode(workspace) {
+        Blockly.Python.addReservedWords('code');
+        const code = python.pythonGenerator.workspaceToCode(workspace);
+        let origin = code.indexOf("# Shapes");
+        const imports_and_libraries = defineImportsAndLibraries();
+        $('#generatedCode').val(imports_and_libraries + code.substring(origin));
+    }
+
+    function setState(workspace) {
+        const state = Blockly.serialization.workspaces.save(workspace);
+        $('#state').val(JSON.stringify(state));
+    }
+
+    function setSubscriptions(subscriptions) {
+        $('#subscriptions').val(JSON.stringify(subscriptions));
+    }
+
+    const reservedWords = ["sunrise_app_function","zion","code","logging_queue","debug","data", "main","tskin","tspeech","gesture","ironboy","touch","braccio"];
+    const functionBlockNames = ["sunrise_app_function", "sunrise_app_setup", "sunrise_app_close", "procedures_defnoreturn", "variables_set", "procedures_defreturn", "mqtt_subscribe", "ros2_subscribe"];
+
+    $(document).ready(async function () {
+
+        loadCustomBlocks({{ blocks_config | tojson | safe }});
+        defineCustomGenerators();
+
+        const workspace = initializeBlockly();
+
+        $('#update-program-form').on('submit', (e) => {
+
+            try{
+                if(!validateShape(workspace)){
+                    e.preventDefault();
+                    return false;
+                }
+                
+                const subscriptions = getSubscriptions(workspace);
+                const ros2subscriptions = getRos2Subscriptions(workspace);
+                const ros2publishers = getRos2Publishers(workspace);
+
+                console.log(ros2subscriptions);
+                console.log(ros2publishers);
+
+                setGeneratedCode(workspace);
+                setState(workspace);
+                setSubscriptions(subscriptions);
+                $('#subscriptions').val(JSON.stringify(subscriptions));
+                $('#ros2_subscriptions').val(JSON.stringify(ros2subscriptions));
+                $('#ros2_publishers').val(JSON.stringify(ros2publishers));
+            }
+            catch(ex){
+                e.preventDefault();
+                console.log(ex);
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+{% endblock %}

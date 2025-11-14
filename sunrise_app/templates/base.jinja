@@ -1,0 +1,94 @@
+{% macro popup_message(messages) %}
+<div class="toast-container end-0 p-3">
+    {% for category, message in messages %}
+    <div class="toast {{ category }}" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary bg-{{ category }} bg-opacity-50">
+            <strong class="me-auto">
+                {% if category == 'success' %}
+                Success
+                {% elif category == 'warning' %}
+                Warning
+                {% elif category == 'danger' %}
+                Error
+                {% else %}
+                Info
+                {% endif %}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunrise App</title>
+    <link rel="shortcut icon" href="{{ url_for('favicon') }}">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/material-icons.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+    {% block style %}
+    {% endblock %}
+</head>
+
+<body class="">
+    <!--- Loader --->
+    <div class="d-flex" id="loading_spinner">
+        <div class="d-flex flex-fill justify-content-center align-self-center">
+            <div class="spinner-border spinner-lg tskin" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <!--- Navbar TSKIN status -->
+    <div class="sticky-top">
+        <!--- Navbar app -->
+        <nav class="navbar bg-tskin">
+            <div class="container-fluid">
+                <a href="{{ url_for('shapes.index') }}" class="btn btn-link text-decoration-none text-light" title="Shapes">
+                    <i class="mi-round mi-extension" style="font-size: 24px"></i>
+                </a>
+                <div>
+                    {% if has_ros2 %}
+                        <a href="{{ url_for('ros2.index') }}" class="btn btn-link text-decoration-none text-light" title="ROS 2">
+                            <i class="mi-round mi-smart-toy" style="font-size: 24px"></i>
+                        </a>
+                    {% endif %}
+                    <a href="{{ url_for('zion.index') }}" class="btn btn-link text-decoration-none text-light" title="Zion cloud">
+                        <i class="mi-outlined mi-cloud" style="font-size: 24px"></i>
+                    </a>
+                    <a href="{{ url_for('main.settings') }}" class="btn btn-link text-decoration-none text-light" title="Settings">
+                        <i class="mi-round mi-settings" style="font-size: 24px"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {{ popup_message(messages) }}
+    {% endwith %}
+
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+
+    <script src="{{url_for('static', filename='js/jquery-3.6.3.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/socket.io-4.7.2.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/svg.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+    {% block script %}{% endblock %}
+</body>
+
+</html>

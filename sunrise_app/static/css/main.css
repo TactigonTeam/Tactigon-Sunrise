@@ -1,0 +1,267 @@
+@font-face {
+    font-family: "Montserrat";
+    src: url('fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #eee;
+    font-family: 'Montserrat';
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Rules for loading spinner */
+
+body > #loading_spinner {
+    display: none!important;
+}
+
+body.on_loading {
+    overflow: hidden;
+}
+
+body.on_loading > #loading_spinner {
+    display: flex!important;
+    position: fixed;
+    z-index: 99999999;
+    background-color: rgba(0, 0, 0, 0.314);
+    width: 100%;
+    height: 100%;
+}
+
+.spinner-lg {
+    width: 5rem;
+    height: 5rem;
+}
+
+/* Basic layout */
+
+main {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+
+.sidebar-container {
+    min-width: 200px;
+    width: 250px;
+    background-color: #fff;
+    border-right: 1px solid rgba(0,0,0,0.125);
+}
+
+.sidebar {
+    overflow-y: auto;
+}
+
+.sidebar > a.active {
+    z-index: 2;
+    color: #212529;
+    background-color: #f5e0dd;
+    border-color: rgba(0,0,0,0.125);
+    border-right: 3px solid #EB6152;
+}
+
+.sidebar > a:hover:not(.active) {
+    color: #212529;
+    background-color: #f5e0dd6e;
+}
+
+.text-tskin{
+    --bs-text-opacity: 1;
+    color: #EB6152 !important;
+}
+
+.tskin {
+    color: #EB6152;
+}
+
+.tskin:hover {
+    color: #EB6152;
+}
+
+.bg-tskin {
+    background-color: #EB6152;
+}
+
+.btn-tskin {
+    background-color: #EB6152;
+    color: #fff;
+}
+.btn-tskin:hover, .btn-outline-tskin:hover {
+    background-color: #EB6152;
+    color: #fff;
+}
+.btn-outline-tskin {
+    border: 1px solid #EB6152;
+}
+
+.dropdown-toggle { outline: 0; }
+
+.btn-toggle {
+    padding: .25rem .5rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, .65);
+    background-color: transparent;
+}
+.btn-toggle:hover,
+.btn-toggle:focus {
+    color: rgba(0, 0, 0, .85);
+    background-color: #d2f4ea;
+}
+
+.btn-toggle::before {
+    width: 1.25em;
+    line-height: 0;
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+    transition: transform .35s ease;
+    transform-origin: .5em 50%;
+}
+
+.btn-toggle[aria-expanded="true"] {
+    color: rgba(0, 0, 0, .85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+    transform: rotate(90deg);
+}
+
+.btn-toggle-nav a {
+    padding: .1875rem .5rem;
+    margin-top: .125rem;
+    margin-left: 1.25rem;
+}
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+    background-color: #d2f4ea;
+}
+
+.scrollarea {
+    overflow-y: auto;
+}
+
+.btn-just-icon {
+    display: flex;
+    padding: 12px;
+    width: auto;
+    /*border-radius: var(--bs-border-radius-xl);*/
+}
+
+
+/* Css per progresso in tutorial */
+
+.progress {
+    height: 25px;
+}
+
+.progresses {
+    display: flex;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 8px;
+}
+
+.line {
+    width: 120px;
+    height: 1px;
+    background: #4D4D4D;
+}
+
+
+.steps {
+    display: flex;
+    background-color: #999999;
+    color: #fff;
+    font-size: 14px;
+    width: 10px;
+    height: 10px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+}
+
+.steps-done {
+
+    display: flex;
+    background-color: #4D4D4D;
+    color: #fff;
+    font-size: 14px;
+    width: 10px;
+    height: 10px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.steps-current {
+
+    display: flex;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #4D4D4D;
+    background-color: #ffffff;
+    color: #fff;
+    font-size: 14px;
+    width: 15px;
+    height: 15px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.btn-tskin {
+    --bs-btn-color: #FFFFFF;
+    --bs-btn-bg: #EB6152;
+    --bs-btn-border-color: #EB6152/* #FC250D*/;
+    --bs-btn-hover-color: #FFFFFF;
+    --bs-btn-hover-bg: #EB6152;
+    --bs-btn-hover-border-color: #CA1D0A;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #FFFFFF;
+    --bs-btn-active-bg: #CA1D0A;
+    --bs-btn-active-border-color: #BE1C0A;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #FFFFFF;
+    --bs-btn-disabled-bg: #EB6152;
+    --bs-btn-disabled-border-color: #EB6152;
+}
+
+.btn-outline-tskin {
+    --bs-btn-color: #EB6152;
+    --bs-btn-border-color: #EB6152;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #EB6152;
+    --bs-btn-hover-border-color: #EB6152;
+    --bs-btn-focus-shadow-rgb: 13,110,253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #EB6152;
+    --bs-btn-active-border-color: #EB6152;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #EB6152;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #EB6152;
+    --bs-gradient: none;
+}
+
+.list-group-item.tskin-action:active {
+    color: var(--bs-list-group-color);
+    border: var(--bs-list-group-border-width) solid #EB6152;
+}
+
+.list-group-item.tskin-action:focus {
+    color: #fff;
+    background-color: #EB6152;
+    border: var(--bs-list-group-border-width) solid #BE1C0A;
+}
+
+.list-group-item.list-tskin.active {
+    z-index: 2;
+    color: #212529;
+    background-color: #f5e0dd;
+    border-color: rgba(0,0,0,0.125);
+    border-right: 3px solid #d03827;
+}

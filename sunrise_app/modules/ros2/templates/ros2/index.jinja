@@ -1,0 +1,85 @@
+{% extends "base.jinja" %}
+
+{% block style %}
+{% endblock %}
+
+{% block body %}
+<div class="d-flex flex-fill scrollarea">
+    <div class="container my-3">
+        <div class="card">
+            <div class="card-header">
+                Ros 2 configurations
+                <div class="float-end">
+                    <button type="button" class="btn btn-link text-decoration-none p-0 text-success" data-bs-toggle="modal" data-bs-target="#add_config" title="Add node configuration">
+                        <i class="mi-round mi-add"></i>
+                    </button>
+                </div>
+                <div class="modal fade" id="add_config" tabindex="-1">
+                    <form action="{{ url_for('ros2.add') }}" method="POST" enctype="multipart/form-data">
+                        <div class="modal-dialog">
+                            <div class="modal-content text-dark">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">ROS 2 node</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body d-flex flex-column gap-3">
+                                    <div class="mb-3">
+                                        <label for="ros2_package" class="form-label">ROS 2 Package</label>
+                                        <input type="text" class="form-control" id="ros2_package" name="ros2_package">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="ros2_node" class="form-label">ROS 2 Node</label>
+                                        <input type="text" class="form-control" id="ros2_node" name="ros2_node">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="ros2_parameters" class="form-label">Parameter file (.yaml)</label>
+                                        <input class="form-control" type="file" id="ros2_parameters" name="ros2_parameters">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        Save
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% if config.ros2_commands %}
+                        {% for c in config.ros2_commands %}
+                            <li class="list-group-item list-group-item-action">
+                                {{ c.get_command() }}
+                                <div class="float-end">
+                                    <button type="button" class="btn btn-link text-decoration-none py-0" data-bs-toggle="modal" data-bs-target="#edit_config" title="Edit node configuration">
+                                        <i class="mi-round mi-edit"></i>
+                                    </button>
+                                    <a href="{{ url_for('ros2.delete', identifier=c.identifier) }}" class="btn btn-link text-decoration-none py-0 text-danger" title="Remove node configuration">
+                                        <i class="mi-round mi-delete"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center m-3">Add a command</p>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_config" title="Add node configuration">
+                    Add a node <i class="mi-round mi-add"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(()=>{});
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "5309b6df742c4eaf81bd5562819a325a",
+    "name": "Sunrise App",
+    "created_on": "2025-11-14T18:31:58.712429",
+    "modified_on": "2025-11-14T18:41:47.579246",
+    "description": "",
+    "readonly": false,
+    "ros2_config": {
+      "node_name": "Sunrise App",
+      "publishers": [],
+      "subscriptions": []
+    },
+    "mqtt_config": null
+  }
+]

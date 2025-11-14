@@ -1,0 +1,20 @@
+{% extends "base.jinja" %}
+
+{% block body %}
+    <div class="d-flex flex-fill">
+        <div class="d-flex flex-column justify-content-between sidebar-container">
+            <div class="text-center pt-5 pb-3">
+                <h5>Settings</h5>
+            </div>
+
+            <div class="list-group list-group-flush flex-grow-1 sidebar">
+                <a href="{{ url_for('main.settings') }}" class="list-group-item list-group-item-action {% if 'settings' in request_path %}active{% endif %}" alt="Notification's settings">
+                    <i class="bi bi-info-circle px-3"></i>
+                    Info
+                </a>
+            </div>
+        </div>
+        {% block settings %}
+        {% endblock%}
+    </div>
+{% endblock %}

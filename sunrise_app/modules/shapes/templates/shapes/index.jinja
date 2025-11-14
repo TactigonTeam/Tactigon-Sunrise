@@ -1,0 +1,426 @@
+{% extends "base.jinja" %}
+
+{% block style %}
+<style>
+    .running {
+        border-right: 3px solid #198754 !important;
+    }
+
+    .terminal-header {
+        background-color: #2e2e2e;
+        border-bottom: 1px solid #4b4b4b;
+        color: #f3f3f3;
+    }
+
+    .terminal {
+        background-color: #2e2e2e;
+        color: #f3f3f3;
+    }
+
+    .terminal::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .terminal::-webkit-scrollbar-track {
+        background: #2e2e2e;
+    }
+
+    .terminal::-webkit-scrollbar-thumb {
+        background: #9c9c9c;
+        border-radius: 4px;
+    }
+
+    .terminal::-webkit-scrollbar-thumb:hover {
+        background: #838383;
+    }
+
+    .terminal-button {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: #2e2e2e;
+        margin: 0.25rem;
+    }
+
+    .terminal-button-close {
+        background-color: #ff5f56;
+    }
+
+    .terminal-button-minimize {
+        background-color: #ffbd2e;
+    }
+
+    .terminal-button-maximize {
+        background-color: #27c93f;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex flex-grow-1">
+    <div class="d-flex flex-column sidebar-container">
+        <div class="text-center pb-3 pt-5">
+            <h5>Shapes</h5>
+        </div>
+        <div class="list-group list-group-flush flex-grow-1 sidebar" style="max-height: 70vh;">
+            {% for config in shapes_config %}
+            <a href="{{ url_for('shapes.index', program_id=config.id) }}" class="list-group-item list-group-item-action
+                {% if config.id == current_config.id %}active{% endif %}
+                {% if config.id == current_running_program %} running {% endif %}
+                ">
+                <div class="d-flex justify-content-between align-items-center">
+                    <b>{{config.name | capitalize}}</b>
+                    {% if config.readonly %}
+                    <small><i class="bi bi-lock"></i></small>
+                    {% endif %}
+                </div>
+                {% if not config.readonly %}
+                <small>Last modified: {{config.modified_on}}</small>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div class="mx-auto mt-auto py-3">
+            <button type="button" class="btn btn-outline-tskin" data-bs-toggle="modal" data-bs-target="#add">
+                <i class="bi bi-plus"></i>
+                Add Shape
+            </button>
+            <div class="modal fade" id="add" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <form action="{{ url_for('shapes.add') }}" method="POST">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Add Shape</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="program-name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="program-name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="program-description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="program-description" rows="3" name="description"></textarea>
+                                </div>
+                                <h6>MQTT</h6>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row mb-3">
+                                            <label class="form-label">MQTT Broker</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mqtt_url" id="mqtt-url" placeholder="mqttx.broker.io">
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="text" class="form-control" name="mqtt_port" id="mqtt-port" placeholder="1883">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mqtt-nodename" class="form-label">Node name</label>
+                                            <input type="text" class="form-control" name="mqtt_nodename" id="mqtt-nodename" placeholder="">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mqtt-nodetype" class="form-label">Node type</label>
+                                            <input type="text" class="form-control" name="mqtt_nodetype" id="mqtt-nodetype" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit">Add Shape</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-column flex-fill m-3 gap-3">
+        {% if current_config %}
+        <div class="d-flex gap-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="run_application" {% if
+                    current_config.id==current_running_program %}checked{% endif %} {% if is_running and not
+                    current_config.id==current_running_program %} disabled {% endif %}>
+                <label class="form-check-label" for="run_application">
+                    <h5 class="ms-3">
+                        {{ current_config.name | capitalize }}
+                    </h5>
+                </label>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#clone"
+                    title="Clone Shape" {% if is_running and current_config.id==current_running_program %} disabled {%
+                    endif %}>
+                    <i class="bi bi-copy"></i>
+                </button>
+                {% if not current_config.readonly %}
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#edit"
+                    title="Edit Shape" {% if is_running and current_config.id==current_running_program %} disabled {%
+                    endif %}>
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#delete-shape"
+                    title="Delete Shaoe" {% if is_running and current_config.id==current_running_program %} disabled {%
+                    endif %}>
+                    <i class="bi bi-trash text-danger"></i>
+                </button>
+                {% endif %}
+            </div>
+            {% if not current_config.readonly %}
+            <div class="modal fade" id="edit" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <form action="{{ url_for('shapes.save_config', program_id=current_config.id) }}" method="POST">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Edit Shape</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="program-name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="program-name"
+                                        value="{{current_config.name}}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="programDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="programDescription"
+                                        name="description">{{current_config.description}}</textarea>
+                                </div>
+                                <h6>MQTT</h6>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-3">
+                                            <label class="form-label">MQTT Broker</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mqtt_url" id="mqtt-url" placeholder="broker.mqttx.io" value="{{current_config.mqtt_config.broker_url}}">
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="text" class="form-control" name="mqtt_port" id="mqtt-port" placeholder="1883" value="{{current_config.mqtt_config.broker_port}}">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mqtt-clientid" class="form-label">Node name</label>
+                                            <input type="text" class="form-control" name="mqtt_nodename" id="mqtt-nodename" placeholder="" value="{{current_config.mqtt_config.node_name}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mqtt-clientid" class="form-label">Node type</label>
+                                            <input type="text" class="form-control" name="mqtt_nodetype" id="mqtt-nodetype" placeholder="" value="{{current_config.mqtt_config.node_type}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit">Update Shape</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="delete-shape" tabindex="-1" aria-labelledby="delete-shape" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="delete-shape">Delete Shape</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Do you really want to delete '<b>{{current_config.name}}</b>' Shape?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{{ url_for('shapes.delete', program_id=current_config.id)}}"
+                                class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="modal fade" id="clone" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form action="{{ url_for('shapes.clone_config', program_id=current_config.id) }}" method="POST">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Clone {{current_config.name}} Shape</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="program-name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="program-name" value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="programDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="programDescription"
+                                        name="description">{{current_config.description}}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit">Clone Shape</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 justify-content-between">
+            <p>{{current_config.description | capitalize}}</p>
+            {% if not current_config.readonly %}
+            <div>
+                <a href="{{ url_for('shapes.edit', program_id=current_config.id) }}"
+                    class="btn btn-primary {% if is_running and current_config.id == current_running_program %} disabled {% endif %}">
+                    <i class="bi bi-code-slash"></i> Edit code
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="d-flex gap-3 h-100">
+            {% if current_config.id == current_running_program %}
+            <div id="blocklyDiv" class="flex-fill col h-100"></div>
+            <div class="d-flex flex-column flex-fill">
+                <div class="d-flex flex-fill flex-column rounded">
+                    <div class="d-flex p-1 terminal-header rounded-top justify-content-start">
+                        <div class="d-flex mx-1">
+                            <div class="terminal-button terminal-button-close"></div>
+                            <div class="terminal-button terminal-button-minimize"></div>
+                            <div class="terminal-button terminal-button-maximize"></div>
+                        </div>
+                        <div class="d-flex flex-fill justify-content-center">{{ current_config.name }}</div>
+                        <div class="d-flex mx-1">
+                            <div class="terminal-button"></div>
+                            <div class="terminal-button"></div>
+                            <div class="terminal-button"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column p-2 rounded-bottom terminal text-white overflow-y-scroll"id="terminal">
+                    </div>
+                </div>
+                <div class="d-flex flex-fill" >
+                    <img id="feed" class="img-fluid"/>
+                </div>
+            </div>
+
+            {% else %}
+            <div id="blocklyDiv" class="flex-grow-1"></div>
+            {% endif %}
+        </div>
+        {%else%}
+        <div class="text-center my-auto">
+            <h3 class="text-dark">You currently have no programs.
+                <br />
+                Please click on "Add blockly program" to start creating programs.
+            </h3>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+<script src="{{url_for('shapes.static', filename='js/blockly_compressed.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_field_dependent_dropdown.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_blocks.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_msg_en.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/blockly_python.js')}}"></script>
+<script src="{{url_for('shapes.static', filename='js/custom_blocks.js')}}"></script>
+
+<script>
+    function initializeBlockly() {
+        var options = {
+            readOnly: true,
+            zoom: { startScale: 1.0, wheel: true },
+            move: {
+                scrollbars: {
+                    horizontal: true,
+                    vertical: true
+                }
+            }
+        };
+
+        var workspace;
+
+        {%if state %}
+        workspace = Blockly.inject('blocklyDiv', options);
+        var initState = JSON.parse({{ state | tojson }});
+        Blockly.serialization.workspaces.load(initState, workspace);
+        {% endif %}
+        return workspace;
+    }
+
+    function getEventMessage(event) {
+        if (event.message_type === "string"){
+            return $("<span/>", {class: event.severity, name: event.message_type}).html(`[${event.date}] ${event.severity}: ${event.message}`);
+        }
+
+        if (event.message_type === "prompt"){
+
+            return $("<span/>", {class: event.severity, name: event.message_type}).html(`[${event.date}] ${event.severity}: ${event.message.message}`);
+        }
+
+        return "";
+    }
+
+    function resizeTerminal(terminal){
+        const container_h = terminal.parent(".col").height();
+        const siblings_h = terminal.siblings().outerHeight();
+        terminal.outerHeight(container_h-siblings_h);
+    }
+
+    $(document).ready(() => {
+        const terminal = $("#terminal");
+
+        $("#run_application").change(function () {
+            if (this.checked) {
+                window.location.href = "{{ url_for('shapes.start', program_id=current_config.id) }}";
+            } else {
+                window.location.href = "{{ url_for('shapes.stop', program_id=current_config.id) }}";
+            }
+        })
+
+        {% if current_config.id == current_running_program %}
+        socket.on("logging", (event) => {
+            if (terminal.find("span.ERROR").length > 0){
+                return;
+            }
+
+            if (event.message_type === "string"){
+                terminal.prepend($("<span/>", {class: event.severity, name: event.message_type}).html(`[${event.date}] ${event.severity}: ${event.message}`));
+                return;
+            }
+
+            if (event.message_type === "prompt"){
+                const last_child = terminal.children().first();
+                if (last_child.attr('name') == event.message_type){
+                    const html = last_child.html();
+                    last_child.html(html+event.message.message);
+                    return;
+                }
+
+                terminal.prepend($("<span/>", {class: event.severity, name: event.message_type}).html(`[${event.date}] ${event.severity}: ${event.message.message}`));
+                return;
+            }
+        });
+        resizeTerminal(terminal);
+        $(window).resize(() => {
+            resizeTerminal(terminal)
+        });
+        {% endif %}
+
+        loadCustomBlocks({{ blocks_config | tojson | safe }});
+        defineCustomGenerators();
+        const workspace = initializeBlockly();
+    });
+
+</script>
+{% endblock %}
