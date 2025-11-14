@@ -1,5 +1,7 @@
 # Sunrise Middleware - ARISE Project POC
 
+Company: Next Industries s.r.l
+
 Release date: 14/11/2025
 
 Author: Stefano Barbareschi
@@ -39,11 +41,27 @@ The ROS2 package `sunrise` contains two main nodes:
 * Manages tasks and their sequence.
 * Acts as the logical core of the middleware.
 
+#### TEO - Teach Engine Orchestrator
+
+TEO component has been embedded into the mission_controller node
+
+#### LEO - Learn Engine Orchestrator
+
+LEO component has been embedded into the mission_controller node
+
 ### 2. `sunrise_bridge`
 
 * Acts as a **bridge** for data coming from the **Tactigon-Skin** device.
 * Handles **gesture** and **touch** input.
 * Normalizes data and forwards it to the **mission_controller**.
+
+### 3. `sunrise_app`
+
+
+Here’s a diagram of the Sunrise middleware architecture:
+
+![Sunrise Architecture](https://github.com/TactigonTeam/Tactigon-Sunrise/blob/master/docs/img/sunrise_architecture.jpg)
+
 
 ## Technologies Used
 
