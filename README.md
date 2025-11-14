@@ -1,5 +1,22 @@
 # Sunrise Middleware - ARISE Project POC
 
+Release date: 14/11/2025
+
+Author: Stefano Barbareschi
+
+Release version:
+ - sunrise: 0.0.1
+ - sunrise_msgs: 0.0.1 (tactigon-gear 5.4.2)
+
+Change Log:
+ - Created sunrise package containing mission_controller and sunrise_bridge nodes
+    - TEO can save and load skills using JSON file
+    - LEO is just a placeholder
+ - Created sunrise_msgs message definition
+ - Added build files to compile the ROS2 package
+ - Added MODEL_01_R for tactigon gesture recognition
+ - Added base configuration files
+
 ## Introduction
 
 The **Sunrise** project is part of the European **ARISE** program (Agile, human-centric, and Real-time enabled Open Source technologies) and represents a **middleware for multimodal human-robot interaction (HRI)**.
