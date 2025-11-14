@@ -1,0 +1,29 @@
+{
+    "tskin_config": {
+        "address": "C0:83:3F:39:21:57",
+        "hand": "right",
+        "name": "Tactigon",
+        "touch_config": null,
+        "gesture_config": {
+            "model_path": "/home/robot/projects/tactigon/Tactigon-Sunrise/data/models/MODEL_01_R/model.pickle",
+            "encoder_path": "/home/robot/projects/tactigon/Tactigon-Sunrise/data/models/MODEL_01_R/encoder.pickle",
+            "name": "test",
+            "created_at": "2025-11-14T12:40:01.108512",
+            "gestures": null
+        }
+    },
+    "intent_topic": "/sunrise/mission_controller/intent",
+    "action_topic": "/sunrise/mission_controller/action",
+    "gestures": [
+        {
+            "gesture": "twist",
+            "mapping": "action"
+        }
+    ],
+    "touchs": [
+        {
+            "touch": "SINGLE_TAP",
+            "mapping": "repeat_intent"
+        }
+    ]
+}
