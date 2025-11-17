@@ -66,8 +66,13 @@ class ZionInterface:
     def token(self, token: str):
         if self.config:
             self.config.token = token
-    
-    
+            
+    def stop(self):
+        """stop Zion Interface
+        """
+        self.config = None
+        self.devices = []
+
     def load_config(self):
         """loads configuration from Zionconfig JSON
         """

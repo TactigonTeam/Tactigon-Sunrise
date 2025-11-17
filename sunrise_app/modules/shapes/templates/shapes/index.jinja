@@ -59,17 +59,19 @@
 {% block body %}
 <div class="d-flex flex-grow-1">
     <div class="d-flex flex-column sidebar-container">
-        <div class="text-center pb-3 pt-5">
-            <h5>Shapes</h5>
-        </div>
-        <div class="list-group list-group-flush flex-grow-1 sidebar" style="max-height: 70vh;">
+        <div class="list-group list-group-flush flex-grow-1" style="max-height: 70vh;">
             {% for config in shapes_config %}
-            <a href="{{ url_for('shapes.index', program_id=config.id) }}" class="list-group-item list-group-item-action
-                {% if config.id == current_config.id %}active{% endif %}
+            <a href="{{ url_for('shapes.index', program_id=config.id) }}" class="
+                list-group-item 
+                list-group-item-action 
                 {% if config.id == current_running_program %} running {% endif %}
                 ">
                 <div class="d-flex justify-content-between align-items-center">
-                    <b>{{config.name | capitalize}}</b>
+                    {% if config.id == current_config.id %}
+                        <b>{{config.name | capitalize}}</b>
+                    {% else %}
+                        {{config.name | capitalize}}
+                    {% endif %}
                     {% if config.readonly %}
                     <small><i class="bi bi-lock"></i></small>
                     {% endif %}
@@ -81,7 +83,7 @@
             {% endfor %}
         </div>
         <div class="mx-auto mt-auto py-3">
-            <button type="button" class="btn btn-outline-tskin" data-bs-toggle="modal" data-bs-target="#add">
+            <button type="button" class="btn btn-outline-tactigon" data-bs-toggle="modal" data-bs-target="#add">
                 <i class="bi bi-plus"></i>
                 Add Shape
             </button>
@@ -287,26 +289,21 @@
         <div class="d-flex gap-3 h-100">
             {% if current_config.id == current_running_program %}
             <div id="blocklyDiv" class="flex-fill col h-100"></div>
-            <div class="d-flex flex-column flex-fill">
-                <div class="d-flex flex-fill flex-column rounded">
-                    <div class="d-flex p-1 terminal-header rounded-top justify-content-start">
-                        <div class="d-flex mx-1">
-                            <div class="terminal-button terminal-button-close"></div>
-                            <div class="terminal-button terminal-button-minimize"></div>
-                            <div class="terminal-button terminal-button-maximize"></div>
-                        </div>
-                        <div class="d-flex flex-fill justify-content-center">{{ current_config.name }}</div>
-                        <div class="d-flex mx-1">
-                            <div class="terminal-button"></div>
-                            <div class="terminal-button"></div>
-                            <div class="terminal-button"></div>
-                        </div>
+            <div class="d-flex flex-fill flex-column rounded">
+                <div class="d-flex p-1 terminal-header rounded-top justify-content-start">
+                    <div class="d-flex mx-1">
+                        <div class="terminal-button terminal-button-close"></div>
+                        <div class="terminal-button terminal-button-minimize"></div>
+                        <div class="terminal-button terminal-button-maximize"></div>
                     </div>
-                    <div class="d-flex flex-column p-2 rounded-bottom terminal text-white overflow-y-scroll"id="terminal">
+                    <div class="d-flex flex-fill justify-content-center">{{ current_config.name }}</div>
+                    <div class="d-flex mx-1">
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
                     </div>
                 </div>
-                <div class="d-flex flex-fill" >
-                    <img id="feed" class="img-fluid"/>
+                <div class="d-flex flex-column p-2 rounded-bottom terminal text-white overflow-y-scroll"id="terminal">
                 </div>
             </div>
 
@@ -372,7 +369,7 @@
     }
 
     function resizeTerminal(terminal){
-        const container_h = terminal.parent(".col").height();
+        const container_h = terminal.parent().height();
         const siblings_h = terminal.siblings().outerHeight();
         terminal.outerHeight(container_h-siblings_h);
     }

@@ -18,6 +18,8 @@ from typing import List, Optional
 
 from flask import Blueprint, render_template, flash, redirect, url_for
 
+from sunrise_app.modules.socketio import get_socket_app
+
 from sunrise_app.modules.mqtt.models import MQTTConfig
 
 from sunrise_app.modules.shapes.extension import ShapeConfig, Program
@@ -363,6 +365,7 @@ def save_program(program_id: str):
 @bp.route("/<string:program_id>/start")
 def start(program_id: str):
     _shapes = get_shapes_app()
+    _socket = get_socket_app()
 
     if not _shapes:
         flash(f"Shapes app not found!", category="danger")
@@ -385,6 +388,8 @@ def start(program_id: str):
     if status is False:
         flash(f"Failed to start {program.name}. {error}", category="danger")
         return redirect(url_for("shapes.edit", program_id=program_id))
+    
+    _socket.start()
           
     flash(f"{program.name} started!", category="success")
     return redirect(url_for("shapes.index", program_id=program_id))
@@ -393,6 +398,7 @@ def start(program_id: str):
 @bp.route("/<string:program_id>/stop")
 def stop(program_id: str):
     _shapes = get_shapes_app()
+    _socket = get_socket_app()
 
     if not _shapes:
         flash(f"Shapes app not found!", category="danger")
@@ -407,6 +413,7 @@ def stop(program_id: str):
         flash(f"Shape not found!", category="danger")
         return redirect(url_for("shapes.index"))
 
+    _socket.stop()
 
     flash(f"{program.name} is stopped", category="success")
     return redirect(url_for("shapes.index", program_id=program_id))

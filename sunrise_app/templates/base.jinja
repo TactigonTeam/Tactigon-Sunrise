@@ -45,34 +45,39 @@
     <!--- Loader --->
     <div class="d-flex" id="loading_spinner">
         <div class="d-flex flex-fill justify-content-center align-self-center">
-            <div class="spinner-border spinner-lg tskin" role="status">
+            <div class="spinner-border spinner-lg tactigon" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
     </div>
-    <!--- Navbar TSKIN status -->
     <div class="sticky-top">
         <!--- Navbar app -->
-        <nav class="navbar bg-tskin">
-            <div class="container-fluid">
-                <a href="{{ url_for('shapes.index') }}" class="btn btn-link text-decoration-none text-light" title="Shapes">
-                    <i class="mi-round mi-extension" style="font-size: 24px"></i>
-                </a>
-                <div>
-                    {% if has_ros2 %}
-                        <a href="{{ url_for('ros2.index') }}" class="btn btn-link text-decoration-none text-light" title="ROS 2">
-                            <i class="mi-round mi-smart-toy" style="font-size: 24px"></i>
-                        </a>
-                    {% endif %}
-                    <a href="{{ url_for('zion.index') }}" class="btn btn-link text-decoration-none text-light" title="Zion cloud">
-                        <i class="mi-outlined mi-cloud" style="font-size: 24px"></i>
+        <header class="navbar bg-tactigon">
+            <a href="{{ url_for('shapes.index') }}" class="text-decoration-none text-light ms-3" title="Sunrise App" style="min-width: 200px; width: 250px;">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Sunrise" height="32px">
+                <span class="">Sunrise</span>
+            </a>
+            <ul class="nav me-auto gap-3 p-2">
+                <li class="nav-item">
+                    <a href="{{ url_for('ros2.index') }}" class="text-decoration-none text-light" title="ROS 2">
+                        <i class="mi-round mi-smart-toy me-2" style="font-size: 24px"></i>
+                        ROS 2
                     </a>
-                    <a href="{{ url_for('main.settings') }}" class="btn btn-link text-decoration-none text-light" title="Settings">
-                        <i class="mi-round mi-settings" style="font-size: 24px"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('zion.index') }}" class="text-decoration-none text-light" title="Zion Cloud">
+                        <i class="mi-round mi-cloud me-2" style="font-size: 24px"></i>
+                        Zion Cloud
                     </a>
-                </div>
-            </div>
-        </nav>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('main.settings') }}" class="text-decoration-none text-light" title="Settings">
+                        <i class="mi-round mi-settings me-2" style="font-size: 24px"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </header>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}

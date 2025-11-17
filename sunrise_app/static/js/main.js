@@ -67,15 +67,9 @@ const show_toast = (el) => {
     new bootstrap.Toast(el, toast_option).show();
 };
 
+const socket = io();
+
 $(()=>{
-    /*
-    sidebar_resize()
-
-    $(window).on("resize", ()=>{
-        sidebar_resize()
-    });
-    */
-
     $(".toast").each((i, el) => {
         show_toast(el);
     });

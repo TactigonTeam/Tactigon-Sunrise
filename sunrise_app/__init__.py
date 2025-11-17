@@ -21,15 +21,15 @@ import requests
 import logging
 import time
 from os import path
-from multiprocessing import Event, Process, Queue
+from multiprocessing import Event, Process
 from flask import Flask, render_template, send_from_directory, request
 from gevent.pywsgi import WSGIServer
-
-from typing import Optional
+from geventwebsocket.handler import WebSocketHandler
 
 from sunrise_app.config import app_config
 from sunrise_app.models import BASE_PATH
 
+from sunrise_app.modules.socketio.extension import SocketApp
 from sunrise_app.modules.shapes.extension import ShapesApp
 from sunrise_app.modules.zion.extension import ZionInterface
 from sunrise_app.modules.zion.manager import get_zion_interface
@@ -71,7 +71,7 @@ class Server(Process):
     def run(self):
         logging.getLogger("bleak").setLevel(logging.INFO)
         app = self.create_app(self.debug)
-        server = WSGIServer((self.url, self.port), app)
+        server = WSGIServer((self.url, self.port), app, handler_class=WebSocketHandler)
         self._ready_flag.set()
         server.serve_forever()
 
@@ -80,18 +80,21 @@ class Server(Process):
         flask_app.config.from_object(app_config)
 
         with flask_app.app_context():
-
+            socket_app = SocketApp()
             shapes_app = ShapesApp(path.join(BASE_PATH, "config", "shapes"))
             zion_interface = ZionInterface(path.join(BASE_PATH, "config", "zion"))
             ros2_interface = Ros2Interface(path.join(BASE_PATH, "config", "ros2"))
 
             flask_app.debug = debug
+            socket_app.init_app(flask_app)
             zion_interface.init_app(flask_app)
             shapes_app.init_app(flask_app)
             ros2_interface.init_app(flask_app)
 
             shapes_app.zion_interface = zion_interface
             shapes_app.ros2_interface = ros2_interface
+
+            socket_app.shapes_app = shapes_app
 
             from . import main
             from .modules.shapes.blueprint import bp as shapes_bp

@@ -13,13 +13,7 @@
 
 from flask import current_app
 
-from typing import Optional
+from sunrise_app.modules.socketio.extension import SocketApp
 
-from sunrise_app.modules.zion.extension import ZionInterface
-
-
-def stop_apps(exclude: Optional[str] = None):
-    for ext in current_app.extensions:
-        if ext == exclude:
-            continue
-        current_app.extensions[ext].stop()
+def get_socket_app() -> SocketApp:
+    return current_app.extensions[SocketApp.name]

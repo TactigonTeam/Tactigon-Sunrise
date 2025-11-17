@@ -8,7 +8,7 @@ html {
 }
 
 body {
-    background-color: #eee;
+    background-color: #fff;
     font-family: 'Montserrat';
     min-height: 100vh;
     display: flex;
@@ -71,32 +71,32 @@ main {
     background-color: #f5e0dd6e;
 }
 
-.text-tskin{
+.text-tactigon{
     --bs-text-opacity: 1;
     color: #EB6152 !important;
 }
 
-.tskin {
+.tactigon {
     color: #EB6152;
 }
 
-.tskin:hover {
+.tactigon:hover {
     color: #EB6152;
 }
 
-.bg-tskin {
+.bg-tactigon {
     background-color: #EB6152;
 }
 
-.btn-tskin {
+.btn-tactigon {
     background-color: #EB6152;
     color: #fff;
 }
-.btn-tskin:hover, .btn-outline-tskin:hover {
+.btn-tactigon:hover, .btn-outline-tactigon:hover {
     background-color: #EB6152;
     color: #fff;
 }
-.btn-outline-tskin {
+.btn-outline-tactigon {
     border: 1px solid #EB6152;
 }
 
@@ -213,7 +213,7 @@ main {
     border-radius: 50%;
 }
 
-.btn-tskin {
+.btn-tactigon {
     --bs-btn-color: #FFFFFF;
     --bs-btn-bg: #EB6152;
     --bs-btn-border-color: #EB6152/* #FC250D*/;
@@ -230,7 +230,7 @@ main {
     --bs-btn-disabled-border-color: #EB6152;
 }
 
-.btn-outline-tskin {
+.btn-outline-tactigon {
     --bs-btn-color: #EB6152;
     --bs-btn-border-color: #EB6152;
     --bs-btn-hover-color: #fff;
@@ -247,18 +247,18 @@ main {
     --bs-gradient: none;
 }
 
-.list-group-item.tskin-action:active {
+.list-group-item.tactigon-action:active {
     color: var(--bs-list-group-color);
     border: var(--bs-list-group-border-width) solid #EB6152;
 }
 
-.list-group-item.tskin-action:focus {
+.list-group-item.tactigon-action:focus {
     color: #fff;
     background-color: #EB6152;
     border: var(--bs-list-group-border-width) solid #BE1C0A;
 }
 
-.list-group-item.list-tskin.active {
+.list-group-item.list-tactigon.active {
     z-index: 2;
     color: #212529;
     background-color: #f5e0dd;
