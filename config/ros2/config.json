@@ -1,3 +1,9 @@
 {
-  "ros2_commands": []
+  "ros2_commands": [
+    {
+      "package_name": "camera_ros",
+      "node_name": "camera_node",
+      "parameter_file": "cfg_test.yaml"
+    }
+  ]
 }

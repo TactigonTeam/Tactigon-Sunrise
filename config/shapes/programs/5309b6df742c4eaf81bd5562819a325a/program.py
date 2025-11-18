@@ -109,6 +109,8 @@ def mqtt_publish(mqtt: Optional[MQTTClient], topic: str, payload: Any):
 # ---------- Generated code ---------------
 
 braccio_response = None
+pointing = None
+markers = None
 
 
 def sunrise_app_setup(
@@ -117,11 +119,11 @@ def sunrise_app_setup(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global braccio_response
+    global braccio_response, pointing, markers
     pass
 
 def _braccio_ros_response(logging_queue: LoggingQueue):
-    global braccio_response
+    global braccio_response, pointing, markers
     debug(logging_queue, braccio_response)
 
 def sunrise_app_function(
@@ -130,9 +132,13 @@ def sunrise_app_function(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global braccio_response
+    global braccio_response, pointing, markers
     pass
 
+
+def _camera_tracking_pointing(logging_queue: LoggingQueue):
+    global braccio_response, pointing, markers
+    debug(logging_queue, pointing)
 
 def sunrise_app_close(
         zion: Optional[ZionInterface],
@@ -140,5 +146,9 @@ def sunrise_app_close(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global braccio_response
+    global braccio_response, pointing, markers
     pass
+
+def _camera_tracking_markers(logging_queue: LoggingQueue):
+    global braccio_response, pointing, markers
+    debug(logging_queue, markers)

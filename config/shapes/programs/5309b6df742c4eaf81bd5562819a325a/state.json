@@ -79,6 +79,120 @@
             }
           }
         }
+      },
+      {
+        "type": "ros2_subscribe",
+        "id": "nNp$FM2ul#~Wc-Z9ttuE",
+        "x": 490,
+        "y": 210,
+        "fields": {
+          "var_name": {
+            "id": "7GAn@#d_;|R8y;.iYz%_"
+          }
+        },
+        "inputs": {
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "eEos%MKHZww{+=H$5d~o",
+              "fields": {
+                "TEXT": "/camera_tracking/pointing"
+              }
+            }
+          },
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "^1SWJ[zSAnt?j/*)`_Y}",
+              "fields": {
+                "message_type": "Marker"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "I)6jP-/FqYI_)VGo)@Er",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "66G=UmAnMX.M}I^`l7:p",
+                    "fields": {
+                      "TEXT": "abc"
+                    }
+                  },
+                  "block": {
+                    "type": "variables_get",
+                    "id": "WnsWPaHv3F|]{P!*QAN@",
+                    "fields": {
+                      "VAR": {
+                        "id": "7GAn@#d_;|R8y;.iYz%_"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "ros2_subscribe",
+        "id": "T|J9#uUQ-jYx3|]o`@N[",
+        "x": 490,
+        "y": 350,
+        "fields": {
+          "var_name": {
+            "id": "VSbG+-v`B{[zVU=25(l0"
+          }
+        },
+        "inputs": {
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "Ej]4@.o,;Szl]nu@n@j;",
+              "fields": {
+                "TEXT": "/camera_tracking/markers"
+              }
+            }
+          },
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "+)xvJP,.y,c^o,HdC@=g",
+              "fields": {
+                "message_type": "MarkerList"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "M~_h+#($+1=^DtwHjzLT",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "|Rb?ur|rM,`PCZ`k1QDu",
+                    "fields": {
+                      "TEXT": "abc"
+                    }
+                  },
+                  "block": {
+                    "type": "variables_get",
+                    "id": "rH.X(=dBL_}d.K675x8H",
+                    "fields": {
+                      "VAR": {
+                        "id": "VSbG+-v`B{[zVU=25(l0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     ]
   },
@@ -86,6 +200,14 @@
     {
       "name": "braccio_response",
       "id": "f@2jhDvkJMO$aa9r6Tr$"
+    },
+    {
+      "name": "pointing",
+      "id": "7GAn@#d_;|R8y;.iYz%_"
+    },
+    {
+      "name": "markers",
+      "id": "VSbG+-v`B{[zVU=25(l0"
     }
   ]
 }

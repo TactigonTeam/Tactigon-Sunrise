@@ -3,7 +3,7 @@
     "id": "5309b6df742c4eaf81bd5562819a325a",
     "name": "Sunrise App",
     "created_on": "2025-11-14T18:31:58.712429",
-    "modified_on": "2025-11-18T15:33:13.737702",
+    "modified_on": "2025-11-18T18:12:47.444938",
     "description": "",
     "readonly": false,
     "ros2_config": {
@@ -15,6 +15,20 @@
           "function": "_braccio_ros_response",
           "payload_reference": "braccio_response",
           "message_type": "BraccioResponse",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/camera_tracking/pointing",
+          "function": "_camera_tracking_pointing",
+          "payload_reference": "pointing",
+          "message_type": "Marker",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/camera_tracking/markers",
+          "function": "_camera_tracking_markers",
+          "payload_reference": "markers",
+          "message_type": "MarkerList",
           "qos_profile": 10
         }
       ]

@@ -8,6 +8,9 @@ find_package(std_msgs REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Action.msg"
   "msg/Intent.msg"
+  "msg/Point2D.msg"
+  "msg/Marker.msg"
+  "msg/MarkerList.msg"
   DEPENDENCIES builtin_interfaces
 )
 
