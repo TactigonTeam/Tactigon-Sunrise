@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 import json
 from sunrise.mission_controller.teo.models import TEOConfig

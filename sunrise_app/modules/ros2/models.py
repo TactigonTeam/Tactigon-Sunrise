@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from rclpy.node import QoSProfile
 from std_msgs import msg

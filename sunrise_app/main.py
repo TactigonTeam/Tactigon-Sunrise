@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from functools import wraps
 from flask import Blueprint, render_template, flash, redirect, url_for, current_app

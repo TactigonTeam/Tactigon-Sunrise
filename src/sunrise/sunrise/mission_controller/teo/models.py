@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from dataclasses import dataclass
 

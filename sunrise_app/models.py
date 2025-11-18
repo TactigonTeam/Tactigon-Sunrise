@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 import sys
 import json
@@ -18,9 +18,7 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Optional, List
 
-from tactigon_gear import  __version__ as tactigon_gear_version
-
-BASE_PATH = getcwd()
+BASE_PATH = getcwd() #"/data"
 
 @dataclass
 class AppConfig(object):

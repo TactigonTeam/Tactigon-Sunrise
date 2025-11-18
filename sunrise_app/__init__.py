@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from platform import system
 
@@ -21,13 +21,14 @@ import requests
 import logging
 import time
 from os import path
-from multiprocessing import Event, Process
 from flask import Flask, render_template, send_from_directory, request
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
 from sunrise_app.config import app_config
 from sunrise_app.models import BASE_PATH
+
+from sunrise_app.utils.extensions import stop_apps
 
 from sunrise_app.modules.socketio.extension import SocketApp
 from sunrise_app.modules.shapes.extension import ShapesApp
@@ -36,43 +37,30 @@ from sunrise_app.modules.zion.manager import get_zion_interface
 from sunrise_app.modules.ros2.extension import Ros2Interface
 from sunrise_app.modules.ros2.manager import get_ros2_interface
 
-class Server(Process):
+class Server:
     url: str
     port: int
     debug: bool
+    app: Flask
 
     def __init__(self, url: str = "localhost", port: int = 5000, debug: bool = False):
-        Process.__init__(self)
         self.url = url
         self.port = port
         self.debug = debug
-        self._ready_flag = Event()
 
     @property
     def address(self) -> str:
         return F"http://{self.url}:{self.port}"
     
-    @property
-    def ready(self) -> bool:
-        return self._ready_flag.is_set()
-    
     def serve(self):
-        print(F"Serving application on {self.address}, port {self.port}")
-        self.start()
-
-        while not self._ready_flag.is_set():
-            time.sleep(0.5)
-
-        input("Type any key to exit...\n")
-    
-        self.stop()
-        self.terminate()
-
-    def run(self):
-        logging.getLogger("bleak").setLevel(logging.INFO)
-        app = self.create_app(self.debug)
-        server = WSGIServer((self.url, self.port), app, handler_class=WebSocketHandler)
-        self._ready_flag.set()
+        print("Starting Sunrise App server...")
+        self.app = self.create_app(self.debug)
+        server = WSGIServer(
+            listener=(self.url, self.port), 
+            application=self.app,
+            handler_class=WebSocketHandler
+        )
+        print(f"Serving app on {self.address}")
         server.serve_forever()
 
     def create_app(self, debug: bool = False):
@@ -140,4 +128,5 @@ class Server(Process):
         return flask_app
     
     def stop(self):
-        return requests.get(F"{self.address}/quit").status_code == 200
+        with self.app.app_context():
+            stop_apps()

@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 import sys
 import json
@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QPu
 from PyQt5.QtCore import QTimer
 
 from sunrise_msgs.msg import Intent, Action
-
+from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 
 class TestNode(Node):
     def __init__(self):
@@ -30,6 +30,13 @@ class TestNode(Node):
 
         self.intent_pub = self.create_publisher(Intent, "/sunrise/mission_controller/intent", 10)
         self.action_pub = self.create_publisher(Action, "/sunrise/mission_controller/action", 10)
+        self.braccio_pub = self.create_publisher(BraccioCommand, "/braccio_ros/command", 10)
+        self.braccio_sub = self.create_subscription(
+            BraccioResponse,
+            "/braccio_ros/response",
+            self.braccio_response_callback,
+            10
+        )
 
     @staticmethod
     def get_teach_intent(skill_name: str) -> Intent:
@@ -46,6 +53,17 @@ class TestNode(Node):
         a.payload = json.dumps(dict(x=x, y=y))
 
         return a
+    
+    @staticmethod
+    def get_braccio_command(x: int, y: int, z: int, gripper: str = "CLOSE", wrist: str = "HORIZONTAL") -> BraccioCommand:
+        bc = BraccioCommand()
+        bc.x = x
+        bc.y = y
+        bc.z = z
+        bc.gripper_state = gripper
+        bc.wrist_state = wrist
+
+        return bc
 
     def send_intent(self, intent: Intent):
         print("Sending", intent)
@@ -54,6 +72,15 @@ class TestNode(Node):
     def send_action(self, action: Action):
         print("Sending", action)
         self.action_pub.publish(action)
+
+    def send_braccio_command(self, command: BraccioCommand):
+        print("Sending", command)
+        self.braccio_pub.publish(command)
+
+    def braccio_response_callback(self, msg: BraccioResponse):
+        self.get_logger().info(
+            f"Received Braccio response: {msg}"
+        )
 
 
 class TestWindow(QMainWindow):
@@ -82,6 +109,18 @@ class TestWindow(QMainWindow):
         position1_btn.clicked.connect(lambda: self._node.send_action(TestNode.get_camera_action(100, 100)))
 
         self._layout.addWidget(position1_btn)
+
+        braccio_1_btn = QPushButton("Braccio position (100, 100, 100)", self._container)
+        braccio_1_btn.setToolTip("Send the Bracio position")
+        braccio_1_btn.clicked.connect(lambda: self._node.send_braccio_command(TestNode.get_braccio_command(100, 100, 100)))
+
+        self._layout.addWidget(braccio_1_btn)
+
+        braccio_2_btn = QPushButton("Braccio position (100, 100, 0)", self._container)
+        braccio_2_btn.setToolTip("Send the Bracio position")
+        braccio_2_btn.clicked.connect(lambda: self._node.send_braccio_command(TestNode.get_braccio_command(100, 100, 0, "OPEN", "VERTICAL")))
+
+        self._layout.addWidget(braccio_2_btn)
         
 
 class TestApp(QApplication):
@@ -99,7 +138,8 @@ class TestApp(QApplication):
         self._node_timer.start()
 
     def spin_node(self):
-        rclpy.spin_once(self._node, timeout_sec=0)
+        if rclpy.ok():
+            rclpy.spin_once(self._node, timeout_sec=0)
 
 
 def main():

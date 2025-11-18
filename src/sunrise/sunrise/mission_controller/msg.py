@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from std_msgs.msg import String, Int16, Int32, UInt16, UInt32, Bool, Byte
 

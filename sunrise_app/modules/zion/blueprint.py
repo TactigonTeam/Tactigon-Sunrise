@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from tabnanny import check
 from flask import Blueprint, redirect, render_template, flash, url_for

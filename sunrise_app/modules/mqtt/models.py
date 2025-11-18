@@ -9,7 +9,7 @@
 # Contributors:
 # Massimiliano Bellino
 # Stefano Barbareschi
-#********************************************************************************/
+#********************************************************************************
 
 from paho.mqtt.enums import CallbackAPIVersion, MQTTProtocolVersion
 from dataclasses import dataclass, field
