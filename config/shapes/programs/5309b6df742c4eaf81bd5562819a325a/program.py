@@ -108,13 +108,21 @@ def mqtt_publish(mqtt: Optional[MQTTClient], topic: str, payload: Any):
 
 # ---------- Generated code ---------------
 
+braccio_response = None
+
+
 def sunrise_app_setup(
         zion: Optional[ZionInterface],
         ros2: Optional[Ros2Interface],
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
+    global braccio_response
     pass
+
+def _braccio_ros_response(logging_queue: LoggingQueue):
+    global braccio_response
+    debug(logging_queue, braccio_response)
 
 def sunrise_app_function(
         zion: Optional[ZionInterface],
@@ -122,7 +130,8 @@ def sunrise_app_function(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    debug(logging_queue, 'Tactigon')
+    global braccio_response
+    pass
 
 
 def sunrise_app_close(
@@ -131,4 +140,5 @@ def sunrise_app_close(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
+    global braccio_response
     pass

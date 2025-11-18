@@ -14,26 +14,7 @@
         "id": "(6#O~za/m9f0x1/=LC:Y",
         "x": 30,
         "y": 150,
-        "deletable": false,
-        "inputs": {
-          "BODY": {
-            "block": {
-              "type": "sunrise_app_debug",
-              "id": "/_RJuT|FP+=rNLqlI8I`",
-              "inputs": {
-                "TEXT": {
-                  "shadow": {
-                    "type": "text",
-                    "id": "hH?+1PMEr}=a.]UcN;r{",
-                    "fields": {
-                      "TEXT": "Tactigon"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        "deletable": false
       },
       {
         "type": "sunrise_app_close",
@@ -41,7 +22,70 @@
         "x": 30,
         "y": 300,
         "deletable": false
+      },
+      {
+        "type": "ros2_subscribe",
+        "id": "w7P)609hxy4/pyrPEMZW",
+        "x": 470,
+        "y": 70,
+        "fields": {
+          "var_name": {
+            "id": "f@2jhDvkJMO$aa9r6Tr$"
+          }
+        },
+        "inputs": {
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "w{*H;i@]:B`.F:5_lm64",
+              "fields": {
+                "TEXT": "/braccio_ros/response"
+              }
+            }
+          },
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "4=6|ykxs@-izj1p@(hKP",
+              "fields": {
+                "message_type": "BraccioResponse"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "dG{w+ou.G*Jdojr+ZY%[",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "66G=UmAnMX.M}I^`l7:p",
+                    "fields": {
+                      "TEXT": "abc"
+                    }
+                  },
+                  "block": {
+                    "type": "variables_get",
+                    "id": "_P#CB5;.NFmR2Ol39+~Q",
+                    "fields": {
+                      "VAR": {
+                        "id": "f@2jhDvkJMO$aa9r6Tr$"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     ]
-  }
+  },
+  "variables": [
+    {
+      "name": "braccio_response",
+      "id": "f@2jhDvkJMO$aa9r6Tr$"
+    }
+  ]
 }

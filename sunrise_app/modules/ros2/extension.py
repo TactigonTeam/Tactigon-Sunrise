@@ -27,7 +27,7 @@ from werkzeug.datastructures import FileStorage
 
 from typing import Callable, Optional, Any
 
-from sunrise_app.modules.ros2.models import Ros2Config, Ros2Command, Ros2ShapeConfig, RosMessage, NodeAction, NodeActions
+from sunrise_app.modules.ros2.models import Ros2Config, Ros2Command, Ros2ShapeConfig, RosMessage, NodeAction, NodeActions, RosMessageTypes, get_message_name
 
 class ShapeNode(Node):
     TICK: float = 0.02
@@ -228,16 +228,7 @@ class Ros2Interface:
 
     def get_blocks(self):
         return {
-            "default_types": [
-                ('Bool', 'Bool'),
-                ('Byte', 'Byte'),
-                ('Char', 'Char'),
-                ('Float64', 'Float64'),
-                ('Int64', 'Int64'),
-                ('UInt64', 'UInt64'),
-                ('String', 'String'),
-                ('ColorRGBA', 'ColorRGBA')
-            ],
+            "default_types": [(n, n) for n in get_message_name()],
             "commands": [(c.name, c.identifier) for c in self.config.ros2_commands] if self.config.ros2_commands else [("", "")]
         }
     

@@ -28,7 +28,7 @@ from sunrise_app.modules.shapes.models import ShapeConfig, DebugMessage, Program
 
 from sunrise_app.modules.zion.extension import ZionInterface
 from sunrise_app.modules.ros2.extension import Ros2Interface
-from sunrise_app.modules.ros2.models import RosMessage, Ros2Subscription
+from sunrise_app.modules.ros2.models import RosMessage, Ros2Subscription, get_message_data
 from sunrise_app.modules.mqtt.extension import MQTTClient, mqtt_client
 
 from sunrise_app.extensions.base import ExtensionThread, ExtensionApp
@@ -107,9 +107,10 @@ class ShapeThread(ExtensionThread):
 
         if not subscription:
             return  
-                
+        
+        print(message.msg)
         # Set the payload reference first
-        setattr(self.module, subscription.payload_reference, message.msg.data)
+        setattr(self.module, subscription.payload_reference, get_message_data(message.msg))
         # Execute the function
         getattr(self.module, subscription.function)(self._logging_queue)
         # Clear the payload

@@ -12,16 +12,37 @@
 #********************************************************************************
 
 from rclpy.node import QoSProfile
-from std_msgs import msg
+from std_msgs.msg import String, Int16, Int32, UInt16, UInt32, Bool, Byte, Float32, Float64, Int8, UInt8, Int64, UInt64, ColorRGBA
+from sunrise_msgs.msg import Action, Intent
+from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+StrMessageTypes = String | Int64 | Bool | Float64
+SunriseMessageTypes = Action | Intent
+BraccioMessageTypes = BraccioCommand | BraccioResponse
+RosMessageTypes = StrMessageTypes | SunriseMessageTypes | BraccioMessageTypes
+
+def get_message_type_by_name(name: str) -> RosMessageTypes:
+    type_index = [t.__name__ for t in RosMessageTypes.__args__].index(name)    
+    return RosMessageTypes.__args__[type_index]
+
+def get_message_name() -> list[str]:
+    return [t.__name__ for t in RosMessageTypes.__args__]
+
+def get_message_data(msg: RosMessageTypes) -> Any:
+    data = {}
+    for field in msg.get_fields_and_field_types():
+        print(field)
+        data[field] = getattr(msg, field)
+    return data
+
 @dataclass
 class RosMessage:
     topic: str
-    msg: Any
+    msg: RosMessageTypes
 
 class NodeActions(Enum):
     ADD_PUBLISHER = "add_publisher"
@@ -72,7 +93,7 @@ class Ros2Publisher:
     def FromJSON(cls, json: dict):
         return cls(
             json["topic"],
-            getattr(msg, json["message_type"]),
+            get_message_type_by_name(json["message_type"]),
             json["qos_profile"] if "qos_profile" in json and json["qos_profile"] else 10,
         )
     
@@ -97,7 +118,7 @@ class Ros2Subscription:
             json["topic"],
             json["function"],
             json["payload_reference"],
-            getattr(msg, json["message_type"]),
+            get_message_type_by_name(json["message_type"]),
             json["qos_profile"] if "qos_profile" in json and json["qos_profile"] else 10,
         )
     
