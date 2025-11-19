@@ -1,9 +1,7 @@
-camera_node:
+camera:
   ros__parameters:
-    camera_name: usb_camera
-    image_width: 320
-    image_height: 240
+    camera: 0
+    width: 640
+    height: 480
     framerate: 15
-    pixel_format: mjpeg
-    camera_info_url: ''
-    frame_id: camera_link
+    format: MJPEG
