@@ -13,6 +13,7 @@
 
 import json
 import cv2
+import math
 from cv2.aruco import getPredefinedDictionary, detectMarkers, DICT_4X4_50
 from rclpy.node import Node
 from sensor_msgs.msg import Image
@@ -37,7 +38,7 @@ class CameraTrakingNode(Node):
         self.bridge = CvBridge()
         self.hands = Hands(
             static_image_mode=False,
-            max_num_hands=1,
+            max_num_hands=2,
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5
         )
@@ -74,6 +75,30 @@ class CameraTrakingNode(Node):
 
         return ((b1 == b2) and (b2 == b3) and (b3 == b4))
     
+    def expand_quad(self, quad, margin):
+
+        expanded = []
+
+        for i in range(4):
+            p1 = quad[i]
+            p2 = quad[(i + 1) % 4]
+
+            dx = p2[0] - p1[0]
+            dy = p2[1] - p1[1]
+
+            length = math.hypot(dx, dy)
+            nx = -dy / length
+            ny = dx / length
+
+            expanded.append((p1[0] + nx * margin, p1[1] + ny * margin))
+
+        return expanded
+    
+    def is_point_in_marker_with_margin(self, quad, point, margin=0.0) -> bool:
+        if margin > 0:
+            quad = self.expand_quad(quad, margin)
+        return self.is_point_in_marker(quad, point)
+    
     def create_marker(self, marker_id: int, corners) -> Marker:
         return Marker(
             id=int(marker_id),
@@ -93,7 +118,7 @@ class CameraTrakingNode(Node):
             if self.marker_refresh_counter >= self.marker_refresh_rate:
                 self.marker_refresh_counter = 0
 
-                markers_to_remove = [marker_id for marker_id in self.markers.keys() if not self.is_point_in_marker(self.markers[marker_id], self.finger_tip)]
+                markers_to_remove = [marker_id for marker_id in self.markers.keys() if not self.is_point_in_marker_with_margin(self.markers[marker_id], self.finger_tip)]
 
                 for marker_id in markers_to_remove:
                     self.markers.pop(marker_id)
@@ -114,6 +139,8 @@ class CameraTrakingNode(Node):
                     self.get_logger().debug("No markers detected.")
             
             hand_tracking = self.hands.process(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
+
+            self.finger_tip = None
             
             if hand_tracking.multi_hand_landmarks: # type: ignore
                 for hand_landmarks in hand_tracking.multi_hand_landmarks: # type: ignore
@@ -124,22 +151,19 @@ class CameraTrakingNode(Node):
 
                     x_pixel = int(finger_tip_landmark.x * w)
                     y_pixel = int(finger_tip_landmark.y * h)
+                    color = self.red
 
-                    self.finger_tip = (x_pixel, y_pixel)
-            else:
-                self.finger_tip = None
+                    for marker_id, corner in self.markers.items():
+                        if self.is_point_in_marker_with_margin(corner, (x_pixel, y_pixel), self.config.marker_detection_margin) and not self.is_pointing:
+                            self.is_pointing = self.create_marker(marker_id, corner)
+                            self.pointing_publisher.publish(self.is_pointing)
+                            self.finger_tip = (x_pixel, y_pixel)
+                            color = self.green
+
+                    cv2.circle(cv_image, (x_pixel, y_pixel), radius=20, color=color, thickness=-1)
 
             for marker_id, corner in self.markers.items():
-                if self.is_point_in_marker(corner, self.finger_tip) and not self.is_pointing:
-                    self.is_pointing = self.create_marker(marker_id, corner)
                 cv2.polylines(cv_image, [corner], isClosed=True, color=self.green, thickness=2)
-
-            if self.finger_tip:
-                color = self.green if self.is_pointing else self.red
-                cv2.circle(cv_image, self.finger_tip, radius=20, color=color, thickness=-1)
-
-            if self.is_pointing:
-                self.pointing_publisher.publish(self.is_pointing)
 
             self.camera_pubblisher.publish(self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8'))
 
