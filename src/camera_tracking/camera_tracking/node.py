@@ -41,7 +41,8 @@ class CameraTrakingNode(Node):
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5
         )
-        self.finger_tip = None
+        self.is_pointing: Marker | None = None
+        self.finger_tip: tuple[int, int] | None = None
 
         self.marker_definition = getPredefinedDictionary(DICT_4X4_50)
         self.marker_refresh_counter = self.marker_refresh_rate
@@ -58,10 +59,13 @@ class CameraTrakingNode(Node):
         with open(config_path) as cf:
             return CameraTrackingConfig.FromJSON(json.load(cf))
         
-    def is_point_in_marker(self, quad, point):
+    def is_point_in_marker(self, quad, point) -> bool:
         def sign(p1, p2, p3):
             return (p1[0] - p3[0]) * (p2[1] - p3[1]) - \
                 (p2[0] - p3[0]) * (p1[1] - p3[1])
+        
+        if not point:
+            return False
 
         b1 = sign(point, quad[0], quad[1]) < 0.0
         b2 = sign(point, quad[1], quad[2]) < 0.0
@@ -69,69 +73,75 @@ class CameraTrakingNode(Node):
         b4 = sign(point, quad[3], quad[0]) < 0.0
 
         return ((b1 == b2) and (b2 == b3) and (b3 == b4))
+    
+    def create_marker(self, marker_id: int, corners) -> Marker:
+        return Marker(
+            id=int(marker_id),
+            p1=Point2D(x=int(corners[0][0]), y=int(corners[0][1])),
+            p2=Point2D(x=int(corners[1][0]), y=int(corners[1][1])),
+            p3=Point2D(x=int(corners[2][0]), y=int(corners[2][1])),
+            p4=Point2D(x=int(corners[3][0]), y=int(corners[3][1])),
+        )
 
     def on_image(self, msg: Image):
         self.marker_refresh_counter += 1
-        is_pointing = None
+        self.is_pointing = None
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             grayscale_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
 
             if self.marker_refresh_counter >= self.marker_refresh_rate:
                 self.marker_refresh_counter = 0
-                self.markers = {}
+
+                markers_to_remove = [marker_id for marker_id in self.markers.keys() if not self.is_point_in_marker(self.markers[marker_id], self.finger_tip)]
+
+                for marker_id in markers_to_remove:
+                    self.markers.pop(marker_id)
+
                 corners, ids, _ = detectMarkers(grayscale_image, self.marker_definition)
                 if ids is not None:
                     for corner, marker_id in zip(corners, ids):
-                        self.get_logger().debug(f"Detected marker ID: {marker_id[0]} at corners: {corner}")
-
                         corner = corner[0].astype(int)
-                        self.get_logger().debug(f"Marker corners (int): {corner}")
                         self.markers[marker_id[0]] = corner
-
+                
                 if self.markers:
-                    self.marker_publisher.publish(
-                        MarkerList(
-                            markers=[
-                                Marker(
-                                    id=int(marker_id),
-                                    corners=[Point2D(x=int(c[0]), y=int(c[1])) for c in corner]
-                                ) for marker_id, corner in self.markers.items()
-                            ]
-                        )
+                    marker_list = MarkerList(
+                        markers=[self.create_marker(marker_id, corner) for marker_id, corner in self.markers.items()]
                     )
+                    self.get_logger().debug(f"Detected markers: {marker_list}")
+                    self.marker_publisher.publish(marker_list)
+                else:
+                    self.get_logger().debug("No markers detected.")
             
             hand_tracking = self.hands.process(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
-            self.finger_tip = None
             
             if hand_tracking.multi_hand_landmarks: # type: ignore
                 for hand_landmarks in hand_tracking.multi_hand_landmarks: # type: ignore
                     self.get_logger().debug(f"Hand landmarks: {hand_landmarks}")
 
-                    finger_tip = hand_landmarks.landmark[8]
+                    finger_tip_landmark = hand_landmarks.landmark[8]
                     h, w, _ = cv_image.shape
 
-                    x_pixel = int(finger_tip.x * w)
-                    y_pixel = int(finger_tip.y * h)
+                    x_pixel = int(finger_tip_landmark.x * w)
+                    y_pixel = int(finger_tip_landmark.y * h)
 
                     self.finger_tip = (x_pixel, y_pixel)
+            else:
+                self.finger_tip = None
 
             for marker_id, corner in self.markers.items():
-                if self.finger_tip and not is_pointing:
-                    is_pointing = Marker(
-                        id=int(marker_id),
-                        corners=[Point2D(x=int(c[0]), y=int(c[1])) for c in corner]
-                    ) if self.is_point_in_marker(corner, self.finger_tip) else None
-                # cv2.polylines(cv_image, [corner], isClosed=True, color=self.green, thickness=2)
+                if self.is_point_in_marker(corner, self.finger_tip) and not self.is_pointing:
+                    self.is_pointing = self.create_marker(marker_id, corner)
+                cv2.polylines(cv_image, [corner], isClosed=True, color=self.green, thickness=2)
 
             if self.finger_tip:
-                color = self.green if is_pointing else self.red
-                # cv2.circle(cv_image, self.finger_tip, radius=20, color=color, thickness=-1)
+                color = self.green if self.is_pointing else self.red
+                cv2.circle(cv_image, self.finger_tip, radius=20, color=color, thickness=-1)
 
-            if is_pointing:
-                self.pointing_publisher.publish(is_pointing)
+            if self.is_pointing:
+                self.pointing_publisher.publish(self.is_pointing)
 
-            # self.camera_pubblisher.publish(self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8'))
+            self.camera_pubblisher.publish(self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8'))
 
         except Exception as e:
             self.get_logger().error(f"Errore nella conversione o invio immagine: {e}")
