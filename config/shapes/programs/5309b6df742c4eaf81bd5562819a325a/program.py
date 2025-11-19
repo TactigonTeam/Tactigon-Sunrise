@@ -7,9 +7,12 @@ import types
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
+from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
+from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 from sunrise_app.modules.shapes.extension import ShapesPostAction, LoggingQueue
 from sunrise_app.modules.zion.extension import ZionInterface, Scope, AlarmSearchStatus, AlarmSeverity
 from sunrise_app.modules.ros2.extension import Ros2Interface
+from sunrise_app.modules.ros2.models import RosMessageTypes
 from sunrise_app.modules.mqtt.extension import MQTTClient
 from typing import List, Optional, Union, Any
 
@@ -93,11 +96,11 @@ def ros2_run(ros2: Optional[Ros2Interface], command: str):
 
     ros2.run(command)
 
-def ros2_publish(ros2: Optional[Ros2Interface], topic: str, message_type: Any, message):
+def ros2_publish(ros2: Optional[Ros2Interface], topic: str, message: RosMessageTypes):
     if not ros2:
         return
     
-    ros2.publish(topic, message_type, message)
+    ros2.publish(topic, message)
 
 def mqtt_publish(mqtt: Optional[MQTTClient], topic: str, payload: Any):
     if not mqtt:
@@ -108,10 +111,15 @@ def mqtt_publish(mqtt: Optional[MQTTClient], topic: str, payload: Any):
 
 # ---------- Generated code ---------------
 
-braccio_response = None
 pointing = None
 markers = None
+bridge_intent = None
+marker_id = None
 
+
+def _camera_tracking_pointing(logging_queue: LoggingQueue):
+    global pointing, markers, bridge_intent, marker_id
+    marker_id = pointing.get('id', None)
 
 def sunrise_app_setup(
         zion: Optional[ZionInterface],
@@ -119,26 +127,12 @@ def sunrise_app_setup(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global braccio_response, pointing, markers
-    pass
+    global pointing, markers, bridge_intent, marker_id
+    marker_id = -1
 
-def _braccio_ros_response(logging_queue: LoggingQueue):
-    global braccio_response, pointing, markers
-    debug(logging_queue, braccio_response)
-
-def sunrise_app_function(
-        zion: Optional[ZionInterface],
-        ros2: Optional[Ros2Interface],
-        mqtt: Optional[MQTTClient],
-        logging_queue: LoggingQueue):
-
-    global braccio_response, pointing, markers
-    pass
-
-
-def _camera_tracking_pointing(logging_queue: LoggingQueue):
-    global braccio_response, pointing, markers
-    debug(logging_queue, pointing)
+def _sunrise_mission_controller_intent(logging_queue: LoggingQueue):
+    global pointing, markers, bridge_intent, marker_id
+    debug(logging_queue, bridge_intent)
 
 def sunrise_app_close(
         zion: Optional[ZionInterface],
@@ -146,9 +140,20 @@ def sunrise_app_close(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global braccio_response, pointing, markers
+    global pointing, markers, bridge_intent, marker_id
     pass
 
 def _camera_tracking_markers(logging_queue: LoggingQueue):
-    global braccio_response, pointing, markers
-    debug(logging_queue, markers)
+    global pointing, markers, bridge_intent, marker_id
+    debug(logging_queue, 'Markers updated')
+
+def sunrise_app_function(
+        zion: Optional[ZionInterface],
+        ros2: Optional[Ros2Interface],
+        mqtt: Optional[MQTTClient],
+        logging_queue: LoggingQueue):
+
+    global pointing, markers, bridge_intent, marker_id
+    if marker_id != -1:
+        debug(logging_queue, 'Send action on marker')
+        marker_id = -1

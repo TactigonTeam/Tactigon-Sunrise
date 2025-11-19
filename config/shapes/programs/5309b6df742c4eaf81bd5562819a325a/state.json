@@ -5,72 +5,112 @@
       {
         "type": "sunrise_app_setup",
         "id": "KC0c-4-UPMw+xp*}1RaS",
-        "x": 30,
-        "y": 30,
-        "deletable": false
+        "x": 50,
+        "y": -50,
+        "deletable": false,
+        "inputs": {
+          "setup_code": {
+            "block": {
+              "type": "variables_set",
+              "id": "[F@bPDJ469{z??0(PgO:",
+              "fields": {
+                "VAR": {
+                  "id": "#Bwf#GRl$C)$r)]UbXCs"
+                }
+              },
+              "inputs": {
+                "VALUE": {
+                  "block": {
+                    "type": "math_number",
+                    "id": "LjwnoUDJrj}Zj.;,gll+",
+                    "fields": {
+                      "NUM": -1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       {
         "type": "sunrise_app_function",
         "id": "(6#O~za/m9f0x1/=LC:Y",
-        "x": 30,
-        "y": 150,
-        "deletable": false
-      },
-      {
-        "type": "sunrise_app_close",
-        "id": "g[@vX?}52mCh[u8c.vOX",
-        "x": 30,
-        "y": 300,
-        "deletable": false
-      },
-      {
-        "type": "ros2_subscribe",
-        "id": "w7P)609hxy4/pyrPEMZW",
-        "x": 470,
-        "y": 70,
-        "fields": {
-          "var_name": {
-            "id": "f@2jhDvkJMO$aa9r6Tr$"
-          }
-        },
+        "x": 50,
+        "y": 230,
+        "deletable": false,
         "inputs": {
-          "topic": {
-            "shadow": {
-              "type": "text",
-              "id": "w{*H;i@]:B`.F:5_lm64",
-              "fields": {
-                "TEXT": "/braccio_ros/response"
-              }
-            }
-          },
-          "message_type": {
-            "shadow": {
-              "type": "ros2_message_type",
-              "id": "4=6|ykxs@-izj1p@(hKP",
-              "fields": {
-                "message_type": "BraccioResponse"
-              }
-            }
-          },
-          "function": {
+          "BODY": {
             "block": {
-              "type": "sunrise_app_debug",
-              "id": "dG{w+ou.G*Jdojr+ZY%[",
+              "type": "controls_if",
+              "id": "|HnJjJpNe0DFN;7FH0;W",
               "inputs": {
-                "TEXT": {
-                  "shadow": {
-                    "type": "text",
-                    "id": "66G=UmAnMX.M}I^`l7:p",
-                    "fields": {
-                      "TEXT": "abc"
-                    }
-                  },
+                "IF0": {
                   "block": {
-                    "type": "variables_get",
-                    "id": "_P#CB5;.NFmR2Ol39+~Q",
+                    "type": "logic_compare",
+                    "id": "kYN^,P?ByJaRq{:`(`2G",
                     "fields": {
-                      "VAR": {
-                        "id": "f@2jhDvkJMO$aa9r6Tr$"
+                      "OP": "NEQ"
+                    },
+                    "inputs": {
+                      "A": {
+                        "block": {
+                          "type": "variables_get",
+                          "id": "4]d,EX~`{I[E;Yu|HAgz",
+                          "fields": {
+                            "VAR": {
+                              "id": "#Bwf#GRl$C)$r)]UbXCs"
+                            }
+                          }
+                        }
+                      },
+                      "B": {
+                        "block": {
+                          "type": "math_number",
+                          "id": "wi$(9(r/:QP7qK{6d~p~",
+                          "fields": {
+                            "NUM": -1
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "DO0": {
+                  "block": {
+                    "type": "sunrise_app_debug",
+                    "id": "}y]_bBmXf0%Wy}N;eu=O",
+                    "inputs": {
+                      "TEXT": {
+                        "shadow": {
+                          "type": "text",
+                          "id": "mZG7%~2jouwBEor@BETo",
+                          "fields": {
+                            "TEXT": "Send action on marker"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "variables_set",
+                        "id": "XEpb5XFATQ]Fs$.RgP*q",
+                        "fields": {
+                          "VAR": {
+                            "id": "#Bwf#GRl$C)$r)]UbXCs"
+                          }
+                        },
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "math_number",
+                              "id": "oz}DggG6fDcH,R6%)83O",
+                              "fields": {
+                                "NUM": -1
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -81,10 +121,17 @@
         }
       },
       {
+        "type": "sunrise_app_close",
+        "id": "g[@vX?}52mCh[u8c.vOX",
+        "x": 50,
+        "y": 90,
+        "deletable": false
+      },
+      {
         "type": "ros2_subscribe",
         "id": "nNp$FM2ul#~Wc-Z9ttuE",
-        "x": 490,
-        "y": 210,
+        "x": 690,
+        "y": -110,
         "fields": {
           "var_name": {
             "id": "7GAn@#d_;|R8y;.iYz%_"
@@ -111,23 +158,38 @@
           },
           "function": {
             "block": {
-              "type": "sunrise_app_debug",
-              "id": "I)6jP-/FqYI_)VGo)@Er",
+              "type": "variables_set",
+              "id": "C#XMkD?UW_O9J@/zXBsK",
+              "fields": {
+                "VAR": {
+                  "id": "#Bwf#GRl$C)$r)]UbXCs"
+                }
+              },
               "inputs": {
-                "TEXT": {
-                  "shadow": {
-                    "type": "text",
-                    "id": "66G=UmAnMX.M}I^`l7:p",
-                    "fields": {
-                      "TEXT": "abc"
-                    }
-                  },
+                "VALUE": {
                   "block": {
-                    "type": "variables_get",
-                    "id": "WnsWPaHv3F|]{P!*QAN@",
-                    "fields": {
-                      "VAR": {
-                        "id": "7GAn@#d_;|R8y;.iYz%_"
+                    "type": "get_dict_property",
+                    "id": "Cm6c)ZM3*fi,.u4~ojnM",
+                    "inputs": {
+                      "key": {
+                        "shadow": {
+                          "type": "text",
+                          "id": "TKRnh4fj,,Cqvg*LJPhD",
+                          "fields": {
+                            "TEXT": "id"
+                          }
+                        }
+                      },
+                      "dictionary": {
+                        "block": {
+                          "type": "variables_get",
+                          "id": "{TvQ6f-5E7^z(dF99u0B",
+                          "fields": {
+                            "VAR": {
+                              "id": "7GAn@#d_;|R8y;.iYz%_"
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -140,8 +202,8 @@
       {
         "type": "ros2_subscribe",
         "id": "T|J9#uUQ-jYx3|]o`@N[",
-        "x": 490,
-        "y": 350,
+        "x": 690,
+        "y": 150,
         "fields": {
           "var_name": {
             "id": "VSbG+-v`B{[zVU=25(l0"
@@ -180,11 +242,66 @@
                     }
                   },
                   "block": {
+                    "type": "text",
+                    "id": "so@!=~|V!9Y9,H|KvXtA",
+                    "fields": {
+                      "TEXT": "Markers updated"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "ros2_subscribe",
+        "id": "4^6aZe-8_P2t:e4ax~d3",
+        "x": 690,
+        "y": 10,
+        "fields": {
+          "var_name": {
+            "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+          }
+        },
+        "inputs": {
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "+uqrIRg*dbcpv;ijCv!R",
+              "fields": {
+                "TEXT": "/sunrise/mission_controller/intent"
+              }
+            }
+          },
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "7W1i2:5Kh%S0^6qRR@Lg",
+              "fields": {
+                "message_type": "Intent"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "I)6jP-/FqYI_)VGo)@Er",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "66G=UmAnMX.M}I^`l7:p",
+                    "fields": {
+                      "TEXT": "abc"
+                    }
+                  },
+                  "block": {
                     "type": "variables_get",
-                    "id": "rH.X(=dBL_}d.K675x8H",
+                    "id": "WnsWPaHv3F|]{P!*QAN@",
                     "fields": {
                       "VAR": {
-                        "id": "VSbG+-v`B{[zVU=25(l0"
+                        "id": "JF^;BrJJ|ujW|Fj|e/ZI"
                       }
                     }
                   }
@@ -198,16 +315,20 @@
   },
   "variables": [
     {
-      "name": "braccio_response",
-      "id": "f@2jhDvkJMO$aa9r6Tr$"
-    },
-    {
       "name": "pointing",
       "id": "7GAn@#d_;|R8y;.iYz%_"
     },
     {
       "name": "markers",
       "id": "VSbG+-v`B{[zVU=25(l0"
+    },
+    {
+      "name": "bridge_intent",
+      "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+    },
+    {
+      "name": "marker_id",
+      "id": "#Bwf#GRl$C)$r)]UbXCs"
     }
   ]
 }

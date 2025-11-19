@@ -23,7 +23,7 @@
     "touchs": [
         {
             "touch": "SINGLE_TAP",
-            "mapping": "repeat_intent"
+            "mapping": "teach_intent"
         }
     ]
 }

@@ -73,7 +73,7 @@ class Server:
             zion_interface = ZionInterface(path.join(BASE_PATH, "config", "zion"))
             ros2_interface = Ros2Interface(path.join(BASE_PATH, "config", "ros2"))
 
-            flask_app.debug = debug
+            flask_app.debug = True
             socket_app.init_app(flask_app)
             zion_interface.init_app(flask_app)
             shapes_app.init_app(flask_app)

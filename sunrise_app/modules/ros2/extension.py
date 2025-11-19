@@ -18,6 +18,7 @@ import subprocess
 import signal
 from rclpy.node import Node, QoSProfile
 from std_msgs.msg import String
+from sunrise_msgs.msg import Action, Intent
 from threading import Thread, Event as ThreadEvent
 from multiprocessing import Process, Queue, Event, Pipe
 from queue import Queue, Empty
@@ -35,7 +36,7 @@ class ShapeNode(Node):
     def __init__(self):
         Node.__init__(self, "sunrise_app")
 
-    def add_publisher(self, topic: str, message_type: Any, qos_profile: QoSProfile | int):
+    def add_publisher(self, topic: str, message_type: RosMessageTypes, qos_profile: QoSProfile | int):
         publisher = self.create_publisher(message_type, topic, qos_profile)
 
     def add_subscription(self, topic: str, fn: Callable[[RosMessage], None], message_type: Any, qos_profile: QoSProfile | int):
@@ -46,13 +47,11 @@ class ShapeNode(Node):
             qos_profile
         )
 
-    def publish(self, topic: str, message_type: Any, msg: Any):
+    def publish(self, topic: str, msg: RosMessageTypes):
         publisher = next((p for p in self.publishers if p.topic == topic), None)
 
         if publisher:
-            message = message_type()
-            message.data = msg
-            publisher.publish(message)
+            publisher.publish(msg)
 
     def unsubscribe(self, topic: str):
         subscription = next((s for s in self.subscriptions if s.topic == topic), None)
@@ -150,8 +149,7 @@ class Ros2Process(Process):
                     elif action == NodeActions.PUBLISH:
                         node.publish(
                             payload.get("topic", ""), 
-                            payload.get("message_type", String),
-                            payload.get("msg", "")
+                            payload.get("msg", String(data="Error publishing message"))
                         )
                     elif action == NodeActions.UNSUBSCRIBE:
                         node.unsubscribe(payload.get("topic", ""))
@@ -174,7 +172,7 @@ class Ros2Process(Process):
         
         return None
 
-    def add_publisher(self, topic: str, message_type: Any, qos_profile: QoSProfile | int = 10):
+    def add_publisher(self, topic: str, message_type: RosMessageTypes, qos_profile: QoSProfile | int = 10):
         self._send_command(
             NodeAction.AddPubblisher(
                 dict(topic=topic, message_type=message_type, qos_profile=qos_profile)
@@ -195,16 +193,13 @@ class Ros2Process(Process):
             )
         )
 
-    def publish(self, topic: str, message_type: Any, msg: Any) -> bool:
-        if message_type:
-            self._send_command(
-                NodeAction.Publish(
-                    dict(topic=topic, message_type=message_type, msg=msg)
-                )
+    def publish(self, topic: str, msg: RosMessageTypes) -> bool:
+        self._send_command(
+            NodeAction.Publish(
+                dict(topic=topic, msg=msg)
             )
-            return True
-        
-        return False
+        )
+        return True
 
 class Ros2Interface:
     _process: Ros2Process | None
@@ -229,7 +224,9 @@ class Ros2Interface:
     def get_blocks(self):
         return {
             "default_types": [(n, n) for n in get_message_name()],
-            "commands": [(c.name, c.identifier) for c in self.config.ros2_commands] if self.config.ros2_commands else [("", "")]
+            "commands": [(c.name, c.identifier) for c in self.config.ros2_commands] if self.config.ros2_commands else [("", "")],
+            "action_types": [("GESTURE", "GESTURE"), ("VOICE_COMMAND", "VOICE_COMMAND"), ("TOUCH", "TOUCH"), ("CAMERA_POINT", "CAMERA_POINT"), ("MARKER", "MARKER")],
+            "intent_types": [("TEACH", "TEACH"), ("REPEAT", "REPEAT")],
         }
     
     @property
@@ -339,13 +336,11 @@ class Ros2Interface:
                 )
             )
 
-    def publish(self, topic: str, message_type: Any, msg: Any) -> bool:
+    def publish(self, topic: str, msg: RosMessageTypes) -> bool:
         if self._process:
-            self._process.publish(
+            return self._process.publish(
                 topic,
-                message_type,
                 msg,        
             )
-            return True
         
         return False

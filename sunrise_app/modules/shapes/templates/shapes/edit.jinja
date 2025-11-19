@@ -487,21 +487,136 @@
                         </shadow>
                     </value>
                 </block>
+                <block type="ros2_message_type"></block>
                 <block type="ros2_publish">
-                    <value name="payload">
-                        <shadow type="text">
+                    <value name="message_type">
+                        <shadow type="ros2_message_String">
+                            <value name="data">
+                                <shadow type="text">
+                                </shadow>
+                            </value>
                         </shadow>
                     </value>
                     <value name="topic">
                         <shadow type="text">
                         </shadow>
                     </value>
-                    <value name="message_type">
-                        <shadow type="ros2_message_type">
+                </block>
+                <block type="ros2_message_String">
+                    <value name="data">
+                        <shadow type="text">
                         </shadow>
                     </value>
                 </block>
-                <block type="ros2_message_type"></block>
+                <block type="ros2_message_Bool">
+                    <value name="data">
+                        <shadow type="logic_boolean">
+                            <field name="BOOL">TRUE</field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Int64">
+                    <value name="data">
+                        <shadow type="math_number">
+                            <field name="NUM">1</field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Float64">
+                    <value name="data">
+                        <shadow type="math_number">
+                            <field name="NUM">1.5</field>
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Action_type">
+                </block>
+                <block type="ros2_message_Action">
+                    <value name="type">
+                        <shadow type="ros2_message_Action_type">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Intent_type">
+                </block>
+                <block type="ros2_message_Intent">
+                    <value name="type">
+                        <shadow type="ros2_message_Intent_type">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Point2D">
+                    <value name="x">
+                        <shadow type="math_number">
+                        </shadow>
+                    </value>
+                    <value name="y">
+                        <shadow type="math_number">
+                        </shadow>
+                    </value>
+                </block>
+                <block type="ros2_message_Marker">
+                    <value name="marker_id">
+                        <shadow type="math_number"></shadow>
+                    </value>
+                    <value name="p1">
+                        <shadow type="ros2_message_Point2D">
+                            <value name="x">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                            <value name="y">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                        </shadow>
+                    </value>
+                    <value name="p2">
+                        <shadow type="ros2_message_Point2D">
+                            <value name="x">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                            <value name="y">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                        </shadow>
+                    </value>
+                    <value name="p3">
+                        <shadow type="ros2_message_Point2D">
+                            <value name="x">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                            <value name="y">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                        </shadow>
+                    </value>
+                    <value name="p4">
+                        <shadow type="ros2_message_Point2D">
+                            <value name="x">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                            <value name="y">
+                                <shadow type="math_number">
+                                    <field name="NUM">0</field>
+                                </shadow>
+                            </value>
+                        </shadow>
+                    </value>
+                </block>
+
             </category>
         {% endif %}
         {% if current_config.mqtt_config %}
@@ -652,7 +767,7 @@
 
         return functions.map(block => {
             const topic = block.getInputTargetBlock("topic").getFieldValue("TEXT");
-            const message_type = block.getInputTargetBlock("message_type").getFieldValue("message_type");
+            const message_type = block.getInputTargetBlock("message_type").type.split('_')[2];
             return {"topic": topic, "message_type": message_type};
         });
     }
@@ -727,9 +842,6 @@
                 const subscriptions = getSubscriptions(workspace);
                 const ros2subscriptions = getRos2Subscriptions(workspace);
                 const ros2publishers = getRos2Publishers(workspace);
-
-                console.log(ros2subscriptions);
-                console.log(ros2publishers);
 
                 setGeneratedCode(workspace);
                 setState(workspace);

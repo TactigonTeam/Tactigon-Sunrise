@@ -23,7 +23,7 @@ SUNRISE_INTENT_TOPIC = "/sunrise/mission_controller/intent"
 class MappingType(Enum):
     UNDEFINED = ""
     ACTION = "action"
-    LEARN_INTENT = "learn_intent"
+    TEACH_INTENT = "teach_intent"
     REPEAT_INTENT = "repeat_intent"
 
 @dataclass

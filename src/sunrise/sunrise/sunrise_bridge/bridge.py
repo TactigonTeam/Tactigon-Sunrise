@@ -81,7 +81,7 @@ class SunriseBridge(Node):
     def _send_payload_by_mapping(self, mapping: GestureMapping | TouchMapping, payload: dict):
         if mapping.mapping == MappingType.ACTION:
             self._send_action(payload)
-        elif mapping.mapping == MappingType.LEARN_INTENT:
+        elif mapping.mapping == MappingType.TEACH_INTENT:
             self._send_teach_intent(payload)
         elif mapping.mapping == MappingType.REPEAT_INTENT:
             self._send_repeat_intent(payload)

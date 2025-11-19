@@ -35,7 +35,6 @@ def get_message_name() -> list[str]:
 def get_message_data(msg: RosMessageTypes) -> Any:
     data = {}
     for field in msg.get_fields_and_field_types():
-        print(field)
         data[field] = getattr(msg, field)
     return data
 
