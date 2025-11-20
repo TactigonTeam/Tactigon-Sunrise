@@ -13,28 +13,52 @@
 
 from dataclasses import dataclass
 
-from sunrise.mission_controller.models.skill import Skill, SkillScope
+from sunrise.mission_controller.models.skill import Task, Skill, SkillScope
 
 @dataclass
 class TEOConfig:
-    skills: list[Skill]
+    tasks: list[Task]
+    # skills: list[Skill]
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
-            skills=[Skill.FromJSON(skill) for skill in json.get("skills", [])]
+            tasks=[Task.FromJSON(skill) for skill in json.get("tasks", [])]
         )
     
     def toJSON(self) -> dict:
         return dict(
-            skills=[skill.toJSON() for skill in self.skills]
+            tasks=[t.toJSON() for t in self.tasks]
         )
     
-    def add_skill(self, skill: Skill, parent: str = "") -> bool:
-        if parent:
-            return self._add_to_skill(self.skills, skill, parent)
+    def get_task(self, name: str) -> Task | None:
+        return next((t for t in self.tasks if t.name == name), None)
+
+    def add_task(self, task_name: str) -> Task:
+        _task = next((t for t in self.tasks if t.name == task_name), None)
+
+        if _task:
+            return _task
         
-        self.skills.append(skill)
+        self.tasks.append(
+            Task(
+                name=task_name,
+                skills=[]
+            )
+        )
+
+        return self.tasks[-1]
+    
+    def add_skill(self, task_name: str, skill: Skill, parent: str = "") -> bool:
+        task = self.get_task(task_name)
+
+        if not task:
+            return False
+
+        if parent:
+            return self._add_to_skill(task.skills, skill, parent)
+        
+        task.skills.append(skill)
         return True
     
     def _add_to_skill(self, skills: list[Skill], skill: Skill, parent: str) -> bool:
@@ -47,6 +71,4 @@ class TEOConfig:
                 return True
             
         return False
-    
-    def get_skill(self, name: str) -> Skill | None:
-        return next((skill for skill in self.skills if skill.name == name), None)
+

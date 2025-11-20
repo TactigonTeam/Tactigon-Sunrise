@@ -26,7 +26,7 @@ from typing import Callable, Any
 
 from sunrise.mission_controller.models.mission_controller import MissionControllerConfig, Message
 from sunrise.mission_controller.teo import TEO
-from sunrise.mission_controller.teo.models import Skill, SkillScope
+from sunrise.mission_controller.teo.models import Task, Skill, SkillScope
 from sunrise.mission_controller.leo import LEO
 
 class MachineState(Enum):
@@ -49,6 +49,7 @@ class MissionController(Node):
     state: tuple[Time, MachineState, dict]
     
     _actions: list[tuple[Time, Action]]
+    _task_name: str | None
 
     def __init__(self, config_path: str):
         Node.__init__(self, MissionController.__name__)
@@ -80,6 +81,7 @@ class MissionController(Node):
 
         self.state = (self.now(), MachineState.IDLE, {})
         self._actions = []
+        self._task_name = None
 
         self.info(f"Created!")
 
@@ -189,6 +191,14 @@ class MissionController(Node):
         elif intent.type == Intent.REPEAT:
             state = MachineState.REPEAT
 
+        if not self._task_name:
+            task_name = payload.get("task", None)
+            if task_name:
+                self._task_name = task_name
+            else:
+                t = self.teacher.add_task("")
+                self._task_name = t.name
+
         self.state = (timestamp, state, payload)
         self.debug(f"Updated state machine to {self.state}")
 
@@ -213,7 +223,7 @@ class MissionController(Node):
         self.debug(f"Managing action for state {state} | {payload}")
         
         if state == MachineState.TEACH:
-            if self._actions:   
+            if self._actions and self._task_name:   
                 time, action = self._actions.pop(0)
 
                 self.debug(f"Learned skill {payload} => {action}")
@@ -225,7 +235,7 @@ class MissionController(Node):
                     payload=json.loads(action.payload)
                 )
                 
-                self.teacher.add_skill(s)
+                self.teacher.add_skill(self._task_name, s)
                 self.teacher.save_config()
 
                 self._reset_state()
