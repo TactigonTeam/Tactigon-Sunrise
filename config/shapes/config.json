@@ -3,7 +3,7 @@
     "id": "5309b6df742c4eaf81bd5562819a325a",
     "name": "Sunrise App",
     "created_on": "2025-11-14T18:31:58.712429",
-    "modified_on": "2025-11-20T12:47:57.035547",
+    "modified_on": "2025-11-20T15:34:38.804728",
     "description": "",
     "readonly": false,
     "ros2_config": {
@@ -29,17 +29,10 @@
           "qos_profile": 10
         },
         {
-          "topic": "/camera_tracking/markers",
-          "function": "_camera_tracking_markers",
-          "payload_reference": "markers",
-          "message_type": "MarkerList",
-          "qos_profile": 10
-        },
-        {
-          "topic": "/sunrise/mission_controller/intent",
-          "function": "_sunrise_mission_controller_intent",
-          "payload_reference": "bridge_intent",
-          "message_type": "Intent",
+          "topic": "/sunrise/mission_controller/log",
+          "function": "_sunrise_mission_controller_log",
+          "payload_reference": "log",
+          "message_type": "Log",
           "qos_profile": 10
         },
         {

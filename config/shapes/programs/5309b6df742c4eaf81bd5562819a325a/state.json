@@ -91,85 +91,59 @@
                 },
                 "DO0": {
                   "block": {
-                    "type": "sunrise_app_debug",
-                    "id": "}y]_bBmXf0%Wy}N;eu=O",
+                    "type": "ros2_publish",
+                    "id": "{?C=wP$cF6Dk.LzI4B]Y",
                     "inputs": {
-                      "TEXT": {
+                      "message_type": {
                         "shadow": {
-                          "type": "text",
-                          "id": "mZG7%~2jouwBEor@BETo",
-                          "fields": {
-                            "TEXT": "Send action on marker"
+                          "type": "ros2_message_String",
+                          "id": "M1Me/%IIQ,$OG`rQ~p|+",
+                          "inputs": {
+                            "data": {
+                              "shadow": {
+                                "type": "text",
+                                "id": "l-{T_FuV/%oCoc*5BeS?",
+                                "fields": {
+                                  "TEXT": ""
+                                }
+                              }
+                            }
                           }
                         },
                         "block": {
                           "type": "variables_get",
-                          "id": "+B{LiopQBYWHczF;h[?q",
+                          "id": "yXdLTPG4I7qv(+NOWvub",
                           "fields": {
                             "VAR": {
                               "id": "2rs1Fgd,xutO|]B}?N^x"
                             }
                           }
                         }
+                      },
+                      "topic": {
+                        "shadow": {
+                          "type": "text",
+                          "id": "p]$h#i$3Oq-#BP_`#RO*",
+                          "fields": {
+                            "TEXT": "/sunrise/mission_controller/action"
+                          }
+                        }
                       }
                     },
                     "next": {
                       "block": {
-                        "type": "ros2_publish",
-                        "id": "{?C=wP$cF6Dk.LzI4B]Y",
-                        "inputs": {
-                          "message_type": {
-                            "shadow": {
-                              "type": "ros2_message_String",
-                              "id": "M1Me/%IIQ,$OG`rQ~p|+",
-                              "inputs": {
-                                "data": {
-                                  "shadow": {
-                                    "type": "text",
-                                    "id": "l-{T_FuV/%oCoc*5BeS?",
-                                    "fields": {
-                                      "TEXT": ""
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            "block": {
-                              "type": "variables_get",
-                              "id": "yXdLTPG4I7qv(+NOWvub",
-                              "fields": {
-                                "VAR": {
-                                  "id": "2rs1Fgd,xutO|]B}?N^x"
-                                }
-                              }
-                            }
-                          },
-                          "topic": {
-                            "shadow": {
-                              "type": "text",
-                              "id": "p]$h#i$3Oq-#BP_`#RO*",
-                              "fields": {
-                                "TEXT": "/sunrise/mission_controller/action"
-                              }
-                            }
+                        "type": "variables_set",
+                        "id": "XEpb5XFATQ]Fs$.RgP*q",
+                        "fields": {
+                          "VAR": {
+                            "id": "2rs1Fgd,xutO|]B}?N^x"
                           }
                         },
-                        "next": {
-                          "block": {
-                            "type": "variables_set",
-                            "id": "XEpb5XFATQ]Fs$.RgP*q",
-                            "fields": {
-                              "VAR": {
-                                "id": "2rs1Fgd,xutO|]B}?N^x"
-                              }
-                            },
-                            "inputs": {
-                              "VALUE": {
-                                "block": {
-                                  "type": "logic_null",
-                                  "id": ":;S$EpGYGc{s[1*g5CwB"
-                                }
-                              }
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "logic_null",
+                              "id": ":;S$EpGYGc{s[1*g5CwB"
                             }
                           }
                         }
@@ -213,85 +187,59 @@
                     },
                     "DO0": {
                       "block": {
-                        "type": "sunrise_app_debug",
-                        "id": "1n9GlfadF#4V@$d0VLcs",
+                        "type": "ros2_publish",
+                        "id": "v]#_1WTZ)9p)BQ2f;HJc",
                         "inputs": {
-                          "TEXT": {
+                          "message_type": {
                             "shadow": {
-                              "type": "text",
-                              "id": "mZG7%~2jouwBEor@BETo",
-                              "fields": {
-                                "TEXT": "Send action on marker"
+                              "type": "ros2_message_String",
+                              "id": "M1Me/%IIQ,$OG`rQ~p|+",
+                              "inputs": {
+                                "data": {
+                                  "shadow": {
+                                    "type": "text",
+                                    "id": "l-{T_FuV/%oCoc*5BeS?",
+                                    "fields": {
+                                      "TEXT": ""
+                                    }
+                                  }
+                                }
                               }
                             },
                             "block": {
                               "type": "variables_get",
-                              "id": "ZJpTa$kV@7P+^oU7|(c#",
+                              "id": "epYyXaqw{nXNfw`Ma9kn",
                               "fields": {
                                 "VAR": {
                                   "id": "N)W$d!a:HX$Mq}j[SR]y"
                                 }
                               }
                             }
+                          },
+                          "topic": {
+                            "shadow": {
+                              "type": "text",
+                              "id": "T1{@T*o8O)Cu;6[E^4Ok",
+                              "fields": {
+                                "TEXT": "/sunrise/mission_controller/intent"
+                              }
+                            }
                           }
                         },
                         "next": {
                           "block": {
-                            "type": "ros2_publish",
-                            "id": "v]#_1WTZ)9p)BQ2f;HJc",
-                            "inputs": {
-                              "message_type": {
-                                "shadow": {
-                                  "type": "ros2_message_String",
-                                  "id": "M1Me/%IIQ,$OG`rQ~p|+",
-                                  "inputs": {
-                                    "data": {
-                                      "shadow": {
-                                        "type": "text",
-                                        "id": "l-{T_FuV/%oCoc*5BeS?",
-                                        "fields": {
-                                          "TEXT": ""
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "block": {
-                                  "type": "variables_get",
-                                  "id": "epYyXaqw{nXNfw`Ma9kn",
-                                  "fields": {
-                                    "VAR": {
-                                      "id": "N)W$d!a:HX$Mq}j[SR]y"
-                                    }
-                                  }
-                                }
-                              },
-                              "topic": {
-                                "shadow": {
-                                  "type": "text",
-                                  "id": "T1{@T*o8O)Cu;6[E^4Ok",
-                                  "fields": {
-                                    "TEXT": "/sunrise/mission_controller/intent"
-                                  }
-                                }
+                            "type": "variables_set",
+                            "id": "#`vvSWg(5PpoZ;hNj+(M",
+                            "fields": {
+                              "VAR": {
+                                "id": "N)W$d!a:HX$Mq}j[SR]y"
                               }
                             },
-                            "next": {
-                              "block": {
-                                "type": "variables_set",
-                                "id": "#`vvSWg(5PpoZ;hNj+(M",
-                                "fields": {
-                                  "VAR": {
-                                    "id": "N)W$d!a:HX$Mq}j[SR]y"
-                                  }
-                                },
-                                "inputs": {
-                                  "VALUE": {
-                                    "block": {
-                                      "type": "logic_null",
-                                      "id": "odaS}3;?+!7E`Yy{1MsV"
-                                    }
-                                  }
+                            "inputs": {
+                              "VALUE": {
+                                "block": {
+                                  "type": "logic_null",
+                                  "id": "odaS}3;?+!7E`Yy{1MsV"
                                 }
                               }
                             }
@@ -317,7 +265,7 @@
         "type": "ros2_subscribe",
         "id": "nNp$FM2ul#~Wc-Z9ttuE",
         "x": 690,
-        "y": -130,
+        "y": 190,
         "fields": {
           "var_name": {
             "id": "7GAn@#d_;|R8y;.iYz%_"
@@ -430,64 +378,9 @@
       },
       {
         "type": "ros2_subscribe",
-        "id": "T|J9#uUQ-jYx3|]o`@N[",
-        "x": 690,
-        "y": 310,
-        "fields": {
-          "var_name": {
-            "id": "VSbG+-v`B{[zVU=25(l0"
-          }
-        },
-        "inputs": {
-          "topic": {
-            "shadow": {
-              "type": "text",
-              "id": "Ej]4@.o,;Szl]nu@n@j;",
-              "fields": {
-                "TEXT": "/camera_tracking/markers"
-              }
-            }
-          },
-          "message_type": {
-            "shadow": {
-              "type": "ros2_message_type",
-              "id": "+)xvJP,.y,c^o,HdC@=g",
-              "fields": {
-                "message_type": "MarkerList"
-              }
-            }
-          },
-          "function": {
-            "block": {
-              "type": "sunrise_app_debug",
-              "id": "M~_h+#($+1=^DtwHjzLT",
-              "inputs": {
-                "TEXT": {
-                  "shadow": {
-                    "type": "text",
-                    "id": "|Rb?ur|rM,`PCZ`k1QDu",
-                    "fields": {
-                      "TEXT": "abc"
-                    }
-                  },
-                  "block": {
-                    "type": "text",
-                    "id": "so@!=~|V!9Y9,H|KvXtA",
-                    "fields": {
-                      "TEXT": "Markers updated"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "ros2_subscribe",
         "id": "4^6aZe-8_P2t:e4ax~d3",
         "x": 690,
-        "y": 190,
+        "y": 370,
         "fields": {
           "var_name": {
             "id": "JF^;BrJJ|ujW|Fj|e/ZI"
@@ -499,7 +392,7 @@
               "type": "text",
               "id": "+uqrIRg*dbcpv;ijCv!R",
               "fields": {
-                "TEXT": "/sunrise/mission_controller/intent"
+                "TEXT": "/sunrise/mission_controller/log"
               }
             }
           },
@@ -508,7 +401,7 @@
               "type": "ros2_message_type",
               "id": "7W1i2:5Kh%S0^6qRR@Lg",
               "fields": {
-                "message_type": "Intent"
+                "message_type": "Log"
               }
             }
           },
@@ -526,11 +419,28 @@
                     }
                   },
                   "block": {
-                    "type": "variables_get",
-                    "id": "WnsWPaHv3F|]{P!*QAN@",
-                    "fields": {
-                      "VAR": {
-                        "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+                    "type": "get_dict_property",
+                    "id": "C@YcDo*$s^8(X1B6fU(C",
+                    "inputs": {
+                      "key": {
+                        "shadow": {
+                          "type": "text",
+                          "id": "[cXOh|;ITXiMh:L@/J6g",
+                          "fields": {
+                            "TEXT": "msg"
+                          }
+                        }
+                      },
+                      "dictionary": {
+                        "block": {
+                          "type": "variables_get",
+                          "id": "WnsWPaHv3F|]{P!*QAN@",
+                          "fields": {
+                            "VAR": {
+                              "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -544,7 +454,7 @@
         "type": "ros2_subscribe",
         "id": "?uloncauF_|3x~F(c,l@",
         "x": 690,
-        "y": -430,
+        "y": -70,
         "fields": {
           "var_name": {
             "id": "*ba*j1LXmJMK)UzJ|E=I"
@@ -723,8 +633,8 @@
       {
         "type": "procedures_defreturn",
         "id": "|afHx.)SjmtA9pH[@TK7",
-        "x": 2170,
-        "y": -530,
+        "x": 1970,
+        "y": -110,
         "extraState": {
           "params": [
             {
@@ -1162,7 +1072,7 @@
       "id": "VSbG+-v`B{[zVU=25(l0"
     },
     {
-      "name": "bridge_intent",
+      "name": "log",
       "id": "JF^;BrJJ|ujW|Fj|e/ZI"
     },
     {

@@ -18,9 +18,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
-from sunrise.mission_controller import msg
-
-print(msg)
+from sunrise.mission_controller.msg import RosMessageTypes, get_message_type_by_name
 
 @dataclass
 class Message:
@@ -68,70 +66,49 @@ class NodeAction:
         )
     
 @dataclass
-class Publisher:
+class Topic:
     topic: str
-    message_type: Any
-    qos_profile: QoSProfile | int = 10
-
-    @classmethod
-    def FromJSON(cls, json: dict):
-        return cls(
-            json["topic"],
-            getattr(msg, json["message_type"]),
-            json["qos_profile"] if "qos_profile" in json and json["qos_profile"] else 10,
-        )
-    
-    def toJSON(self) -> dict:
-        return {
-            "topic": self.topic,
-            "message_type": self.message_type.__name__,
-            "qos_profile": self.qos_profile
-        }
-
-@dataclass
-class Subscription:
-    topic: str
-    # function: Callable[[MissionControllerNode, Message], None]
-    message_type: Any
+    message_type: RosMessageTypes
     qos_profile: QoSProfile | int = 10
     
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
-            json["topic"],
-            # json["function"],
-            getattr(msg, json["message_type"]),
-            json["qos_profile"] if "qos_profile" in json and json["qos_profile"] else 10,
+            topic=json.get("topic", "missing"),
+            message_type=get_message_type_by_name(json.get("message_type", "")),
+            qos_profile=json.get("qos_profile", 10)
         )
     
     def toJSON(self) -> dict:
-        return {
-            "topic": self.topic,
-            # "function": self.function.__name__,
-            "message_type": self.message_type.__name__,
-            "qos_profile": self.qos_profile
-        }
+        return dict(
+            topic=self.topic,
+            message_type=self.message_type.__name__,
+            qos_profile=self.qos_profile
+        )
 
 @dataclass
 class MissionControllerConfig:
     teacher_config_path: str
     student_config_path: str
-    publishers: list[Publisher] = field(default_factory=list)
-    subscriptions: list[Subscription] = field(default_factory=list)
+    logging: Topic
+    publishers: list[Topic] = field(default_factory=list)
+    subscriptions: list[Topic] = field(default_factory=list)
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
             teacher_config_path=json.get("teacher_config_path", ""),
             student_config_path=json.get("student_config_path", ""),
-            publishers=[Publisher.FromJSON(json) for json in json.get("publishers", [])],
-            subscriptions=[Subscription.FromJSON(json) for json in json.get("subscriptions", [])],
+            logging=Topic.FromJSON(json.get("logging", {})),
+            publishers=[Topic.FromJSON(json) for json in json.get("publishers", [])],
+            subscriptions=[Topic.FromJSON(json) for json in json.get("subscriptions", [])],
         )
     
     def toJSON(self) -> dict:
         return dict(
             teacher_config_path=self.teacher_config_path,
             student_config_path=self.student_config_path,
+            logging=self.logging.toJSON(),
             publishers=[p.toJSON() for p in self.publishers],
             subscriptions=[s.toJSON() for s in self.subscriptions],
         )

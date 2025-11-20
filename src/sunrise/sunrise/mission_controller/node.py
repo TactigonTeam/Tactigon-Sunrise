@@ -20,7 +20,7 @@ from functools import wraps
 from enum import Enum
 from datetime import datetime
 
-from sunrise_msgs.msg import Action, Intent
+from sunrise.mission_controller.msg import RosMessageTypes, Action, Intent, Log
 
 from typing import Callable, Any
 
@@ -68,6 +68,12 @@ class MissionController(Node):
         for s in self._config.subscriptions:
             self.add_subscription(s.topic, s.message_type, s.qos_profile)
 
+        self.logging_publisher = self.add_publisher(
+            self._config.logging.topic,
+            self._config.logging.message_type,
+            self._config.logging.qos_profile
+        )
+
         self.action_timer = self.create_timer(0.1, self._clear_expired_actions)
         self.state_timer = self.create_timer(3, self._clear_state)
         self.do_state_timer = self.create_timer(0.05, self.do_state)
@@ -81,11 +87,11 @@ class MissionController(Node):
         with open(config_path) as cf:
             return MissionControllerConfig.FromJSON(json.load(cf))
 
-    def add_publisher(self, topic: str, message_type: Any, qos_profile: QoSProfile | int):
+    def add_publisher(self, topic: str, message_type: RosMessageTypes, qos_profile: QoSProfile | int):
         self.info(f"Adding publisher {topic}, {message_type}")
-        self.create_publisher(message_type, topic, qos_profile)
+        return self.create_publisher(message_type, topic, qos_profile)
 
-    def add_subscription(self, topic: str, message_type: Any, qos_profile: QoSProfile | int):
+    def add_subscription(self, topic: str, message_type: RosMessageTypes, qos_profile: QoSProfile | int):
         self.info(f"Adding subscriber {topic}, {message_type}")
         self.create_subscription(
             message_type, 
@@ -94,12 +100,10 @@ class MissionController(Node):
             qos_profile
         )
 
-    def publish(self, topic: str, message_type: Any, msg: Any):
+    def publish(self, topic: str, message: RosMessageTypes):
         publisher = next((p for p in self.publishers if p.topic == topic), None)
 
         if publisher:
-            message = message_type()
-            message.data = msg
             publisher.publish(message)
 
     # def unsubscribe(self, topic: str):
@@ -107,6 +111,28 @@ class MissionController(Node):
 
     #     if subscription:
     #         self.destroy_subscription(subscription)
+
+    def ros_debug(self, msg: str):
+        self.ros_log(Log.DEBUG, msg)
+
+    def ros_info(self, msg: str):
+        self.ros_log(Log.INFO, msg)
+
+    def ros_warn(self, msg: str):
+        self.ros_log(Log.WARN, msg)
+
+    def ros_error(self, msg: str):
+        self.ros_log(Log.ERROR, msg)
+
+    def ros_log(self, level, msg):
+        self.logging_publisher.publish(
+            Log(
+                stamp=self.now().to_msg(),
+                level=level,
+                name=MissionController.__name__,
+                msg=msg,
+            )
+        )
 
     def debug(self, msg: str):
         self.get_logger().debug(msg)
@@ -187,10 +213,11 @@ class MissionController(Node):
         self.debug(f"Managing action for state {state} | {payload}")
         
         if state == MachineState.TEACH:
-            if self._actions:
+            if self._actions:   
                 time, action = self._actions.pop(0)
 
-                self.debug(f"Learning skill {payload} => {action}")
+                self.debug(f"Learned skill {payload} => {action}")
+                self.ros_debug(f"Learned skill {payload} => {action}")
                 
                 s = Skill(
                     scope=SkillScope.BRACCIO_ROBOT,

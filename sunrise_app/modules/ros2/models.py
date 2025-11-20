@@ -13,6 +13,7 @@
 
 from rclpy.node import QoSProfile
 from std_msgs.msg import String, Int16, Int32, UInt16, UInt32, Bool, Byte, Float32, Float64, Int8, UInt8, Int64, UInt64, ColorRGBA
+from rcl_interfaces.msg import Log
 from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
 from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 
@@ -21,9 +22,10 @@ from enum import Enum
 from typing import Any
 
 StrMessageTypes = String | Int64 | Bool | Float64
+InterfacesMessageTypes = Log
 SunriseMessageTypes = Action | Intent | Point2D | Marker | MarkerList
 BraccioMessageTypes = BraccioCommand | BraccioResponse
-RosMessageTypes = StrMessageTypes | SunriseMessageTypes | BraccioMessageTypes
+RosMessageTypes = StrMessageTypes | InterfacesMessageTypes | SunriseMessageTypes | BraccioMessageTypes
 
 def get_message_type_by_name(name: str) -> RosMessageTypes:
     type_index = [t.__name__ for t in RosMessageTypes.__args__].index(name)    

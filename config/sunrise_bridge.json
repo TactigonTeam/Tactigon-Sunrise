@@ -16,8 +16,8 @@
     "action_topic": "/sunrise_app/bridge/action",
     "gestures": [
         {
-            "gesture": "twist",
-            "mapping": "action"
+            "gesture": "up",
+            "mapping": "teach_intent"
         }
     ],
     "touchs": [

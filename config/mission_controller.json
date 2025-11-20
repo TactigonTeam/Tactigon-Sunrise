@@ -1,6 +1,11 @@
 {
     "teacher_config_path": "config/mission_controller_teacher.json",
     "student_config_path": "config/mission_controller_student.json",
+    "logging": {
+        "topic": "/sunrise/mission_controller/log",
+        "message_type": "Log",
+        "qos_profile": 10
+    },
     "subscriptions": [
         {
             "topic": "/sunrise/mission_controller/intent",
