@@ -3,11 +3,6 @@
     "student_config_path": "config/mission_controller_student.json",
     "subscriptions": [
         {
-            "topic": "/sunrise/mission_controller/test",
-            "message_type": "String",
-            "qos_profile": 10
-        },
-        {
             "topic": "/sunrise/mission_controller/intent",
             "message_type": "Intent",
             "qos_profile": 10

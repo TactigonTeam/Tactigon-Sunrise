@@ -338,7 +338,27 @@
             <block type="get_dict_property">
                 <value name="key">
                     <shadow type="text">
-                        <field name="key"></field>
+                        <field name="TEXT">key</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="dict_builder">
+            </block>
+            <block type="dict_pair">
+                <value name="dict_key">
+                    <shadow type="text">
+                        <field name="TEXT">key</field>
+                    </shadow>
+                </value>
+                <value name="dict_value">
+                    <shadow type="text">
+                        <field name="TEXT">value</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="dict_to_json">
+                <value name="dict">
+                    <shadow type="dict_builder">
                     </shadow>
                 </value>
             </block>
@@ -762,12 +782,33 @@
         });
     }
 
+    function getVariableSet(workspace, VAR){
+        const set_blocks = workspace.getBlocksByType("variables_set");
+        for (let i = 0; i< set_blocks.length; i++){
+            const block_var = set_blocks[i].getFieldValue("VAR");
+            const target_block = set_blocks[i].getInputTargetBlock('VALUE')
+            if (block_var == VAR && target_block.type.startsWith("ros2_message_")){
+                return target_block;
+            }
+        }
+    }
+
     function getRos2Publishers(workspace){
         const functions = workspace.getBlocksByType("ros2_publish");
 
         return functions.map(block => {
             const topic = block.getInputTargetBlock("topic").getFieldValue("TEXT");
-            const message_type = block.getInputTargetBlock("message_type").type.split('_')[2];
+            let message_type_block = block.getInputTargetBlock("message_type");
+
+            let message_type = "String";
+
+            if (message_type_block.type.startsWith("ros2_message_")){
+                message_type = message_type_block.type.replace("ros2_message_", "");
+            } else if (message_type_block.type == "variables_get"){
+                message_type_block = getVariableSet(workspace, message_type_block.getFieldValue("VAR"));
+                message_type = message_type_block.type.replace("ros2_message_", "");
+            }
+
             return {"topic": topic, "message_type": message_type};
         });
     }
@@ -849,6 +890,7 @@
                 $('#subscriptions').val(JSON.stringify(subscriptions));
                 $('#ros2_subscriptions').val(JSON.stringify(ros2subscriptions));
                 $('#ros2_publishers').val(JSON.stringify(ros2publishers));
+
             }
             catch(ex){
                 e.preventDefault();

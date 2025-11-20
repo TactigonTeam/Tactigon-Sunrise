@@ -90,6 +90,7 @@ class Ros2Publisher:
 
     @classmethod
     def FromJSON(cls, json: dict):
+        print(f"Deserializing Ros2Publisher from JSON: {json}")
         return cls(
             json["topic"],
             get_message_type_by_name(json["message_type"]),
@@ -113,6 +114,7 @@ class Ros2Subscription:
     
     @classmethod
     def FromJSON(cls, json: dict):
+        print(f"Deserializing Ros2Subscription from JSON: {json}")
         return cls(
             json["topic"],
             json["function"],
@@ -162,8 +164,6 @@ class Ros2Command:
         package_name, node_name = identifier.split("]-[")
         package_name = package_name[1:]
         node_name = node_name[:-1]
-
-        print(package_name, node_name)
 
         return package_name, node_name
 

@@ -4,6 +4,7 @@
 import time
 import random
 import types
+import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
@@ -114,12 +115,32 @@ def mqtt_publish(mqtt: Optional[MQTTClient], topic: str, payload: Any):
 pointing = None
 markers = None
 bridge_intent = None
+tactigon_intent = None
 marker_id = None
+create_action = None
+marker_map = None
+create_intent = None
 
+def marker_to_x_y(marker_id):
+    global pointing, markers, bridge_intent, tactigon_intent, create_action, marker_map, create_intent
+    if marker_id == 0:
+        marker_map = {'marker_id': marker_id, 'x': (-100), 'y': 100}
+    elif marker_id == 1:
+        marker_map = {'marker_id': marker_id, 'x': 100, 'y': 100}
+    else:
+        marker_map = {'marker_id': marker_id, 'error': 'Marker not mapped'}
+    return marker_map
+
+
+def _sunrise_app_bridge_intent(logging_queue: LoggingQueue):
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    if tactigon_intent.get('type', None) == 0:
+        debug(logging_queue, 'Create a teaching intent')
+        create_intent = Intent(type=Intent.TEACH, payload=json.dumps({'skill': 'pick'}))
 
 def _camera_tracking_pointing(logging_queue: LoggingQueue):
-    global pointing, markers, bridge_intent, marker_id
-    marker_id = pointing.get('id', None)
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    create_action = Action(type=Action.MARKER, payload=json.dumps((marker_to_x_y(pointing.get('id', None)))))
 
 def sunrise_app_setup(
         zion: Optional[ZionInterface],
@@ -127,12 +148,9 @@ def sunrise_app_setup(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global pointing, markers, bridge_intent, marker_id
-    marker_id = -1
-
-def _sunrise_mission_controller_intent(logging_queue: LoggingQueue):
-    global pointing, markers, bridge_intent, marker_id
-    debug(logging_queue, bridge_intent)
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    create_action = None
+    create_intent = None
 
 def sunrise_app_close(
         zion: Optional[ZionInterface],
@@ -140,12 +158,12 @@ def sunrise_app_close(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global pointing, markers, bridge_intent, marker_id
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
     pass
 
-def _camera_tracking_markers(logging_queue: LoggingQueue):
-    global pointing, markers, bridge_intent, marker_id
-    debug(logging_queue, 'Markers updated')
+def _sunrise_mission_controller_intent(logging_queue: LoggingQueue):
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    debug(logging_queue, bridge_intent)
 
 def sunrise_app_function(
         zion: Optional[ZionInterface],
@@ -153,7 +171,17 @@ def sunrise_app_function(
         mqtt: Optional[MQTTClient],
         logging_queue: LoggingQueue):
 
-    global pointing, markers, bridge_intent, marker_id
-    if marker_id != -1:
-        debug(logging_queue, 'Send action on marker')
-        marker_id = -1
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    if create_action != None:
+        debug(logging_queue, create_action)
+        ros2_publish(ros2, '/sunrise/mission_controller/action', create_action)
+        create_action = None
+    if create_intent != None:
+        debug(logging_queue, create_intent)
+        ros2_publish(ros2, '/sunrise/mission_controller/intent', create_intent)
+        create_intent = None
+
+
+def _camera_tracking_markers(logging_queue: LoggingQueue):
+    global pointing, markers, bridge_intent, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map
+    debug(logging_queue, 'Markers updated')

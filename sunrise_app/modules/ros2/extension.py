@@ -324,7 +324,6 @@ class Ros2Interface:
     def run(self, command: str):
         c = next((c for c in self.config.ros2_commands if c.identifier == command), None)
         if c:
-            print(c, c.get_command())
             cmd = c.get_command().split(" ")
             self._running_commands.append(
                 subprocess.Popen(

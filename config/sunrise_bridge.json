@@ -12,8 +12,8 @@
             "gestures": null
         }
     },
-    "intent_topic": "/sunrise/mission_controller/intent",
-    "action_topic": "/sunrise/mission_controller/action",
+    "intent_topic": "/sunrise_app/bridge/intent",
+    "action_topic": "/sunrise_app/bridge/action",
     "gestures": [
         {
             "gesture": "twist",

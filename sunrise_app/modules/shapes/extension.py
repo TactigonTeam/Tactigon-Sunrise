@@ -108,7 +108,6 @@ class ShapeThread(ExtensionThread):
         if not subscription:
             return  
         
-        print(message.msg)
         # Set the payload reference first
         setattr(self.module, subscription.payload_reference, get_message_data(message.msg))
         # Execute the function

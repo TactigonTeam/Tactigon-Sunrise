@@ -102,6 +102,53 @@ function loadDictionaryBlocks(){
             "helpUrl": "",
             "inputsInline": true
         },
+        {
+            "type": "dict_builder",
+            "message0": "Create map %1",
+            "args0": [
+                {
+                    "type": "input_statement",
+                    "name": "PAIRS"
+                }
+            ],
+            "output": "Dict",
+            "colour": 230,
+            "tooltip": "Create a dictionary",
+        },
+        {
+            "type": "dict_pair",
+            "message0": "Key %1 value %2",
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "dict_key",
+                    "check": "String"
+                },
+                {
+                    "type": "input_value",
+                    "name": "dict_value"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "colour": 200,
+            "tooltip": "Create a key-value pair for a dictionary",
+        },
+        {
+            "type": "dict_to_json",
+            "message0": "jsonify %1",
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "dict",
+                    "check": "Dict"
+                }
+            ],
+            "output": "JSONString",
+            "colour": 200,
+            "tooltip": "Convert dictionary into json string",
+            "inputsInline": true
+        }
     ]);
 
     Blockly.common.defineBlocks(blocksDefinitions);
@@ -565,7 +612,7 @@ function loadRos2Blocks(ros2blocks){
                 {
                     "type": "input_value",
                     "name": "payload",
-                    "check": "text"
+                    "check": "JSONString"
                 }
             ],
             "output": "Ros2MessageType",
@@ -600,7 +647,7 @@ function loadRos2Blocks(ros2blocks){
                 {
                     "type": "input_value",
                     "name": "payload",
-                    "check": "text"
+                    "check": "JSONString"
                 }
             ],
             "output": "Ros2MessageType",
@@ -743,6 +790,7 @@ function defineImportsAndLibraries(){
 import time
 import random
 import types
+import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
@@ -951,6 +999,29 @@ function defineDictionaryGenerators() {
         const code = `${dict}.get(${key}, None)`;
         return [code, Blockly.Python.ORDER_ATOMIC];
     };
+
+    python.pythonGenerator.forBlock['dict_builder'] = function(block) {
+        const pairBlock = block.getInputTargetBlock('PAIRS');
+        const pairCode = Blockly.Python.blockToCode(pairBlock).slice(0, -2); // remove trailing comma and space
+        const code = "{" + pairCode + "}";
+
+        return [code, Blockly.Python.ORDER_ATOMIC];
+    };
+
+    python.pythonGenerator.forBlock['dict_pair'] = function (block) {
+        const key = Blockly.Python.valueToCode(block, 'dict_key', Blockly.Python.ORDER_ATOMIC) || "'data'";
+        const value = Blockly.Python.valueToCode(block, 'dict_value', Blockly.Python.ORDER_ATOMIC) || "''";
+
+        const code = `${key}: ${value}, `;
+        return code;
+    };
+
+    python.pythonGenerator.forBlock['dict_to_json'] = function (block, generator) {
+        const dict = Blockly.Python.valueToCode(block, 'dict', Blockly.Python.ORDER_ATOMIC) || "{}";
+
+        const code = `json.dumps(${dict})`;
+        return [code, Blockly.Python.ORDER_ATOMIC];
+    };
 }
 
 function defineZionGenerators() {
@@ -1118,7 +1189,8 @@ function defineRos2Generators(){
 
     python.pythonGenerator.forBlock['ros2_message_Action'] = function(block, generator) {
         const type = generator.valueToCode(block, 'type', python.Order.ATOMIC);
-        const command = `Action(type=${type})`;
+        const payload = generator.valueToCode(block, 'payload', python.Order.ATOMIC) || "{}";
+        const command = `Action(type=${type}, payload=${payload})`;
         return [command, Blockly.Python.ORDER_ATOMIC];
     };
 
@@ -1130,7 +1202,8 @@ function defineRos2Generators(){
 
     python.pythonGenerator.forBlock['ros2_message_Intent'] = function(block, generator) {
         const type = generator.valueToCode(block, 'type', python.Order.ATOMIC);
-        const command = `Intent(type=${type})`;
+        const payload = generator.valueToCode(block, 'payload', python.Order.ATOMIC) || "{}";
+        const command = `Intent(type=${type}, payload=${payload})`;
         return [command, Blockly.Python.ORDER_ATOMIC];
     };
 

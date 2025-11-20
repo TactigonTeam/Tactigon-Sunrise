@@ -3,12 +3,23 @@
     "id": "5309b6df742c4eaf81bd5562819a325a",
     "name": "Sunrise App",
     "created_on": "2025-11-14T18:31:58.712429",
-    "modified_on": "2025-11-19T16:02:15.985292",
+    "modified_on": "2025-11-20T12:47:57.035547",
     "description": "",
     "readonly": false,
     "ros2_config": {
       "node_name": "Sunrise App",
-      "publishers": [],
+      "publishers": [
+        {
+          "topic": "/sunrise/mission_controller/action",
+          "message_type": "Action",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise/mission_controller/intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        }
+      ],
       "subscriptions": [
         {
           "topic": "/camera_tracking/pointing",
@@ -28,6 +39,13 @@
           "topic": "/sunrise/mission_controller/intent",
           "function": "_sunrise_mission_controller_intent",
           "payload_reference": "bridge_intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise_app/bridge/intent",
+          "function": "_sunrise_app_bridge_intent",
+          "payload_reference": "tactigon_intent",
           "message_type": "Intent",
           "qos_profile": 10
         }
