@@ -15,34 +15,23 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 from typing import Any
-from sunrise.mission_controller.models.robots import RobotDefinition
 
+from sunrise.mission_controller.models.skill import Skill
 
 @dataclass
-class Skill:
-    scope: RobotDefinition
+class Task:
     name: str
-    payload: Any
-
-    children: list["Skill"] = field(default_factory=list)
-
-    @property
-    def has_children(self) -> bool:
-        return len(self.children) > 0
+    skills: list[Skill]
 
     @classmethod
-    def FromJSON(cls, json):
+    def FromJSON(cls, json: dict):
         return cls(
-            scope=RobotDefinition(json["scope"]),
-            name=json["name"],
-            payload=json["payload"],
-            children=[Skill.FromJSON(c) for c in json.get("children", [])]
+            name=json.get("name", ""),
+            skills=[Skill.FromJSON(s) for s in json.get("skills", [])]
         )
     
     def toJSON(self) -> dict:
         return dict(
-            scope=self.scope.value,
             name=self.name,
-            payload=self.payload,
-            children=self.children
+            skills=[s.toJSON() for s in self.skills]
         )

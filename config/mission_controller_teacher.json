@@ -1,29 +1,3 @@
 {
-    "tasks": [
-        {
-            "name": "pick task for robot",
-            "skills": [
-                {
-                    "scope": "braccio_robot",
-                    "name": "pick",
-                    "payload": {
-                        "marker_id": 1,
-                        "x": 100,
-                        "y": 100
-                    },
-                    "children": []
-                },
-                {
-                    "scope": "braccio_robot",
-                    "name": "place",
-                    "payload": {
-                        "marker_id": 0,
-                        "x": -100,
-                        "y": 100
-                    },
-                    "children": []
-                }
-            ]
-        }
-    ]
+    "tasks": []
 }

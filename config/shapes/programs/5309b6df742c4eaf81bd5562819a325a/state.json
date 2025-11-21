@@ -454,7 +454,7 @@
         "type": "ros2_subscribe",
         "id": "?uloncauF_|3x~F(c,l@",
         "x": 690,
-        "y": -70,
+        "y": -210,
         "fields": {
           "var_name": {
             "id": "*ba*j1LXmJMK)UzJ|E=I"
@@ -483,6 +483,9 @@
             "block": {
               "type": "controls_if",
               "id": "7S2Au1jli3bo~y2LBsC`",
+              "extraState": {
+                "hasElse": true
+              },
               "inputs": {
                 "IF0": {
                   "block": {
@@ -598,6 +601,99 @@
                                                 "fields": {
                                                   "VAR": {
                                                     "id": "*ba*j1LXmJMK)UzJ|E=I"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "ELSE": {
+                  "block": {
+                    "type": "sunrise_app_debug",
+                    "id": "t:,Wmhu8LF})znU7aXD;",
+                    "inputs": {
+                      "TEXT": {
+                        "shadow": {
+                          "type": "text",
+                          "id": "*E-g,#*3`B.aJ-a1+7tl",
+                          "fields": {
+                            "TEXT": "Create a repeat intent"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "variables_set",
+                        "id": "8by([+Sx2EzEbin7#.Pe",
+                        "fields": {
+                          "VAR": {
+                            "id": "N)W$d!a:HX$Mq}j[SR]y"
+                          }
+                        },
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "ros2_message_Intent",
+                              "id": "{kLJvE.)YNgZTNl_Qgv0",
+                              "inputs": {
+                                "type": {
+                                  "shadow": {
+                                    "type": "ros2_message_Intent_type",
+                                    "id": "h|#k8nbD;yK1ENEIxLdp",
+                                    "fields": {
+                                      "type": "REPEAT"
+                                    }
+                                  }
+                                },
+                                "payload": {
+                                  "block": {
+                                    "type": "dict_to_json",
+                                    "id": "ULglsUT,xy9QlM/U8/i8",
+                                    "inputs": {
+                                      "dict": {
+                                        "shadow": {
+                                          "type": "dict_builder",
+                                          "id": "5-CI_8oLG=d;;(D;R)-O"
+                                        },
+                                        "block": {
+                                          "type": "dict_builder",
+                                          "id": "u{(CCY$8m7evEy8HOR!V",
+                                          "inputs": {
+                                            "PAIRS": {
+                                              "block": {
+                                                "type": "dict_pair",
+                                                "id": "+ufntiWY?vUX_f~MorPY",
+                                                "inputs": {
+                                                  "dict_key": {
+                                                    "shadow": {
+                                                      "type": "text",
+                                                      "id": "EPF}eA#N{eE2[!s%nO..",
+                                                      "fields": {
+                                                        "TEXT": "task"
+                                                      }
+                                                    }
+                                                  },
+                                                  "dict_value": {
+                                                    "shadow": {
+                                                      "type": "text",
+                                                      "id": "!6IY3ML!p;5R2;)(f!F0",
+                                                      "fields": {
+                                                        "TEXT": "pick from position stock"
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }
@@ -1229,7 +1325,7 @@
                                               "type": "text",
                                               "id": "kroc~Dc-6?`Op$MZY;Ai",
                                               "fields": {
-                                                "TEXT": "pick task for robot"
+                                                "TEXT": "pick from position stock"
                                               }
                                             }
                                           }
@@ -1364,23 +1460,49 @@
                                           "PAIRS": {
                                             "block": {
                                               "type": "dict_pair",
-                                              "id": "[QQq,9c]m;ZHb**|aF?^",
+                                              "id": "[u?XmMvX_H[tv))(KsT:",
                                               "inputs": {
                                                 "dict_key": {
                                                   "shadow": {
                                                     "type": "text",
-                                                    "id": "o_FBK1,$Bw5`#Z2q|J$#",
+                                                    "id": "-l=iEX`Pis*1H|={$..V",
                                                     "fields": {
-                                                      "TEXT": "skill"
+                                                      "TEXT": "robot"
                                                     }
                                                   }
                                                 },
                                                 "dict_value": {
                                                   "shadow": {
                                                     "type": "text",
-                                                    "id": "G+}hE3!_R}YVMYDNk|C#",
+                                                    "id": "6,O^Ts|lZoz_QeccmzYM",
                                                     "fields": {
-                                                      "TEXT": "pick"
+                                                      "TEXT": "braccio_robot"
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "dict_pair",
+                                                  "id": "[QQq,9c]m;ZHb**|aF?^",
+                                                  "inputs": {
+                                                    "dict_key": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "o_FBK1,$Bw5`#Z2q|J$#",
+                                                        "fields": {
+                                                          "TEXT": "skill"
+                                                        }
+                                                      }
+                                                    },
+                                                    "dict_value": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "G+}hE3!_R}YVMYDNk|C#",
+                                                        "fields": {
+                                                          "TEXT": "pick"
+                                                        }
+                                                      }
                                                     }
                                                   }
                                                 }
@@ -1459,23 +1581,49 @@
                                           "PAIRS": {
                                             "block": {
                                               "type": "dict_pair",
-                                              "id": "k[Ws{K5,ZLph=eZ_ndG]",
+                                              "id": "%IN7m%m,,=j[Gg86YlHk",
                                               "inputs": {
                                                 "dict_key": {
                                                   "shadow": {
                                                     "type": "text",
-                                                    "id": "S6$*miJfo2gMY$#8me[h",
+                                                    "id": "Ga3ko=+aS#v_qOi*ia(D",
                                                     "fields": {
-                                                      "TEXT": "skill"
+                                                      "TEXT": "robot"
                                                     }
                                                   }
                                                 },
                                                 "dict_value": {
                                                   "shadow": {
                                                     "type": "text",
-                                                    "id": "8WmQ[~Sgk7+6PDDW}cJ}",
+                                                    "id": ")x)0C5.0fj9t^4TR}ERb",
                                                     "fields": {
-                                                      "TEXT": "place"
+                                                      "TEXT": "braccio_robot"
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "dict_pair",
+                                                  "id": "k[Ws{K5,ZLph=eZ_ndG]",
+                                                  "inputs": {
+                                                    "dict_key": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "S6$*miJfo2gMY$#8me[h",
+                                                        "fields": {
+                                                          "TEXT": "skill"
+                                                        }
+                                                      }
+                                                    },
+                                                    "dict_value": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "8WmQ[~Sgk7+6PDDW}cJ}",
+                                                        "fields": {
+                                                          "TEXT": "place"
+                                                        }
+                                                      }
                                                     }
                                                   }
                                                 }

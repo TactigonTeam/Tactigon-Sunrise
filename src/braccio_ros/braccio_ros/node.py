@@ -14,6 +14,7 @@
 import json
 import rclpy
 from rclpy.node import Node
+from rclpy.logging_service import LoggingSeverity
 import time
 from tactigon_arduino_braccio import Braccio, Wrist, Gripper
 from braccio_ros_msgs.msg import BraccioCommand
@@ -27,6 +28,7 @@ class BraccioRos(Node):
 
     def __init__(self, config_path: str):
         Node.__init__(self, BraccioRos.__name__)
+        self.get_logger().set_level(LoggingSeverity.DEBUG)
         self.get_logger().info("Attempting to connect to Braccio...")
 
         self.config = self.load_config(config_path)
@@ -45,12 +47,14 @@ class BraccioRos(Node):
             rclpy.shutdown()
             return 
 
+        self.get_logger().debug(f"Create response topic {self.config.response_topic}")
         self.move_result_pub = self.create_publisher(
             BraccioResponse, 
             self.config.response_topic,
             10
         )
 
+        self.get_logger().debug(f"Create command topic {self.config.command_topic}")
         self.command_subscriber = self.create_subscription(
             BraccioCommand,
             self.config.command_topic,

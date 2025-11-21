@@ -47,6 +47,14 @@ class TestNode(Node):
         return i
     
     @staticmethod
+    def get_repeat_intent(payload: dict) -> Intent:
+        i = Intent()
+        i.type = Intent.REPEAT
+        i.payload = json.dumps(payload)
+
+        return i
+    
+    @staticmethod
     def get_camera_action(x: int, y: int) -> Action:
         a = Action()
         a.type = Action.CAMERA_POINT
@@ -99,7 +107,7 @@ class TestWindow(QMainWindow):
 
     def main_layout(self):
         teach_task_btn = QPushButton("Intent TEACH task", self._container)
-        teach_task_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent(dict(task="pick from position stock"))) )
+        teach_task_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent(dict(task="pick from position stock"))))
 
         self._layout.addWidget(teach_task_btn)
 
@@ -123,14 +131,17 @@ class TestWindow(QMainWindow):
 
         self._layout.addWidget(position2_btn)
 
+        repeat_task_btn = QPushButton("Intent REPEAT task", self._container)
+        repeat_task_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_repeat_intent(dict(task="pick from position stock"))))
+
+        self._layout.addWidget(repeat_task_btn)
+
         braccio_1_btn = QPushButton("Braccio position (100, 100, 100)", self._container)
-        braccio_1_btn.setToolTip("Send the Bracio position")
         braccio_1_btn.clicked.connect(lambda: self._node.send_braccio_command(TestNode.get_braccio_command(100, 100, 100)))
 
         self._layout.addWidget(braccio_1_btn)
 
         braccio_2_btn = QPushButton("Braccio position (100, 100, 0)", self._container)
-        braccio_2_btn.setToolTip("Send the Bracio position")
         braccio_2_btn.clicked.connect(lambda: self._node.send_braccio_command(TestNode.get_braccio_command(100, 100, 0, "OPEN", "VERTICAL")))
 
         self._layout.addWidget(braccio_2_btn)

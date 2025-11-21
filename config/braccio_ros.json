@@ -1,5 +1,5 @@
 {
-    "address": "D4:86:94:DF:2C:17",
+    "address": "E2:48:72:F0:CC:D6",
     "command_topic": "/braccio_ros/command",
     "response_topic": "/braccio_ros/response"
 }

@@ -13,7 +13,8 @@
 
 import json
 from sunrise.mission_controller.teo.models import TEOConfig
-from sunrise.mission_controller.models.skill import Skill, Task
+from sunrise.mission_controller.models.task import Task
+from sunrise.mission_controller.models.skill import Skill
 
 
 class TEO():

@@ -13,7 +13,8 @@
 
 from dataclasses import dataclass
 
-from sunrise.mission_controller.models.skill import Task, Skill, SkillScope
+from sunrise.mission_controller.models.task import Task
+from sunrise.mission_controller.models.skill import Skill
 
 @dataclass
 class TEOConfig:

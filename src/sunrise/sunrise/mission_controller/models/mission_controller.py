@@ -16,14 +16,13 @@ from rclpy.time import Time
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
 
 from sunrise.mission_controller.msg import RosMessageTypes, get_message_type_by_name
 
 @dataclass
 class Message:
     topic: str
-    msg: Any
+    msg: RosMessageTypes
     timestamp: Time
 
 class NodeActions(Enum):
@@ -91,6 +90,8 @@ class MissionControllerConfig:
     teacher_config_path: str
     student_config_path: str
     logging: Topic
+    action_timeout: int = 5
+    state_timeout: int = 10
     publishers: list[Topic] = field(default_factory=list)
     subscriptions: list[Topic] = field(default_factory=list)
 
@@ -100,6 +101,8 @@ class MissionControllerConfig:
             teacher_config_path=json.get("teacher_config_path", ""),
             student_config_path=json.get("student_config_path", ""),
             logging=Topic.FromJSON(json.get("logging", {})),
+            action_timeout=json.get("action_timeout", 5),
+            state_timeout=json.get("state_timeout", 10),
             publishers=[Topic.FromJSON(json) for json in json.get("publishers", [])],
             subscriptions=[Topic.FromJSON(json) for json in json.get("subscriptions", [])],
         )
@@ -109,6 +112,8 @@ class MissionControllerConfig:
             teacher_config_path=self.teacher_config_path,
             student_config_path=self.student_config_path,
             logging=self.logging.toJSON(),
+            action_timeout=self.action_timeout,
+            state_timeout=self.state_timeout,
             publishers=[p.toJSON() for p in self.publishers],
             subscriptions=[s.toJSON() for s in self.subscriptions],
         )

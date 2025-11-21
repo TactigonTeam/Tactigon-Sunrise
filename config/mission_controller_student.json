@@ -1,3 +1,195 @@
 {
-    
+    "robots": [
+        {
+            "name": "braccio_robot",
+            "robot_type": "pick_and_place",
+            "commands": [
+                {
+                    "command_name": "pick",
+                    "command_topic": "/braccio_ros/command",
+                    "command_topic_type": "BraccioCommand",
+                    "response_topic": "/braccio_ros/response",
+                    "response_topic_type": "BraccioResponse",
+                    "steps": [
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 100,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "OPEN",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 0,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "OPEN",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 0,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "CLOSE",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 100,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "CLOSE",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        }
+                    ]
+                },
+                {
+                    "command_name": "place",
+                    "command_topic": "/braccio_ros/command",
+                    "command_topic_type": "BraccioCommand",
+                    "response_topic": "/braccio_ros/response",
+                    "response_topic_type": "BraccioResponse",
+                    "steps": [
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 100,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "CLOSE",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 0,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "CLOSE",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 0,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "OPEN",
+                                    "override": true
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        },
+                        {
+                            "payload_fields": {
+                                "x": {
+                                    "default": 100
+                                },
+                                "y": {
+                                    "default": 100
+                                },
+                                "z": {
+                                    "default": 100,
+                                    "override": true
+                                },
+                                "gripper_state": {
+                                    "default": "CLOSE"
+                                },
+                                "wrist_state": {
+                                    "default": "HORIZONTAL"
+                                }
+                            } 
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

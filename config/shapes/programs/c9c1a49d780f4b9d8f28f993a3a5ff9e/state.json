@@ -6,42 +6,23 @@
         "type": "sunrise_app_setup",
         "id": "KC0c-4-UPMw+xp*}1RaS",
         "x": 105,
-        "y": -8,
+        "y": 16,
         "deletable": false,
         "inputs": {
           "setup_code": {
             "block": {
               "type": "variables_set",
-              "id": "n%@6]Q7HkDeNL)2M1^f|",
+              "id": "[F@bPDJ469{z??0(PgO:",
               "fields": {
                 "VAR": {
-                  "id": "2rs1Fgd,xutO|]B}?N^x"
+                  "id": "N)W$d!a:HX$Mq}j[SR]y"
                 }
               },
               "inputs": {
                 "VALUE": {
                   "block": {
                     "type": "logic_null",
-                    "id": "rau7kt}d2ay$*heHe?W#"
-                  }
-                }
-              },
-              "next": {
-                "block": {
-                  "type": "variables_set",
-                  "id": "[F@bPDJ469{z??0(PgO:",
-                  "fields": {
-                    "VAR": {
-                      "id": "N)W$d!a:HX$Mq}j[SR]y"
-                    }
-                  },
-                  "inputs": {
-                    "VALUE": {
-                      "block": {
-                        "type": "logic_null",
-                        "id": "p^]8j;/1(X`=`r[7{o+S"
-                      }
-                    }
+                    "id": "p^]8j;/1(X`=`r[7{o+S"
                   }
                 }
               }
@@ -59,12 +40,12 @@
           "BODY": {
             "block": {
               "type": "controls_if",
-              "id": "|HnJjJpNe0DFN;7FH0;W",
+              "id": "=l-r|h;#/:86rfuWEBkP",
               "inputs": {
                 "IF0": {
                   "block": {
                     "type": "logic_compare",
-                    "id": "kYN^,P?ByJaRq{:`(`2G",
+                    "id": "%U)x$S(DA[.@95dK|fvU",
                     "fields": {
                       "OP": "NEQ"
                     },
@@ -72,10 +53,10 @@
                       "A": {
                         "block": {
                           "type": "variables_get",
-                          "id": "4]d,EX~`{I[E;Yu|HAgz",
+                          "id": ";$.C[sk@7Mcjmp.Q-H)|",
                           "fields": {
                             "VAR": {
-                              "id": "2rs1Fgd,xutO|]B}?N^x"
+                              "id": "N)W$d!a:HX$Mq}j[SR]y"
                             }
                           }
                         }
@@ -83,7 +64,7 @@
                       "B": {
                         "block": {
                           "type": "logic_null",
-                          "id": "w?rez5^yB(CdoK}1Q`4G"
+                          "id": "H^leH_V##K]ka~vZ$%=p"
                         }
                       }
                     }
@@ -92,7 +73,7 @@
                 "DO0": {
                   "block": {
                     "type": "ros2_publish",
-                    "id": "{?C=wP$cF6Dk.LzI4B]Y",
+                    "id": "v]#_1WTZ)9p)BQ2f;HJc",
                     "inputs": {
                       "message_type": {
                         "shadow": {
@@ -112,10 +93,10 @@
                         },
                         "block": {
                           "type": "variables_get",
-                          "id": "yXdLTPG4I7qv(+NOWvub",
+                          "id": "epYyXaqw{nXNfw`Ma9kn",
                           "fields": {
                             "VAR": {
-                              "id": "2rs1Fgd,xutO|]B}?N^x"
+                              "id": "N)W$d!a:HX$Mq}j[SR]y"
                             }
                           }
                         }
@@ -123,9 +104,9 @@
                       "topic": {
                         "shadow": {
                           "type": "text",
-                          "id": "p]$h#i$3Oq-#BP_`#RO*",
+                          "id": "T1{@T*o8O)Cu;6[E^4Ok",
                           "fields": {
-                            "TEXT": "/sunrise/mission_controller/action"
+                            "TEXT": "/sunrise/mission_controller/intent"
                           }
                         }
                       }
@@ -133,115 +114,17 @@
                     "next": {
                       "block": {
                         "type": "variables_set",
-                        "id": "XEpb5XFATQ]Fs$.RgP*q",
+                        "id": "#`vvSWg(5PpoZ;hNj+(M",
                         "fields": {
                           "VAR": {
-                            "id": "2rs1Fgd,xutO|]B}?N^x"
+                            "id": "N)W$d!a:HX$Mq}j[SR]y"
                           }
                         },
                         "inputs": {
                           "VALUE": {
                             "block": {
                               "type": "logic_null",
-                              "id": ":;S$EpGYGc{s[1*g5CwB"
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "next": {
-                "block": {
-                  "type": "controls_if",
-                  "id": "=l-r|h;#/:86rfuWEBkP",
-                  "inputs": {
-                    "IF0": {
-                      "block": {
-                        "type": "logic_compare",
-                        "id": "%U)x$S(DA[.@95dK|fvU",
-                        "fields": {
-                          "OP": "NEQ"
-                        },
-                        "inputs": {
-                          "A": {
-                            "block": {
-                              "type": "variables_get",
-                              "id": ";$.C[sk@7Mcjmp.Q-H)|",
-                              "fields": {
-                                "VAR": {
-                                  "id": "N)W$d!a:HX$Mq}j[SR]y"
-                                }
-                              }
-                            }
-                          },
-                          "B": {
-                            "block": {
-                              "type": "logic_null",
-                              "id": "H^leH_V##K]ka~vZ$%=p"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "DO0": {
-                      "block": {
-                        "type": "ros2_publish",
-                        "id": "v]#_1WTZ)9p)BQ2f;HJc",
-                        "inputs": {
-                          "message_type": {
-                            "shadow": {
-                              "type": "ros2_message_String",
-                              "id": "M1Me/%IIQ,$OG`rQ~p|+",
-                              "inputs": {
-                                "data": {
-                                  "shadow": {
-                                    "type": "text",
-                                    "id": "l-{T_FuV/%oCoc*5BeS?",
-                                    "fields": {
-                                      "TEXT": ""
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            "block": {
-                              "type": "variables_get",
-                              "id": "epYyXaqw{nXNfw`Ma9kn",
-                              "fields": {
-                                "VAR": {
-                                  "id": "N)W$d!a:HX$Mq}j[SR]y"
-                                }
-                              }
-                            }
-                          },
-                          "topic": {
-                            "shadow": {
-                              "type": "text",
-                              "id": "T1{@T*o8O)Cu;6[E^4Ok",
-                              "fields": {
-                                "TEXT": "/sunrise/mission_controller/intent"
-                              }
-                            }
-                          }
-                        },
-                        "next": {
-                          "block": {
-                            "type": "variables_set",
-                            "id": "#`vvSWg(5PpoZ;hNj+(M",
-                            "fields": {
-                              "VAR": {
-                                "id": "N)W$d!a:HX$Mq}j[SR]y"
-                              }
-                            },
-                            "inputs": {
-                              "VALUE": {
-                                "block": {
-                                  "type": "logic_null",
-                                  "id": "odaS}3;?+!7E`Yy{1MsV"
-                                }
-                              }
+                              "id": "odaS}3;?+!7E`Yy{1MsV"
                             }
                           }
                         }
@@ -260,195 +143,6 @@
         "x": 50,
         "y": 90,
         "deletable": false
-      },
-      {
-        "type": "ros2_subscribe",
-        "id": "nNp$FM2ul#~Wc-Z9ttuE",
-        "x": 690,
-        "y": 190,
-        "fields": {
-          "var_name": {
-            "id": "7GAn@#d_;|R8y;.iYz%_"
-          }
-        },
-        "inputs": {
-          "topic": {
-            "shadow": {
-              "type": "text",
-              "id": "eEos%MKHZww{+=H$5d~o",
-              "fields": {
-                "TEXT": "/camera_tracking/pointing"
-              }
-            }
-          },
-          "message_type": {
-            "shadow": {
-              "type": "ros2_message_type",
-              "id": "^1SWJ[zSAnt?j/*)`_Y}",
-              "fields": {
-                "message_type": "Marker"
-              }
-            }
-          },
-          "function": {
-            "block": {
-              "type": "variables_set",
-              "id": "4hVKllk^i;fHxzO[j8^i",
-              "fields": {
-                "VAR": {
-                  "id": "2rs1Fgd,xutO|]B}?N^x"
-                }
-              },
-              "inputs": {
-                "VALUE": {
-                  "block": {
-                    "type": "ros2_message_Action",
-                    "id": "?SQpA3rdGV~aSdg@T.N-",
-                    "inputs": {
-                      "type": {
-                        "shadow": {
-                          "type": "ros2_message_Action_type",
-                          "id": "c^U*62w1yqwm(JsTnp%!",
-                          "fields": {
-                            "type": "MARKER"
-                          }
-                        }
-                      },
-                      "payload": {
-                        "block": {
-                          "type": "dict_to_json",
-                          "id": "J]||R*%AU|1y7aJB[t2{",
-                          "inputs": {
-                            "dict": {
-                              "shadow": {
-                                "type": "dict_builder",
-                                "id": "5-CI_8oLG=d;;(D;R)-O"
-                              },
-                              "block": {
-                                "type": "procedures_callreturn",
-                                "id": "TI([|n9s_b3^R.EVG*MH",
-                                "extraState": {
-                                  "name": "marker_to_x_y",
-                                  "params": [
-                                    "marker_id"
-                                  ]
-                                },
-                                "inputs": {
-                                  "ARG0": {
-                                    "block": {
-                                      "type": "get_dict_property",
-                                      "id": "J$!QRcfCB|rdpTHSVZ}}",
-                                      "inputs": {
-                                        "key": {
-                                          "shadow": {
-                                            "type": "text",
-                                            "id": "xG9RNUp$8Y;2H~YyVBN~",
-                                            "fields": {
-                                              "TEXT": "id"
-                                            }
-                                          }
-                                        },
-                                        "dictionary": {
-                                          "block": {
-                                            "type": "variables_get",
-                                            "id": "QMc9E`VLg;3FE4c4VH1=",
-                                            "fields": {
-                                              "VAR": {
-                                                "id": "7GAn@#d_;|R8y;.iYz%_"
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "ros2_subscribe",
-        "id": "4^6aZe-8_P2t:e4ax~d3",
-        "x": 690,
-        "y": 370,
-        "fields": {
-          "var_name": {
-            "id": "JF^;BrJJ|ujW|Fj|e/ZI"
-          }
-        },
-        "inputs": {
-          "topic": {
-            "shadow": {
-              "type": "text",
-              "id": "+uqrIRg*dbcpv;ijCv!R",
-              "fields": {
-                "TEXT": "/sunrise/mission_controller/log"
-              }
-            }
-          },
-          "message_type": {
-            "shadow": {
-              "type": "ros2_message_type",
-              "id": "7W1i2:5Kh%S0^6qRR@Lg",
-              "fields": {
-                "message_type": "Log"
-              }
-            }
-          },
-          "function": {
-            "block": {
-              "type": "sunrise_app_debug",
-              "id": "I)6jP-/FqYI_)VGo)@Er",
-              "inputs": {
-                "TEXT": {
-                  "shadow": {
-                    "type": "text",
-                    "id": "66G=UmAnMX.M}I^`l7:p",
-                    "fields": {
-                      "TEXT": "abc"
-                    }
-                  },
-                  "block": {
-                    "type": "get_dict_property",
-                    "id": "C@YcDo*$s^8(X1B6fU(C",
-                    "inputs": {
-                      "key": {
-                        "shadow": {
-                          "type": "text",
-                          "id": "[cXOh|;ITXiMh:L@/J6g",
-                          "fields": {
-                            "TEXT": "msg"
-                          }
-                        }
-                      },
-                      "dictionary": {
-                        "block": {
-                          "type": "variables_get",
-                          "id": "WnsWPaHv3F|]{P!*QAN@",
-                          "fields": {
-                            "VAR": {
-                              "id": "JF^;BrJJ|ujW|Fj|e/ZI"
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       },
       {
         "type": "ros2_subscribe",
@@ -525,7 +219,7 @@
                           "type": "math_number",
                           "id": "$WJzKJ~G||0dx;9FNMO6",
                           "fields": {
-                            "NUM": 0
+                            "NUM": 1
                           }
                         }
                       }
@@ -542,7 +236,7 @@
                           "type": "text",
                           "id": "(TLT=Lq)R*0km,(]350N",
                           "fields": {
-                            "TEXT": "Create a teaching intent"
+                            "TEXT": "Create a repear intent"
                           }
                         }
                       }
@@ -567,7 +261,7 @@
                                     "type": "ros2_message_Intent_type",
                                     "id": "b4r4zZFU-y2%fnio1qhB",
                                     "fields": {
-                                      "type": "TEACH"
+                                      "type": "REPEAT"
                                     }
                                   }
                                 },
@@ -582,22 +276,31 @@
                                           "id": "5-CI_8oLG=d;;(D;R)-O"
                                         },
                                         "block": {
-                                          "type": "procedures_callreturn",
-                                          "id": "_u-@aIyX30$C$1b}oEip",
-                                          "extraState": {
-                                            "name": "intent_to_map",
-                                            "params": [
-                                              "intent"
-                                            ]
-                                          },
+                                          "type": "dict_builder",
+                                          "id": "6e%D$~:tmHuJxSukx?4p",
                                           "inputs": {
-                                            "ARG0": {
+                                            "PAIRS": {
                                               "block": {
-                                                "type": "variables_get",
-                                                "id": "E*#p^Euj!Tp8]|[LO:@}",
-                                                "fields": {
-                                                  "VAR": {
-                                                    "id": "*ba*j1LXmJMK)UzJ|E=I"
+                                                "type": "dict_pair",
+                                                "id": "4lr|%3F!ueDU++L3Aei6",
+                                                "inputs": {
+                                                  "dict_key": {
+                                                    "shadow": {
+                                                      "type": "text",
+                                                      "id": "bb}H^]sT%+M73~l36C8G",
+                                                      "fields": {
+                                                        "TEXT": "task"
+                                                      }
+                                                    }
+                                                  },
+                                                  "dict_value": {
+                                                    "shadow": {
+                                                      "type": "text",
+                                                      "id": "/At_A?Is,61@S(VL2vo:",
+                                                      "fields": {
+                                                        "TEXT": "pick task for robot"
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }
@@ -622,889 +325,56 @@
         }
       },
       {
-        "type": "procedures_defreturn",
-        "id": "|afHx.)SjmtA9pH[@TK7",
-        "x": 1970,
-        "y": -110,
-        "extraState": {
-          "params": [
-            {
-              "name": "marker_id",
-              "id": ":7fcSA,Vw-b/*1I2ZD?{"
-            }
-          ]
-        },
+        "type": "ros2_subscribe",
+        "id": "@H[5#R3:C-_MHeYZLjqm",
+        "x": 690,
+        "y": 250,
         "fields": {
-          "NAME": "marker_to_x_y"
-        },
-        "inputs": {
-          "STACK": {
-            "block": {
-              "type": "controls_if",
-              "id": "3*51+*NF?*B8J/;Cb;c@",
-              "extraState": {
-                "elseIfCount": 1,
-                "hasElse": true
-              },
-              "inputs": {
-                "IF0": {
-                  "block": {
-                    "type": "logic_compare",
-                    "id": "CF})BV,f|sM={Q{TWxAJ",
-                    "fields": {
-                      "OP": "EQ"
-                    },
-                    "inputs": {
-                      "A": {
-                        "block": {
-                          "type": "variables_get",
-                          "id": "]f$:{cZ{?d=r}oOa%OlZ",
-                          "fields": {
-                            "VAR": {
-                              "id": ":7fcSA,Vw-b/*1I2ZD?{"
-                            }
-                          }
-                        }
-                      },
-                      "B": {
-                        "block": {
-                          "type": "math_number",
-                          "id": "`{rU7MZOC|Gx5:l-6,p?",
-                          "fields": {
-                            "NUM": 0
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "DO0": {
-                  "block": {
-                    "type": "variables_set",
-                    "id": "G;3$wXc}}Vk+=ljb,ru5",
-                    "fields": {
-                      "VAR": {
-                        "id": "@1e:h3Lo#(ZF;(d$pEv;"
-                      }
-                    },
-                    "inputs": {
-                      "VALUE": {
-                        "block": {
-                          "type": "dict_builder",
-                          "id": "PVxGzp8r*MIY,Sg;cV2d",
-                          "inputs": {
-                            "PAIRS": {
-                              "block": {
-                                "type": "dict_pair",
-                                "id": "ec:^l],M;BgTcA9d3xOF",
-                                "inputs": {
-                                  "dict_key": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": "Bj==$+*0KPc?a{Q+WGVY",
-                                      "fields": {
-                                        "TEXT": "marker_id"
-                                      }
-                                    }
-                                  },
-                                  "dict_value": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": ":Gup!w/v|KLq^Cyk/hj0",
-                                      "fields": {
-                                        "TEXT": "value"
-                                      }
-                                    },
-                                    "block": {
-                                      "type": "variables_get",
-                                      "id": "W9Y!99R#v{J/ObFJf-JD",
-                                      "fields": {
-                                        "VAR": {
-                                          "id": ":7fcSA,Vw-b/*1I2ZD?{"
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "next": {
-                                  "block": {
-                                    "type": "dict_pair",
-                                    "id": ";4uZ7Rv#Nrc7ZxKt8~B_",
-                                    "inputs": {
-                                      "dict_key": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "{QZ^xR]{l6rgOq#8qXU{",
-                                          "fields": {
-                                            "TEXT": "x"
-                                          }
-                                        }
-                                      },
-                                      "dict_value": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "$AjvWk)Ol,t!c:^+nPnG",
-                                          "fields": {
-                                            "TEXT": "position"
-                                          }
-                                        },
-                                        "block": {
-                                          "type": "math_number",
-                                          "id": "$*s:GE;tM1ZV@FgYY+0M",
-                                          "fields": {
-                                            "NUM": -100
-                                          }
-                                        }
-                                      }
-                                    },
-                                    "next": {
-                                      "block": {
-                                        "type": "dict_pair",
-                                        "id": "iRzdgFPSQ~v,bSet8rG(",
-                                        "inputs": {
-                                          "dict_key": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "[msc!n@BLQ|`p),Gjn8m",
-                                              "fields": {
-                                                "TEXT": "y"
-                                              }
-                                            }
-                                          },
-                                          "dict_value": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "]9#RSl_rDro[qakN!EVO",
-                                              "fields": {
-                                                "TEXT": "position"
-                                              }
-                                            },
-                                            "block": {
-                                              "type": "math_number",
-                                              "id": "zGg3X$(piDTQ=eZ3](8t",
-                                              "fields": {
-                                                "NUM": 100
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "IF1": {
-                  "block": {
-                    "type": "logic_compare",
-                    "id": "#`Tx)`$?m?3h:mkfSrGO",
-                    "fields": {
-                      "OP": "EQ"
-                    },
-                    "inputs": {
-                      "A": {
-                        "block": {
-                          "type": "variables_get",
-                          "id": "?c*xSwN{RB#aM2gOI.HG",
-                          "fields": {
-                            "VAR": {
-                              "id": ":7fcSA,Vw-b/*1I2ZD?{"
-                            }
-                          }
-                        }
-                      },
-                      "B": {
-                        "block": {
-                          "type": "math_number",
-                          "id": "F|H:qb.TC)RYg?Q+o.6P",
-                          "fields": {
-                            "NUM": 1
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "DO1": {
-                  "block": {
-                    "type": "variables_set",
-                    "id": "VWfiP/n=kC%D(qbNm]=F",
-                    "fields": {
-                      "VAR": {
-                        "id": "@1e:h3Lo#(ZF;(d$pEv;"
-                      }
-                    },
-                    "inputs": {
-                      "VALUE": {
-                        "block": {
-                          "type": "dict_builder",
-                          "id": "aSV01];nf|WArtMK*A#R",
-                          "inputs": {
-                            "PAIRS": {
-                              "block": {
-                                "type": "dict_pair",
-                                "id": "8D)x5a#F+BYGEj9]E@b@",
-                                "inputs": {
-                                  "dict_key": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": "$Y#}OBB7.o7Cu6!QDC+h",
-                                      "fields": {
-                                        "TEXT": "marker_id"
-                                      }
-                                    }
-                                  },
-                                  "dict_value": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": ":Gup!w/v|KLq^Cyk/hj0",
-                                      "fields": {
-                                        "TEXT": "value"
-                                      }
-                                    },
-                                    "block": {
-                                      "type": "variables_get",
-                                      "id": "|s$m8fDh`oF:=UkpkfQo",
-                                      "fields": {
-                                        "VAR": {
-                                          "id": ":7fcSA,Vw-b/*1I2ZD?{"
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "next": {
-                                  "block": {
-                                    "type": "dict_pair",
-                                    "id": "|s^%VgU1xorzycbHfoYC",
-                                    "inputs": {
-                                      "dict_key": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "SPs,~{s9E@M[-:Iy9-/H",
-                                          "fields": {
-                                            "TEXT": "x"
-                                          }
-                                        }
-                                      },
-                                      "dict_value": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "$AjvWk)Ol,t!c:^+nPnG",
-                                          "fields": {
-                                            "TEXT": "position"
-                                          }
-                                        },
-                                        "block": {
-                                          "type": "math_number",
-                                          "id": "Eqg}[#4Fr4^z?69^kV2*",
-                                          "fields": {
-                                            "NUM": 100
-                                          }
-                                        }
-                                      }
-                                    },
-                                    "next": {
-                                      "block": {
-                                        "type": "dict_pair",
-                                        "id": "uDPJ)ms4}|G`@pl+DxKg",
-                                        "inputs": {
-                                          "dict_key": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "vTDu~D,aU/v7b!Wb6IQC",
-                                              "fields": {
-                                                "TEXT": "y"
-                                              }
-                                            }
-                                          },
-                                          "dict_value": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "]9#RSl_rDro[qakN!EVO",
-                                              "fields": {
-                                                "TEXT": "position"
-                                              }
-                                            },
-                                            "block": {
-                                              "type": "math_number",
-                                              "id": "ynhfBPnafcH4LqIckCx1",
-                                              "fields": {
-                                                "NUM": 100
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "ELSE": {
-                  "block": {
-                    "type": "variables_set",
-                    "id": "yN)*f,]iNf+_E78il$nO",
-                    "fields": {
-                      "VAR": {
-                        "id": "@1e:h3Lo#(ZF;(d$pEv;"
-                      }
-                    },
-                    "inputs": {
-                      "VALUE": {
-                        "block": {
-                          "type": "dict_builder",
-                          "id": "thlcX:3mhvj~wU#8(MxV",
-                          "inputs": {
-                            "PAIRS": {
-                              "block": {
-                                "type": "dict_pair",
-                                "id": "T}+`;L5hk,L)HtYt://{",
-                                "inputs": {
-                                  "dict_key": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": "i-Go`V,Ye7F^%K)_oCV#",
-                                      "fields": {
-                                        "TEXT": "marker_id"
-                                      }
-                                    }
-                                  },
-                                  "dict_value": {
-                                    "shadow": {
-                                      "type": "text",
-                                      "id": ":Gup!w/v|KLq^Cyk/hj0",
-                                      "fields": {
-                                        "TEXT": "value"
-                                      }
-                                    },
-                                    "block": {
-                                      "type": "variables_get",
-                                      "id": "RXvNp:k}j.xGjnSQ@*q,",
-                                      "fields": {
-                                        "VAR": {
-                                          "id": ":7fcSA,Vw-b/*1I2ZD?{"
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "next": {
-                                  "block": {
-                                    "type": "dict_pair",
-                                    "id": "-tdV4E0Fp,mW)sLyNQg3",
-                                    "inputs": {
-                                      "dict_key": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "_JK?HM*zQ}|Ijl6U-GUr",
-                                          "fields": {
-                                            "TEXT": "error"
-                                          }
-                                        }
-                                      },
-                                      "dict_value": {
-                                        "shadow": {
-                                          "type": "text",
-                                          "id": "$AjvWk)Ol,t!c:^+nPnG",
-                                          "fields": {
-                                            "TEXT": "Marker not mapped"
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "RETURN": {
-            "block": {
-              "type": "variables_get",
-              "id": "wPJx_k+D_LAwhxY`brf;",
-              "fields": {
-                "VAR": {
-                  "id": "@1e:h3Lo#(ZF;(d$pEv;"
-                }
-              }
-            }
+          "var_name": {
+            "id": "JF^;BrJJ|ujW|Fj|e/ZI"
           }
-        }
-      },
-      {
-        "type": "procedures_defreturn",
-        "id": "j56hXDuP4mpqgYTU,ZBG",
-        "x": 2610,
-        "y": -130,
-        "extraState": {
-          "params": [
-            {
-              "name": "intent",
-              "id": "Ton|~!c(~Vu9xG)18MUf"
-            }
-          ]
-        },
-        "fields": {
-          "NAME": "intent_to_map"
         },
         "inputs": {
-          "STACK": {
-            "block": {
-              "type": "variables_set",
-              "id": "=Z(4kszVm,49*SHIuk-+",
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "mRW]LpW|/9[]V2D(FiY(",
               "fields": {
-                "VAR": {
-                  "id": "iynZ@jbKJ#so]|L5G($y"
-                }
-              },
-              "inputs": {
-                "VALUE": {
-                  "block": {
-                    "type": "logic_null",
-                    "id": "0k41=(=k:^+o3@6,eXeD"
-                  }
-                }
-              },
-              "next": {
-                "block": {
-                  "type": "variables_set",
-                  "id": "JUd*1C+3AYr7_Hy4vn5u",
-                  "fields": {
-                    "VAR": {
-                      "id": ",ujY67Tlmet6oR~3.tD."
-                    }
-                  },
-                  "inputs": {
-                    "VALUE": {
-                      "block": {
-                        "type": "json_to_dict",
-                        "id": "S!B(hg$qCt@7e0Z_MBYK",
-                        "inputs": {
-                          "json": {
-                            "shadow": {
-                              "type": "text",
-                              "id": "@LVu$*z?3p/PQjTPv^xB",
-                              "fields": {
-                                "TEXT": ""
-                              }
-                            },
-                            "block": {
-                              "type": "get_dict_property",
-                              "id": "+2L)Je:4)sDF0TYsNbFv",
-                              "inputs": {
-                                "key": {
-                                  "shadow": {
-                                    "type": "text",
-                                    "id": "F$y#C1A?+HtVQw|:vg0]",
-                                    "fields": {
-                                      "TEXT": "payload"
-                                    }
-                                  }
-                                },
-                                "dictionary": {
-                                  "block": {
-                                    "type": "variables_get",
-                                    "id": "QsYLvs3u2J+g$x%F|l[W",
-                                    "fields": {
-                                      "VAR": {
-                                        "id": "Ton|~!c(~Vu9xG)18MUf"
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "next": {
-                    "block": {
-                      "type": "controls_if",
-                      "id": "QN=nQ(rae4Ea{C+EJs=H",
-                      "extraState": {
-                        "elseIfCount": 1
-                      },
-                      "inputs": {
-                        "IF0": {
-                          "block": {
-                            "type": "logic_compare",
-                            "id": "SFK}S_$znOz[nz|7rlX#",
-                            "fields": {
-                              "OP": "EQ"
-                            },
-                            "inputs": {
-                              "A": {
-                                "block": {
-                                  "type": "get_dict_property",
-                                  "id": "ALep2Mrd:LnycRy/%irN",
-                                  "inputs": {
-                                    "key": {
-                                      "shadow": {
-                                        "type": "text",
-                                        "id": "l.`ufYON;!]L(|~J5Fi-",
-                                        "fields": {
-                                          "TEXT": "mapping"
-                                        }
-                                      }
-                                    },
-                                    "dictionary": {
-                                      "block": {
-                                        "type": "variables_get",
-                                        "id": "knAcBcz[]rC?U3U}]p!D",
-                                        "fields": {
-                                          "VAR": {
-                                            "id": ",ujY67Tlmet6oR~3.tD."
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "B": {
-                                "block": {
-                                  "type": "text",
-                                  "id": "R|b%QOxGGKH/(S=jW,.W",
-                                  "fields": {
-                                    "TEXT": "TEACH_TASK"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "DO0": {
-                          "block": {
-                            "type": "variables_set",
-                            "id": "!]M|hx;_GIejhcSb|@(+",
-                            "fields": {
-                              "VAR": {
-                                "id": "iynZ@jbKJ#so]|L5G($y"
-                              }
-                            },
-                            "inputs": {
-                              "VALUE": {
-                                "block": {
-                                  "type": "dict_builder",
-                                  "id": "%H7jI`ltX6[mN2WJ8_wt",
-                                  "inputs": {
-                                    "PAIRS": {
-                                      "block": {
-                                        "type": "dict_pair",
-                                        "id": "+pE91qs)?o|1:2%0C$fJ",
-                                        "inputs": {
-                                          "dict_key": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "8+L(]XPG5iB*Se^%gRP_",
-                                              "fields": {
-                                                "TEXT": "task"
-                                              }
-                                            }
-                                          },
-                                          "dict_value": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "kroc~Dc-6?`Op$MZY;Ai",
-                                              "fields": {
-                                                "TEXT": "pick task for robot"
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "IF1": {
-                          "block": {
-                            "type": "logic_compare",
-                            "id": "]fUIB5WPsWLpc:1(AVI9",
-                            "fields": {
-                              "OP": "EQ"
-                            },
-                            "inputs": {
-                              "A": {
-                                "block": {
-                                  "type": "get_dict_property",
-                                  "id": "i7HF_qC]PbSt%j~Gp];k",
-                                  "inputs": {
-                                    "key": {
-                                      "shadow": {
-                                        "type": "text",
-                                        "id": "Kqh#PP@b+zo_r%%bg|dg",
-                                        "fields": {
-                                          "TEXT": "mapping"
-                                        }
-                                      }
-                                    },
-                                    "dictionary": {
-                                      "block": {
-                                        "type": "variables_get",
-                                        "id": "3q|ij(|:pq@86,Nxq#FM",
-                                        "fields": {
-                                          "VAR": {
-                                            "id": ",ujY67Tlmet6oR~3.tD."
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "B": {
-                                "block": {
-                                  "type": "text",
-                                  "id": "Er/KU#AqKep.SasK}Ha0",
-                                  "fields": {
-                                    "TEXT": "TEACH_SKILL"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "DO1": {
-                          "block": {
-                            "type": "controls_if",
-                            "id": "BO_F682H7rhp^e2xwV?0",
-                            "extraState": {
-                              "elseIfCount": 1
-                            },
-                            "inputs": {
-                              "IF0": {
-                                "block": {
-                                  "type": "logic_compare",
-                                  "id": "1GRveaY0p$kQIj`YM-RQ",
-                                  "fields": {
-                                    "OP": "EQ"
-                                  },
-                                  "inputs": {
-                                    "A": {
-                                      "block": {
-                                        "type": "get_dict_property",
-                                        "id": "UXR@/cuO~-c~%kBJf/*H",
-                                        "inputs": {
-                                          "key": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "2bKW?7*l~i%UPKIYIRi%",
-                                              "fields": {
-                                                "TEXT": "gesture"
-                                              }
-                                            }
-                                          },
-                                          "dictionary": {
-                                            "block": {
-                                              "type": "variables_get",
-                                              "id": "h0i?g$P[X%Hf9]OZ^}S$",
-                                              "fields": {
-                                                "VAR": {
-                                                  "id": ",ujY67Tlmet6oR~3.tD."
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                    "B": {
-                                      "block": {
-                                        "type": "text",
-                                        "id": "VyP5`GkUN,./[xzN+j:,",
-                                        "fields": {
-                                          "TEXT": "up"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "DO0": {
-                                "block": {
-                                  "type": "variables_set",
-                                  "id": "h(@Xc7|75nX]LLClo1+Q",
-                                  "fields": {
-                                    "VAR": {
-                                      "id": "iynZ@jbKJ#so]|L5G($y"
-                                    }
-                                  },
-                                  "inputs": {
-                                    "VALUE": {
-                                      "block": {
-                                        "type": "dict_builder",
-                                        "id": "g-PZ27{=rDR...P#!fY}",
-                                        "inputs": {
-                                          "PAIRS": {
-                                            "block": {
-                                              "type": "dict_pair",
-                                              "id": "[QQq,9c]m;ZHb**|aF?^",
-                                              "inputs": {
-                                                "dict_key": {
-                                                  "shadow": {
-                                                    "type": "text",
-                                                    "id": "o_FBK1,$Bw5`#Z2q|J$#",
-                                                    "fields": {
-                                                      "TEXT": "skill"
-                                                    }
-                                                  }
-                                                },
-                                                "dict_value": {
-                                                  "shadow": {
-                                                    "type": "text",
-                                                    "id": "G+}hE3!_R}YVMYDNk|C#",
-                                                    "fields": {
-                                                      "TEXT": "pick"
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "IF1": {
-                                "block": {
-                                  "type": "logic_compare",
-                                  "id": "YFBB.B:Lge2GKW9@P7]4",
-                                  "fields": {
-                                    "OP": "EQ"
-                                  },
-                                  "inputs": {
-                                    "A": {
-                                      "block": {
-                                        "type": "get_dict_property",
-                                        "id": "GcBlqHR+d6hmK!+y5Q#[",
-                                        "inputs": {
-                                          "key": {
-                                            "shadow": {
-                                              "type": "text",
-                                              "id": "GubrfXz^||aYMh,SA5D8",
-                                              "fields": {
-                                                "TEXT": "gesture"
-                                              }
-                                            }
-                                          },
-                                          "dictionary": {
-                                            "block": {
-                                              "type": "variables_get",
-                                              "id": "b}aJUOE:}k)/8#,DXM{v",
-                                              "fields": {
-                                                "VAR": {
-                                                  "id": ",ujY67Tlmet6oR~3.tD."
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                    "B": {
-                                      "block": {
-                                        "type": "text",
-                                        "id": "xT/f)D*NMSw+;INp}+57",
-                                        "fields": {
-                                          "TEXT": "down"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "DO1": {
-                                "block": {
-                                  "type": "variables_set",
-                                  "id": "W#Jy%lwKQGfIiNzaKg`6",
-                                  "fields": {
-                                    "VAR": {
-                                      "id": "iynZ@jbKJ#so]|L5G($y"
-                                    }
-                                  },
-                                  "inputs": {
-                                    "VALUE": {
-                                      "block": {
-                                        "type": "dict_builder",
-                                        "id": "Z%KJ~HVAbaE.fc#5lr4s",
-                                        "inputs": {
-                                          "PAIRS": {
-                                            "block": {
-                                              "type": "dict_pair",
-                                              "id": "k[Ws{K5,ZLph=eZ_ndG]",
-                                              "inputs": {
-                                                "dict_key": {
-                                                  "shadow": {
-                                                    "type": "text",
-                                                    "id": "S6$*miJfo2gMY$#8me[h",
-                                                    "fields": {
-                                                      "TEXT": "skill"
-                                                    }
-                                                  }
-                                                },
-                                                "dict_value": {
-                                                  "shadow": {
-                                                    "type": "text",
-                                                    "id": "8WmQ[~Sgk7+6PDDW}cJ}",
-                                                    "fields": {
-                                                      "TEXT": "place"
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+                "TEXT": "/sunrise/mission_controller/log"
               }
             }
           },
-          "RETURN": {
-            "block": {
-              "type": "variables_get",
-              "id": "%@MpLwrO%97+2b@6N(T6",
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "9m1K?.LeE|8rE;0aE$t%",
               "fields": {
-                "VAR": {
-                  "id": "iynZ@jbKJ#so]|L5G($y"
+                "message_type": "Log"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "E/GRa9qRbX8P}o[8z?]a",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "@(Js5%BCap*vykDc7?2^",
+                    "fields": {
+                      "TEXT": "abc"
+                    }
+                  },
+                  "block": {
+                    "type": "variables_get",
+                    "id": "T9_RYre..H{}2h*6Z^U9",
+                    "fields": {
+                      "VAR": {
+                        "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+                      }
+                    }
+                  }
                 }
               }
             }

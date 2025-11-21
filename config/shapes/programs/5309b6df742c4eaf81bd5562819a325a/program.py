@@ -138,12 +138,12 @@ def intent_to_map(intent):
     intent_map = None
     payload = json.loads(intent.get('payload', None))
     if payload.get('mapping', None) == 'TEACH_TASK':
-        intent_map = {'task': 'pick task for robot'}
+        intent_map = {'task': 'pick from position stock'}
     elif payload.get('mapping', None) == 'TEACH_SKILL':
         if payload.get('gesture', None) == 'up':
-            intent_map = {'skill': 'pick'}
+            intent_map = {'robot': 'braccio_robot', 'skill': 'pick'}
         elif payload.get('gesture', None) == 'down':
-            intent_map = {'skill': 'place'}
+            intent_map = {'robot': 'braccio_robot', 'skill': 'place'}
     return intent_map
 
 
@@ -152,6 +152,9 @@ def _sunrise_app_bridge_intent(logging_queue: LoggingQueue):
     if tactigon_intent.get('type', None) == 0:
         debug(logging_queue, 'Create a teaching intent')
         create_intent = Intent(type=Intent.TEACH, payload=json.dumps((intent_to_map(tactigon_intent))))
+    else:
+        debug(logging_queue, 'Create a repeat intent')
+        create_intent = Intent(type=Intent.REPEAT, payload=json.dumps({'task': 'pick from position stock'}))
 
 def sunrise_app_setup(
         zion: Optional[ZionInterface],

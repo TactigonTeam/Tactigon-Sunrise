@@ -13,40 +13,125 @@
 
 from dataclasses import dataclass
 
-from sunrise.mission_controller.models.skill import Skill, SkillScope
+from typing import Any
+
+from sunrise.mission_controller.models.robots import RobotDefinition
+from sunrise.mission_controller.models.skill import Skill
+from sunrise.mission_controller.msg import RosMessageTypes, get_message_type_by_name, get_message_name
 
 @dataclass
-class LEOConfig:
-    # skills: list[Skill]
+class RosMessage:
+    topic: str
+    msg: RosMessageTypes
+
+@dataclass
+class CommandStepField:
+    default: Any
+    override: bool = False
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
-            # skills=[Skill.FromJSON(skill) for skill in json.get("skills", [])]
+            default=json.get("default", None),
+            override=json.get("override", False),
         )
     
     def toJSON(self) -> dict:
         return dict(
-            # skills=[skill.toJSON for skill in self.skills]
+            default=self.default,
+            override=self.override,
+        )
+
+@dataclass
+class CommandStep:
+    payload_fields: dict[str, CommandStepField]
+
+    @classmethod
+    def FromJSON(cls, json: dict):
+        return cls(
+            payload_fields={
+                key: CommandStepField.FromJSON(value)
+                for key, value in json.get("payload_fields", {}).items()
+            }
         )
     
-    # def add_skill(self, skill: Skill, parent: str = "") -> bool:
-    #     if parent:
-    #         return self._add_to_skill(self.skills, skill, parent)
-        
-    #     self.skills.append(skill)
-    #     return True
+    def toJSON(self) -> dict:
+        return dict(
+            payload_fields={
+                key: field.toJSON()
+                for key, field in self.payload_fields.items()
+            }
+        )
+
+
+@dataclass
+class Command:
+    command_name: str
+    command_topic: str
+    command_topic_type: RosMessageTypes
+    response_topic: str
+    response_topic_type: RosMessageTypes
+    steps: list[CommandStep]
+
+    @classmethod
+    def FromJSON(cls, json: dict):
+        return cls(
+            command_name=json.get("command_name", ""),
+            command_topic=json.get("command_topic", ""),
+            command_topic_type=get_message_type_by_name(json.get("command_topic_type", "String")),
+            response_topic=json.get("response_topic", ""),
+            response_topic_type=get_message_type_by_name(json.get("response_topic_type", "String")),
+            steps=[CommandStep.FromJSON(s) for s in json.get("steps", [])]
+        )
     
-    # def _add_to_skill(self, skills: list[Skill], skill: Skill, parent: str) -> bool:
-    #     for skill in skills:
-    #         if skill.name == parent:
-    #             skill.children.append(skill)
-    #             return True
-            
-    #         if self._add_to_skill(skill.children, skill, parent):
-    #             return True
-            
-    #     return False
+    def toJSON(self) -> dict:
+        return dict(
+            command_name=self.command_name,
+            command_topic=self.command_topic,
+            command_topic_type=self.command_topic_type.__name__,
+            response_topic=self.response_topic,
+            response_topic_type=self.response_topic_type.__name__,
+            steps=[s.toJSON() for s in self.steps]
+        )
+
+@dataclass
+class Robot:
+    name: RobotDefinition
+    robot_type: str
+    commands: list[Command]
+
+    @classmethod
+    def FromJSON(cls, json: dict):
+        return cls(
+            name=RobotDefinition(json.get("name", "")),
+            robot_type=json.get("namrobot_typee", ""),
+            commands=[Command.FromJSON(c) for c in json.get("commands", [])]
+        )
     
-    # def get_skill(self, name: str) -> Skill | None:
-    #     return next((skill for skill in self.skills if skill.name == name), None)
+    def toJSON(self) -> dict:
+        return dict(
+            name=self.name.value,
+            robot_type=self.robot_type,
+            commands=[c.toJSON() for c in self.commands]
+        )
+
+    def get_command(self, command_name: str) -> Command | None:
+        return next((command for command in self.commands if command.command_name == command_name), None)
+
+@dataclass
+class LEOConfig:
+    robots: list[Robot]
+
+    @classmethod
+    def FromJSON(cls, json: dict):
+        return cls(
+            robots=[Robot.FromJSON(r) for r in json.get("robots", [])]
+        )
+    
+    def toJSON(self) -> dict:
+        return dict(
+            robots=[r.toJSON() for r in self.robots]
+        )
+    
+    def get_robot(self, robot_name: RobotDefinition) -> Robot | None:
+        return next((robot for robot in self.robots if robot.name == robot_name), None)

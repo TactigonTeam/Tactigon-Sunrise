@@ -27,8 +27,10 @@ from typing import Callable, Any
 
 from sunrise.mission_controller.models.mission_controller import MissionControllerConfig, Message
 from sunrise.mission_controller.teo import TEO
-from sunrise.mission_controller.teo.models import Task, Skill, SkillScope
-from sunrise.mission_controller.leo import LEO
+from sunrise.mission_controller.models.task import Task
+from sunrise.mission_controller.models.skill import Skill
+from sunrise.mission_controller.models.robots import RobotDefinition
+from sunrise.mission_controller.leo import LEO, TaskErrorEnum
 
 class MachineState(Enum):
     IDLE = 0
@@ -62,13 +64,25 @@ class MissionController(Node):
         self._config = self.load_config(config_path)
         
         self.teacher = TEO(self._config.teacher_config_path)
-        self.student = LEO(self._config.student_config_path)
+        self.student = LEO(self._config.student_config_path, self.get_logger())
 
         for p in self._config.publishers:
             self.add_publisher(p.topic, p.message_type, p.qos_profile)
 
         for s in self._config.subscriptions:
-            self.add_subscription(s.topic, s.message_type, s.qos_profile)
+            self.add_subscription(s.topic, s.message_type, self.state_machine, s.qos_profile)
+
+        for topic, message_type in self.student.get_publishers_from_config():
+            pub = self.add_publisher(topic, message_type, 10)
+            self.student.add_publisher(topic, pub)
+
+        # for topic, message_type in self.student.get_subscribers_from_config():
+        #     sub = self.add_subscription(
+        #         topic,
+        #         message_type,
+        #         self.student.subscription_callback,
+        #         10
+        #     )
 
         self.logging_publisher = self.add_publisher(
             self._config.logging.topic,
@@ -94,12 +108,12 @@ class MissionController(Node):
         self.info(f"Adding publisher {topic}, {message_type}")
         return self.create_publisher(message_type, topic, qos_profile)
 
-    def add_subscription(self, topic: str, message_type: RosMessageTypes, qos_profile: QoSProfile | int):
+    def add_subscription(self, topic: str, message_type: RosMessageTypes, fn: Callable[[Message], None], qos_profile: QoSProfile | int):
         self.info(f"Adding subscriber {topic}, {message_type}")
         self.create_subscription(
             message_type, 
             topic, 
-            self._callback(topic, self.state_machine), 
+            self._callback(topic, fn), 
             qos_profile
         )
 
@@ -163,7 +177,7 @@ class MissionController(Node):
             return
         
         now = self.now()
-        self._actions = [a for a in self._actions if (now-a[0]).nanoseconds < 3*10e7]
+        self._actions = [a for a in self._actions if (now-a[0]).nanoseconds < self._config.action_timeout*10e7]
 
         self.debug(f"Valid actions count: {len(self._actions)}")
 
@@ -173,7 +187,7 @@ class MissionController(Node):
         
         now = self.now()
 
-        if (now - self.state[0]).nanoseconds > 5*10e7:
+        if (now - self.state[0]).nanoseconds > self._config.state_timeout*10e7:
             self._reset_state()
 
     def _reset_state(self):
@@ -230,6 +244,7 @@ class MissionController(Node):
         self.debug(f"Managing action for state {state} | {payload}")
         
         if state == MachineState.TEACH:
+            self.debug(f"{self._actions} | {self._task_name}")
             if self._actions and self._task_name:   
                 time, action = self._actions.pop(0)
 
@@ -237,7 +252,7 @@ class MissionController(Node):
                 self.ros_debug(f"Learned skill {payload} => {action}")
                 
                 s = Skill(
-                    scope=SkillScope.BRACCIO_ROBOT,
+                    scope=RobotDefinition(payload.get("robot", "braccio_robot")),
                     name=payload.get("skill", ""),
                     payload=json.loads(action.payload)
                 )
@@ -245,15 +260,35 @@ class MissionController(Node):
                 self.teacher.add_skill(self._task_name, s)
                 self.debug(f"{self.teacher._config}")
                 self.teacher.save_config()
+                self._reset_state()
 
         elif state == MachineState.REPEAT:
             if self._task_name:
                 self.debug(f"Repeat task {payload}")
                 self.ros_debug(f"Repeat task {payload}")
 
-                self.student.repeat_task(self._task_name)
+                error = TaskErrorEnum.NO_ERROR
+                task = self.teacher.get_task(self._task_name)
 
-        self._reset_state()
+                if task:
+                    for skill in task.skills:
+                        self.debug(f"Repeating skill {skill}")
+                        error = self.student.do_skill(skill)
+                        self.debug(f"Repeating skill result {error}")
+
+                        if error != TaskErrorEnum.NO_ERROR:
+                            break
+                else:
+                    error = TaskErrorEnum.TASK_NOT_FOUND
+
+                if error == TaskErrorEnum.NO_ERROR:
+                    self.debug(f"Task {self._task_name} executed correctly")
+                    self.ros_debug(f"Task {self._task_name} executed correctly")
+                else:
+                    self.warn(f"Task {self._task_name} execution returned error {error}")
+                    self.ros_warn(f"Task {self._task_name} execution returned error {error}")
+
+                self._reset_state()
 
 
 
