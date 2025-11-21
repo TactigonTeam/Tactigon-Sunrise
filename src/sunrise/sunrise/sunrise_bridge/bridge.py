@@ -79,11 +79,13 @@ class SunriseBridge(Node):
         self.intent_publisher.publish(i)
 
     def _send_payload_by_mapping(self, mapping: GestureMapping | TouchMapping, payload: dict):
+        payload["mapping"] = mapping.mapping.name
+
         if mapping.mapping == MappingType.ACTION:
             self._send_action(payload)
-        elif mapping.mapping == MappingType.TEACH_INTENT:
+        elif mapping.mapping in [MappingType.TEACH_SKILL, MappingType.TEACH_TASK]:
             self._send_teach_intent(payload)
-        elif mapping.mapping == MappingType.REPEAT_INTENT:
+        elif mapping.mapping in [MappingType.REPEAT_SKILL, MappingType.REPEAT_TASK]:
             self._send_repeat_intent(payload)
 
     def _do_tskin_job(self):

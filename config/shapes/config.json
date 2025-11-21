@@ -1,9 +1,78 @@
 [
   {
     "id": "5309b6df742c4eaf81bd5562819a325a",
-    "name": "Sunrise App",
+    "name": "Sunrise App - teach task",
     "created_on": "2025-11-14T18:31:58.712429",
-    "modified_on": "2025-11-20T15:34:38.804728",
+    "modified_on": "2025-11-21T09:38:27.576463",
+    "description": "",
+    "readonly": false,
+    "ros2_config": {
+      "node_name": "Sunrise App",
+      "publishers": [
+        {
+          "topic": "/sunrise/mission_controller/action",
+          "message_type": "Action",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise/mission_controller/intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        }
+      ],
+      "subscriptions": [
+        {
+          "topic": "/camera_tracking/pointing",
+          "function": "_camera_tracking_pointing",
+          "payload_reference": "pointing",
+          "message_type": "Marker",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise/mission_controller/log",
+          "function": "_sunrise_mission_controller_log",
+          "payload_reference": "log",
+          "message_type": "Log",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise_app/bridge/intent",
+          "function": "_sunrise_app_bridge_intent",
+          "payload_reference": "tactigon_intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        }
+      ]
+    },
+    "mqtt_config": null
+  },
+  {
+    "id": "6dbe939cdf8442b1a2bd6aea64f8c343",
+    "name": "test_bridge",
+    "created_on": "2025-11-20T17:43:09.927929",
+    "modified_on": "2025-11-20T18:00:53.279888",
+    "description": "",
+    "readonly": false,
+    "ros2_config": {
+      "node_name": "test_bridge",
+      "publishers": [],
+      "subscriptions": [
+        {
+          "topic": "/sunrise_app/bridge/intent",
+          "function": "_sunrise_app_bridge_intent",
+          "payload_reference": "tactigon_intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        }
+      ]
+    },
+    "mqtt_config": null
+  },
+  {
+    "id": "c9c1a49d780f4b9d8f28f993a3a5ff9e",
+    "name": "Sunrise app - repeat task",
+    "created_on": "2025-11-21T09:38:56.148383",
+    "modified_on": "2025-11-21T09:38:56.148410",
     "description": "",
     "readonly": false,
     "ros2_config": {

@@ -39,10 +39,10 @@ class TestNode(Node):
         )
 
     @staticmethod
-    def get_teach_intent(skill_name: str) -> Intent:
+    def get_teach_intent(payload: dict) -> Intent:
         i = Intent()
         i.type = Intent.TEACH
-        i.payload = json.dumps(dict(skill=skill_name))
+        i.payload = json.dumps(payload)
 
         return i
     
@@ -98,17 +98,30 @@ class TestWindow(QMainWindow):
         self.setCentralWidget(self._container)
 
     def main_layout(self):
-        teach_intent_btn = QPushButton("Intent TEACH position", self._container)
-        teach_intent_btn.setToolTip("Send the TEACH intent")
-        teach_intent_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent("position")) )
+        teach_task_btn = QPushButton("Intent TEACH task", self._container)
+        teach_task_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent(dict(task="pick from position stock"))) )
 
-        self._layout.addWidget(teach_intent_btn)
+        self._layout.addWidget(teach_task_btn)
+
+        teach_pick_btn = QPushButton("Intent TEACH pick", self._container)
+        teach_pick_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent(dict(skill="pick"))) )
+
+        self._layout.addWidget(teach_pick_btn)
 
         position1_btn = QPushButton("Camera Position (100, 100)", self._container)
-        position1_btn.setToolTip("Send the Camera action position")
         position1_btn.clicked.connect(lambda: self._node.send_action(TestNode.get_camera_action(100, 100)))
 
         self._layout.addWidget(position1_btn)
+
+        teach_place_btn = QPushButton("Intent TEACH place", self._container)
+        teach_place_btn.clicked.connect(lambda: self._node.send_intent(TestNode.get_teach_intent(dict(skill="pick"))) )
+
+        self._layout.addWidget(teach_place_btn)
+
+        position2_btn = QPushButton("Camera Position (-100, 100)", self._container)
+        position2_btn.clicked.connect(lambda: self._node.send_action(TestNode.get_camera_action(-100, 100)))
+
+        self._layout.addWidget(position2_btn)
 
         braccio_1_btn = QPushButton("Braccio position (100, 100, 100)", self._container)
         braccio_1_btn.setToolTip("Send the Bracio position")

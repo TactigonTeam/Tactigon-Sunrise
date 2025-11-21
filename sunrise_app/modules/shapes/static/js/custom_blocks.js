@@ -148,6 +148,21 @@ function loadDictionaryBlocks(){
             "colour": 200,
             "tooltip": "Convert dictionary into json string",
             "inputsInline": true
+        },
+        {
+            "type": "json_to_dict",
+            "message0": "Dict from json %1",
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "json",
+                    "check": "String"
+                }
+            ],
+            "output": "Dict",
+            "colour": 200,
+            "tooltip": "Convert json string into dictionary",
+            "inputsInline": true
         }
     ]);
 
@@ -1020,6 +1035,13 @@ function defineDictionaryGenerators() {
         const dict = Blockly.Python.valueToCode(block, 'dict', Blockly.Python.ORDER_ATOMIC) || "{}";
 
         const code = `json.dumps(${dict})`;
+        return [code, Blockly.Python.ORDER_ATOMIC];
+    };
+
+    python.pythonGenerator.forBlock['json_to_dict'] = function (block, generator) {
+        const dict = Blockly.Python.valueToCode(block, 'json', Blockly.Python.ORDER_ATOMIC) || "{}";
+
+        const code = `json.loads(${dict})`;
         return [code, Blockly.Python.ORDER_ATOMIC];
     };
 }

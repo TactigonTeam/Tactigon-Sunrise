@@ -19,7 +19,6 @@ from sunrise.mission_controller.models.skill import Skill, Task
 class TEO():
     _config_path: str
     _config: TEOConfig
-    _task: Task | None
 
     def __init__(self, config_path: str):
         self._config_path = config_path
@@ -38,9 +37,6 @@ class TEO():
         return self._config.add_task(task_name)
 
     def add_skill(self, task_name: str, skill: Skill, parent: str = ""):
-        if not self._task:
-            self._task = Task("task", [])
-
         self._config.add_skill(task_name, skill, parent)
 
     def get_task(self, name: str) -> Task | None:

@@ -12,6 +12,7 @@
 #********************************************************************************
 
 import json
+from copy import deepcopy
 from rclpy.logging import LoggingSeverity
 from rclpy.node import Node, QoSProfile
 from rclpy.time import Time
@@ -46,7 +47,7 @@ class MissionController(Node):
 
     teacher: TEO
     student: LEO
-    state: tuple[Time, MachineState, dict]
+    state: tuple[Time, MachineState, dict[str, Any]]
     
     _actions: list[tuple[Time, Action]]
     _task_name: str | None
@@ -61,7 +62,7 @@ class MissionController(Node):
         self._config = self.load_config(config_path)
         
         self.teacher = TEO(self._config.teacher_config_path)
-        self.studend = LEO(self._config.student_config_path)
+        self.student = LEO(self._config.student_config_path)
 
         for p in self._config.publishers:
             self.add_publisher(p.topic, p.message_type, p.qos_profile)
@@ -179,17 +180,23 @@ class MissionController(Node):
         self.state = (self.now(), MachineState.IDLE, {})
 
     def _map_intent_to_state(self, timestamp: Time, intent: Intent):
-        if self.state[1] is not MachineState.IDLE:
-            self.warn(f"Trying to state machine state while the state is {self.state}. Discard.")
-            return
-        
         state = MachineState.IDLE
-        payload = json.loads(intent.payload)
-        
+
         if intent.type == Intent.TEACH:
             state = MachineState.TEACH
         elif intent.type == Intent.REPEAT:
             state = MachineState.REPEAT
+
+        payload: dict[str, Any] = json.loads(intent.payload)
+        self.info(f"{payload}")
+
+        if self.state[1] == state:
+            updated_payload = self.state[2]
+            updated_payload.update(payload)
+            payload = updated_payload
+        elif self.state[1] is not MachineState.IDLE:
+            self.warn(f"Trying to state machine state while the state is {self.state}. Discard.")
+            return
 
         if not self._task_name:
             task_name = payload.get("task", None)
@@ -236,9 +243,17 @@ class MissionController(Node):
                 )
                 
                 self.teacher.add_skill(self._task_name, s)
+                self.debug(f"{self.teacher._config}")
                 self.teacher.save_config()
 
-                self._reset_state()
+        elif state == MachineState.REPEAT:
+            if self._task_name:
+                self.debug(f"Repeat task {payload}")
+                self.ros_debug(f"Repeat task {payload}")
+
+                self.student.repeat_task(self._task_name)
+
+        self._reset_state()
 
 
 

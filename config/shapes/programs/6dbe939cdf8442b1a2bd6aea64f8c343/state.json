@@ -1,0 +1,223 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "sunrise_app_setup",
+        "id": "KC0c-4-UPMw+xp*}1RaS",
+        "x": 50,
+        "y": -50,
+        "deletable": false,
+        "inputs": {
+          "setup_code": {
+            "block": {
+              "type": "variables_set",
+              "id": "n%@6]Q7HkDeNL)2M1^f|",
+              "fields": {
+                "VAR": {
+                  "id": "2rs1Fgd,xutO|]B}?N^x"
+                }
+              },
+              "inputs": {
+                "VALUE": {
+                  "block": {
+                    "type": "logic_null",
+                    "id": "rau7kt}d2ay$*heHe?W#"
+                  }
+                }
+              },
+              "next": {
+                "block": {
+                  "type": "variables_set",
+                  "id": "[F@bPDJ469{z??0(PgO:",
+                  "fields": {
+                    "VAR": {
+                      "id": "N)W$d!a:HX$Mq}j[SR]y"
+                    }
+                  },
+                  "inputs": {
+                    "VALUE": {
+                      "block": {
+                        "type": "logic_null",
+                        "id": "p^]8j;/1(X`=`r[7{o+S"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "sunrise_app_function",
+        "id": "(6#O~za/m9f0x1/=LC:Y",
+        "x": 50,
+        "y": 230,
+        "deletable": false
+      },
+      {
+        "type": "sunrise_app_close",
+        "id": "g[@vX?}52mCh[u8c.vOX",
+        "x": 50,
+        "y": 90,
+        "deletable": false
+      },
+      {
+        "type": "ros2_subscribe",
+        "id": "?uloncauF_|3x~F(c,l@",
+        "x": 690,
+        "y": -70,
+        "fields": {
+          "var_name": {
+            "id": "*ba*j1LXmJMK)UzJ|E=I"
+          }
+        },
+        "inputs": {
+          "topic": {
+            "shadow": {
+              "type": "text",
+              "id": "74~t9Kx`lx+gOs%]spJl",
+              "fields": {
+                "TEXT": "/sunrise_app/bridge/intent"
+              }
+            }
+          },
+          "message_type": {
+            "shadow": {
+              "type": "ros2_message_type",
+              "id": "hM#_uqq[3coj%6j.a_G(",
+              "fields": {
+                "message_type": "Intent"
+              }
+            }
+          },
+          "function": {
+            "block": {
+              "type": "sunrise_app_debug",
+              "id": "px~T6sfU#|c5dgJwVWhe",
+              "inputs": {
+                "TEXT": {
+                  "shadow": {
+                    "type": "text",
+                    "id": "(TLT=Lq)R*0km,(]350N",
+                    "fields": {
+                      "TEXT": "Create a teaching intent"
+                    }
+                  },
+                  "block": {
+                    "type": "variables_get",
+                    "id": "^x4Xn,ay}3-YNDCe9WsZ",
+                    "fields": {
+                      "VAR": {
+                        "id": "*ba*j1LXmJMK)UzJ|E=I"
+                      }
+                    }
+                  }
+                }
+              },
+              "next": {
+                "block": {
+                  "type": "controls_if",
+                  "id": "7S2Au1jli3bo~y2LBsC`",
+                  "inputs": {
+                    "IF0": {
+                      "block": {
+                        "type": "logic_compare",
+                        "id": "lgeC#RjUqybyGjycO$^s",
+                        "fields": {
+                          "OP": "EQ"
+                        },
+                        "inputs": {
+                          "A": {
+                            "block": {
+                              "type": "get_dict_property",
+                              "id": "xP^UJ%LQfI7b.-1Q})u6",
+                              "inputs": {
+                                "key": {
+                                  "shadow": {
+                                    "type": "text",
+                                    "id": "nC2)6t]BJoDpkx@J{Q#a",
+                                    "fields": {
+                                      "TEXT": "type"
+                                    }
+                                  }
+                                },
+                                "dictionary": {
+                                  "block": {
+                                    "type": "variables_get",
+                                    "id": "kAyWOO9u,L{S[cdm2R1d",
+                                    "fields": {
+                                      "VAR": {
+                                        "id": "*ba*j1LXmJMK)UzJ|E=I"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "B": {
+                            "block": {
+                              "type": "math_number",
+                              "id": "$WJzKJ~G||0dx;9FNMO6",
+                              "fields": {
+                                "NUM": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "pointing",
+      "id": "7GAn@#d_;|R8y;.iYz%_"
+    },
+    {
+      "name": "markers",
+      "id": "VSbG+-v`B{[zVU=25(l0"
+    },
+    {
+      "name": "log",
+      "id": "JF^;BrJJ|ujW|Fj|e/ZI"
+    },
+    {
+      "name": "create_action",
+      "id": "2rs1Fgd,xutO|]B}?N^x"
+    },
+    {
+      "name": "payload",
+      "id": ",ujY67Tlmet6oR~3.tD."
+    },
+    {
+      "name": "tactigon_intent",
+      "id": "*ba*j1LXmJMK)UzJ|E=I"
+    },
+    {
+      "name": "create_intent",
+      "id": "N)W$d!a:HX$Mq}j[SR]y"
+    },
+    {
+      "name": "x",
+      "id": "Lzw/_gJ,JT+96?:Fbf:{"
+    },
+    {
+      "name": "marker_id",
+      "id": ":7fcSA,Vw-b/*1I2ZD?{"
+    },
+    {
+      "name": "marker_map",
+      "id": "@1e:h3Lo#(ZF;(d$pEv;"
+    }
+  ]
+}

@@ -23,8 +23,10 @@ SUNRISE_INTENT_TOPIC = "/sunrise/mission_controller/intent"
 class MappingType(Enum):
     UNDEFINED = ""
     ACTION = "action"
-    TEACH_INTENT = "teach_intent"
-    REPEAT_INTENT = "repeat_intent"
+    TEACH_TASK = "teach_task"
+    TEACH_SKILL = "teach_skill"
+    REPEAT_TASK = "repeat_task"
+    REPEAT_SKILL = "repeat_skill"
 
 @dataclass
 class GestureMapping:

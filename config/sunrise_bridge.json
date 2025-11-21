@@ -17,13 +17,25 @@
     "gestures": [
         {
             "gesture": "up",
-            "mapping": "teach_intent"
+            "mapping": "teach_skill"
+        },
+        {
+            "gesture": "down",
+            "mapping": "teach_skill"
+        },
+        {
+            "gesture": "twist",
+            "mapping": "repeat_task"
         }
     ],
     "touchs": [
         {
             "touch": "SINGLE_TAP",
-            "mapping": "teach_intent"
+            "mapping": "teach_task"
+        },
+        {
+            "touch": "TWO_FINGER_TAP",
+            "mapping": "repeat_task"
         }
     ]
 }

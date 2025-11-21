@@ -53,7 +53,7 @@ class TEOConfig:
         task = self.get_task(task_name)
 
         if not task:
-            return False
+            task = self.add_task(task_name)
 
         if parent:
             return self._add_to_skill(task.skills, skill, parent)

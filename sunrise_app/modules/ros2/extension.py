@@ -50,6 +50,7 @@ class ShapeNode(Node):
     def publish(self, topic: str, msg: RosMessageTypes):
         publisher = next((p for p in self.publishers if p.topic == topic), None)
 
+        self.get_logger().info(f"Pubblishin {msg} on {topic}")
         if publisher:
             publisher.publish(msg)
 
