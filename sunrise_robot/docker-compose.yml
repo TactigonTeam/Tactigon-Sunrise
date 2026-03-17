@@ -1,0 +1,54 @@
+version: "3.9"
+
+# ================================================================
+#  MyCo ROS2 Humble  ↔  Host Ubuntu 24.04 / ROS2 Jazzy
+#
+#  Comunicazione ROS2:  network_mode: host  +  ROS_DOMAIN_ID=42
+#  GUI (RViz/Gazebo):   X11 forwarding via /tmp/.X11-unix
+# ================================================================
+
+services:
+  myco_ros2:
+    image: myco-ros2:humble
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # ── Stesso namespace di rete dell'host ──────────────────
+    # Questo permette la comunicazione DDS diretta con ROS2 Jazzy
+    # sull'host senza bridge né port-mapping.
+    network_mode: host
+
+    # ── GUI / X11 ───────────────────────────────────────────
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - LIBGL_ALWAYS_SOFTWARE=0          # usa GPU host se disponibile
+      - ROS_DOMAIN_ID=42                 # deve combaciare con l'host
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp   # opzionale, ma esplicito
+      # Per hardware reale (EtherCAT): decommenta la riga sotto
+      # - MYCO_ETHERNET=eth0
+
+    volumes:
+      # X11 socket per GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Autenticazione X (necessaria per alcune distro)
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
+      # Volume persistente per configurazioni/log
+      - myco_ws:/ros2_ws/install
+      # Mount opzionale: cartella locale per myco_drivers.yaml
+      # - ./config:/ros2_ws/src/myco_robot/myco_robot_bringup/config/custom
+
+    # ── Privilegi (necessari per EtherCAT / RT scheduling) ──
+    privileged: false          # metti true SOLO per hardware reale
+    # cap_add:
+    #   - NET_ADMIN
+    #   - SYS_NICE
+
+    stdin_open: true
+    tty: true
+
+    restart: unless-stopped
+
+volumes:
+  myco_ws:
