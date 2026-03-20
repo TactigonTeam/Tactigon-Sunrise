@@ -1,0 +1,47 @@
+services:
+  #DATABASE
+  timescaledb:
+    image: timescale/timescaledb-ha:pg15-latest
+    container_name: sunrise_timescaledb
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=sunrise_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/home/postgres/pgdata/data
+    networks:
+      - hostnet
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - hostnet
+    depends_on:
+      - timescaledb
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./conf/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./conf/grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./conf/grafana/dashboards:/var/lib/grafana/dashboards_json
+
+  ros2:
+    image: osrf/ros:humble-desktop
+    container_name: sunrise_ros2
+    command: tail -F /dev/null
+    networks:
+      - hostnet
+
+volumes:
+  timescale_data:
+  grafana_data:
+
+networks:
+  hostnet:
+    driver: bridge

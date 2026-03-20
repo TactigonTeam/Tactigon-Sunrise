@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: Sunrise_TimescaleDB
+    type: postgres
+    url: timescaledb:5432
+    user: admin
+    secureJsonData:
+      password: 'admin'
+    jsonData:
+      database: sunrise_db
+      sslmode: 'disable'
+      postgresVersion: 15
+      timescaledb: true
+    isDefault: true
