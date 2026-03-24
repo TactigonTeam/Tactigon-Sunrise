@@ -1,71 +1,162 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # ============================================================
-#  launch.sh  —  Helper per i launch file MyCo dentro Docker
-#
-#  Uso:
-#    ./launch.sh sim       → Gazebo + RViz (simulazione)
-#    ./launch.sh gui       → Myco Control Panel GUI
-#    ./launch.sh api       → Basic API server
-#    ./launch.sh real      → Hardware reale (richiede privileged)
-#    ./launch.sh rviz      → Solo RViz
+#  COMAU ROS2 Driver – Launcher
+#  Gestisce il container Docker e le operazioni sul robot
 # ============================================================
-set -e
 
-# Assicura X11
-xhost +local:docker 2>/dev/null || true
+CONTAINER_NAME="comau_ros2"
+IMAGE_NAME="comau_ros2_driver:humble"
+ROBOT_TYPE="racer7-14"
 
-CONTAINER=$(docker compose ps -q myco_ros2 2>/dev/null | head -1)
-if [ -z "$CONTAINER" ]; then
-    echo "⚠️  Container non in esecuzione. Avvialo prima con: ./run.sh"
-    exit 1
-fi
+# ── Colori ────────────────────────────────────────────────────
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
 
-# Modello di default (cambia in myco_3_590mm, myco_5_800mm, myco_10_1000mm, ecc.)
-MODEL="${MODEL:-myco_3_5_950mm}"
-PKG="${MODEL}_ros2_moveit2"
+# ── Utility ───────────────────────────────────────────────────
+print_header() {
+    echo -e "\n${BOLD}${CYAN}╔══════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${CYAN}║     COMAU ROS2 Driver – Launcher     ║${NC}"
+    echo -e "${BOLD}${CYAN}║          Robot: ${ROBOT_TYPE}           ║${NC}"
+    echo -e "${BOLD}${CYAN}╚══════════════════════════════════════╝${NC}\n"
+}
 
-case "$1" in
-    sim)
-        echo "🤖 Avvio simulazione Gazebo + RViz ($MODEL)..."
-        docker exec -it "$CONTAINER" bash -c \
-          "source /ros2_ws/install/setup.bash && \
-           ros2 launch ${PKG} ${MODEL}.launch.py"
-        ;;
-    api)
-        echo "🔌 Avvio Basic API ($MODEL)..."
-        docker exec -it "$CONTAINER" bash -c \
-          "source /ros2_ws/install/setup.bash && \
-           ros2 launch ${PKG} ${MODEL}_basic_api.launch.py"
-        ;;
-    gui)
-        echo "🖥️  Avvio Myco Control Panel GUI..."
-        docker exec -it "$CONTAINER" bash -c \
-          "source /ros2_ws/install/setup.bash && \
-           ros2 launch myco_basic_api fake_myco_gui.launch.py"
-        ;;
-    real)
-        echo "⚙️  Avvio hardware reale ($MODEL) — richiede privileged=true in compose"
-        docker exec -it "$CONTAINER" bash -c \
-          "source /ros2_ws/install/setup.bash && \
-           ros2 launch ${PKG} ${MODEL}_moveit.launch.py"
-        ;;
-    rviz)
-        echo "👁️  Avvio solo RViz..."
-        docker exec -it "$CONTAINER" bash -c \
-          "source /ros2_ws/install/setup.bash && \
-           ros2 launch ${PKG} ${MODEL}_moveit_rviz.launch.py"
-        ;;
-    *)
-        echo "Uso: MODEL=myco_3_5_950mm ./launch.sh [sim|api|gui|real|rviz]"
-        echo ""
-        echo "  sim    → Gazebo + RViz (simulazione)"
-        echo "  api    → Basic API server"
-        echo "  gui    → Myco Control Panel"
-        echo "  real   → Hardware EtherCAT reale"
-        echo "  rviz   → Solo RViz con MoveIt"
-        echo ""
-        echo "Modelli disponibili:"
-        echo "  myco_3_590mm | myco_3_5_950mm | myco_5_800mm"
-        echo "  myco_8_1300mm | myco_10_1000mm | myco_15_1300mm"
-        ;;
-esac
+container_running() {
+    docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
+}
+
+container_exists() {
+    docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"
+}
+
+# ── Azioni ────────────────────────────────────────────────────
+
+start_driver() {
+    echo -e "${YELLOW}▶  Avvio del container e del driver COMAU...${NC}"
+    if container_running; then
+        echo -e "${GREEN}✔  Il container è già in esecuzione.${NC}"
+    else
+        docker compose up -d
+        echo -e "${GREEN}✔  Container avviato. Attendi qualche secondo che il driver sia pronto.${NC}"
+    fi
+}
+
+stop_driver() {
+    echo -e "${YELLOW}■  Arresto del container...${NC}"
+    docker compose down
+    echo -e "${GREEN}✔  Container fermato.${NC}"
+}
+
+open_connection() {
+    echo -e "${YELLOW}🔌  Apertura connessione TCP/IP con il robot...${NC}"
+    if ! container_running; then
+        echo -e "${RED}✖  Il container non è in esecuzione. Avvialo prima con l'opzione 1.${NC}"
+        return 1
+    fi
+    docker exec "${CONTAINER_NAME}" bash -c \
+        "source /opt/ros/humble/setup.bash && \
+         source /ros2_humble/install/setup.bash && \
+         ros2 service call /tcpip_conn_manager comau_msgs/srv/OpenConnection \
+         \"open_connection: true\""
+}
+
+close_connection() {
+    echo -e "${YELLOW}🔌  Chiusura connessione TCP/IP con il robot...${NC}"
+    if ! container_running; then
+        echo -e "${RED}✖  Il container non è in esecuzione.${NC}"
+        return 1
+    fi
+    docker exec "${CONTAINER_NAME}" bash -c \
+        "source /opt/ros/humble/setup.bash && \
+         source /ros2_humble/install/setup.bash && \
+         ros2 service call /tcpip_conn_manager comau_msgs/srv/OpenConnection \
+         \"open_connection: false\""
+}
+
+read_robot_status() {
+    echo -e "${YELLOW}📡  Lettura stato robot (Ctrl+C per uscire)...${NC}"
+    if ! container_running; then
+        echo -e "${RED}✖  Il container non è in esecuzione. Avvialo prima con l'opzione 1.${NC}"
+        return 1
+    fi
+    docker exec -it "${CONTAINER_NAME}" bash -c \
+        "source /opt/ros/humble/setup.bash && \
+         source /ros2_humble/install/setup.bash && \
+         ros2 topic echo /robot_status"
+}
+
+show_logs() {
+    echo -e "${YELLOW}📋  Log del driver (Ctrl+C per uscire)...${NC}"
+    docker logs -f "${CONTAINER_NAME}"
+}
+
+open_shell() {
+    echo -e "${YELLOW}🐚  Apertura shell interattiva nel container...${NC}"
+    if ! container_running; then
+        echo -e "${RED}✖  Il container non è in esecuzione.${NC}"
+        return 1
+    fi
+    docker exec -it "${CONTAINER_NAME}" bash
+}
+
+build_image() {
+    echo -e "${YELLOW}🔨  Build dell'immagine Docker (può richiedere diversi minuti)...${NC}"
+    docker compose build
+    echo -e "${GREEN}✔  Build completata.${NC}"
+}
+
+show_status() {
+    echo -e "${BOLD}Stato container:${NC}"
+    if container_running; then
+        echo -e "  ${GREEN}● RUNNING${NC} – ${CONTAINER_NAME}"
+    elif container_exists; then
+        echo -e "  ${RED}● STOPPED${NC} – ${CONTAINER_NAME}"
+    else
+        echo -e "  ${RED}● NON ESISTE${NC} – immagine non ancora buildata o container rimosso."
+    fi
+    echo ""
+}
+
+# ── Menu principale ───────────────────────────────────────────
+while true; do
+    print_header
+    show_status
+
+    echo -e "${BOLD}  Gestione container${NC}"
+    echo "  1) Build immagine Docker"
+    echo "  2) Avvia il driver (start container)"
+    echo "  3) Ferma il driver (stop container)"
+    echo ""
+    echo -e "${BOLD}  Operazioni robot${NC}"
+    echo "  4) Apri connessione TCP/IP con il robot"
+    echo "  5) Chiudi connessione TCP/IP con il robot"
+    echo "  6) Leggi stato robot (/robot_status)"
+    echo ""
+    echo -e "${BOLD}  Debug${NC}"
+    echo "  7) Mostra log del driver"
+    echo "  8) Apri shell nel container"
+    echo ""
+    echo "  0) Esci"
+    echo ""
+    echo -n "  Scelta: "
+    read -r choice
+
+    case $choice in
+        1) build_image ;;
+        2) start_driver ;;
+        3) stop_driver ;;
+        4) open_connection ;;
+        5) close_connection ;;
+        6) read_robot_status ;;
+        7) show_logs ;;
+        8) open_shell ;;
+        0) echo -e "\n${GREEN}Arrivederci!${NC}\n"; exit 0 ;;
+        *) echo -e "${RED}Scelta non valida.${NC}" ;;
+    esac
+
+    echo -e "\n${CYAN}Premi INVIO per tornare al menu...${NC}"
+    read -r
+done
