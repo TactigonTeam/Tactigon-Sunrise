@@ -29,6 +29,7 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: ""
+
 Visualization Manager:
   Class: ""
   Displays:
@@ -120,38 +121,15 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: false
-        base_link:
-          Value: true
-        ee_link:
-          Value: true
-        link_1:
-          Value: false
-        link_2:
-          Value: false
-        link_3:
-          Value: false
-        link_4:
-          Value: false
-        link_5:
-          Value: false
-        link_6:
-          Value: false
-      Marker Scale: 1
+        All Enabled: true
+      Marker Scale: 0.3
       Name: TF
       Show Arrows: true
+      
       Show Axes: true
       Show Names: false
       Tree:
-        base_link:
-          link_1:
-            link_2:
-              link_3:
-                link_4:
-                  link_5:
-                    link_6:
-                      ee_link:
-                        {}
+        {}
       Update Interval: 0
       Value: true
   Enabled: true

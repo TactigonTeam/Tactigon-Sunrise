@@ -30,8 +30,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "gui",
             default_value="true",
-            description="Start Rviz2 and Joint State Publisher gui automatically \
-        with this launch file.",
+            description="Start Rviz2 and Joint State Publisher gui automatically with this launch file.",
         )
     )
     # Initialize Arguments

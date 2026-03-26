@@ -1,10 +1,10 @@
 # ============================================================
-#  COMAU ROS2 Driver - Docker Image
+#  COMAU ROS2 Driver – Docker Image
 #  Base: ROS 2 Humble (Ubuntu 22.04)
 # ============================================================
-FROM ros:humble-ros-base-jammy
+FROM eprosima/vulcanexus:humble-base
 
-# System dependencies
+# ── System dependencies ──────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     python3-colcon-common-extensions \
@@ -21,39 +21,41 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-action-msgs \
     ros-humble-xacro \
     ros-humble-joint-state-publisher \
+    ros-humble-joint-state-publisher-gui \
     ros-humble-robot-state-publisher \
     ros-humble-rviz2 \
+    # ros-humble-rmw-fastrtps-cpp \
     && rm -rf /var/lib/apt/lists/*
 
-# Fix include path per joint_limits
+# ── Fix include path per joint_limits ────────────────────────
 RUN ln -s \
     /opt/ros/humble/include/joint_limits/joint_limits \
     /usr/include/joint_limits
 
-# Create workspace
+# ── Create workspace ─────────────────────────────────────────
 ENV ROS_WS=/ros2_humble
 WORKDIR ${ROS_WS}
 
 RUN mkdir -p src
 
-# Copia il repo locale invece di clonarlo da GitHub
+# ── Copia il repo locale invece di clonarlo da GitHub ────────
 COPY COMAU-ROS2-DRIVER/comau_ros2_client/ src/
 
-# rosdep install
+# ── rosdep install ────────────────────────────────────────────
 RUN rosdep update --include-eol-distros && \
     rosdep install --from-paths src --ignore-src -r -y \
       --skip-keys "Boost rviz2 joint_state_publisher_gui" || true
 
-# Build in due passate
+# ── Build in due passate ──────────────────────────────────────
 SHELL ["/bin/bash", "-c"]
-RUN source /opt/ros/humble/setup.bash && \
+RUN source /opt/vulcanexus/humble/setup.bash && \
     colcon build \
       --packages-skip comau_bringup && \
     source /ros2_humble/install/setup.bash && \
     colcon build \
       --packages-select comau_bringup
 
-# Entrypoint
+# ── Entrypoint driver (robot reale) ──────────────────────────
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
