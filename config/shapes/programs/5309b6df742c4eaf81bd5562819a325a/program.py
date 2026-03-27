@@ -8,7 +8,8 @@ import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
+from sunrise_msgs.msg import Action, Point2D, Marker, MarkerList
+from hri_actions_msgs.msg import Intent
 from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 from sunrise_app.modules.shapes.extension import ShapesPostAction, LoggingQueue
 from sunrise_app.modules.zion.extension import ZionInterface, Scope, AlarmSearchStatus, AlarmSeverity
@@ -151,10 +152,10 @@ def _sunrise_app_bridge_intent(logging_queue: LoggingQueue):
     global pointing, markers, log, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map, intent, intent_map
     if tactigon_intent.get('type', None) == 0:
         debug(logging_queue, 'Create a teaching intent')
-        create_intent = Intent(type=Intent.TEACH, payload=json.dumps((intent_to_map(tactigon_intent))))
+        create_intent = Intent(intent="__intent__teach__", data=json.dumps((intent_to_map(tactigon_intent))))
     else:
         debug(logging_queue, 'Create a repeat intent')
-        create_intent = Intent(type=Intent.REPEAT, payload=json.dumps({'task': 'pick from position stock'}))
+        create_intent = Intent(intent=Intent.START_ACTIVITY, data=json.dumps({'task': 'pick from position stock'}))
 
 def sunrise_app_setup(
         zion: Optional[ZionInterface],

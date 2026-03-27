@@ -809,7 +809,8 @@ import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
+from sunrise_msgs.msg import Action, Point2D, Marker, MarkerList
+from hri_actions_msgs.msg import Intent
 from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 from sunrise_app.modules.shapes.extension import ShapesPostAction, LoggingQueue
 from sunrise_app.modules.zion.extension import ZionInterface, Scope, AlarmSearchStatus, AlarmSeverity
@@ -1225,7 +1226,7 @@ function defineRos2Generators(){
     python.pythonGenerator.forBlock['ros2_message_Intent'] = function(block, generator) {
         const type = generator.valueToCode(block, 'type', python.Order.ATOMIC);
         const payload = generator.valueToCode(block, 'payload', python.Order.ATOMIC) || "{}";
-        const command = `Intent(type=${type}, payload=${payload})`;
+        const command = `Intent(intent=${type}, data=${payload})`;
         return [command, Blockly.Python.ORDER_ATOMIC];
     };
 

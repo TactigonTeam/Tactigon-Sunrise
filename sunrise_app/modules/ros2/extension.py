@@ -18,7 +18,6 @@ import subprocess
 import signal
 from rclpy.node import Node, QoSProfile
 from std_msgs.msg import String
-from sunrise_msgs.msg import Action, Intent
 from threading import Thread, Event as ThreadEvent
 from multiprocessing import Process, Queue, Event, Pipe
 from queue import Queue, Empty

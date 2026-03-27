@@ -244,8 +244,8 @@ class MissionController(Node):
         self.debug(f"Managing action for state {state} | {payload}")
         
         if state == MachineState.TEACH:
-            self.debug(f"{self._actions} | {self._task_name}")
-            if self._actions and self._task_name:   
+            skill_name = payload.get("skill", None)
+            if self._actions and self._task_name and skill_name:   
                 time, action = self._actions.pop(0)
 
                 self.debug(f"Learned skill {payload} => {action}")
@@ -253,13 +253,14 @@ class MissionController(Node):
                 
                 s = Skill(
                     scope=RobotDefinition(payload.get("robot", "braccio_robot")),
-                    name=payload.get("skill", ""),
+                    name=skill_name,
                     payload=json.loads(action.payload)
                 )
                 
                 self.teacher.add_skill(self._task_name, s)
                 self.debug(f"{self.teacher._config}")
                 self.teacher.save_config()
+                self.student.do_skill(s)
                 self._reset_state()
 
         elif state == MachineState.REPEAT:

@@ -21,7 +21,8 @@ from rclpy.node import Node
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QPushButton
 from PyQt5.QtCore import QTimer
 
-from sunrise_msgs.msg import Intent, Action
+from sunrise_msgs.msg import Action
+from hri_actions_msgs.msg import Intent
 from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
 
 class TestNode(Node):
@@ -41,16 +42,16 @@ class TestNode(Node):
     @staticmethod
     def get_teach_intent(payload: dict) -> Intent:
         i = Intent()
-        i.type = Intent.TEACH
-        i.payload = json.dumps(payload)
+        i.intent = "__intent__teach__"
+        i.data = json.dumps(payload)
 
         return i
     
     @staticmethod
     def get_repeat_intent(payload: dict) -> Intent:
         i = Intent()
-        i.type = Intent.REPEAT
-        i.payload = json.dumps(payload)
+        i.intent = Intent.START_ACTIVITY
+        i.data = json.dumps(payload)
 
         return i
     

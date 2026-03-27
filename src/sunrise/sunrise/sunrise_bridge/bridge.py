@@ -15,7 +15,8 @@ import json
 from os import path
 from rclpy.node import Node
 
-from sunrise_msgs.msg import Action, Intent
+from sunrise_msgs.msg import Action
+from hri_actions_msgs.msg import Intent
 
 from sunrise.sunrise_bridge.models import SunriseBridgeConfig, MappingType, GestureMapping, TouchMapping
 
@@ -66,15 +67,15 @@ class SunriseBridge(Node):
 
     def _send_teach_intent(self, payload: dict):
         i = Intent()
-        i.type = Intent.TEACH
-        i.payload = json.dumps(payload)
+        i.intent = "__intent_teach__"
+        i.data = json.dumps(payload)
         self.get_logger().info(f"Sending Intent {i}")
         self.intent_publisher.publish(i)
 
     def _send_repeat_intent(self, payload: dict):
         i = Intent()
-        i.type = Intent.REPEAT
-        i.payload = json.dumps(payload)
+        i.intent = Intent.START_ACTIVITY
+        i.data = json.dumps(payload)
         self.get_logger().info(f"Sending Intent {i}")
         self.intent_publisher.publish(i)
 

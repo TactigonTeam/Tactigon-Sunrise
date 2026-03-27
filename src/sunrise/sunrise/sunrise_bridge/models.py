@@ -14,7 +14,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
-from sunrise_msgs.msg import Action, Intent
 from tactigon_gear.models import TSkinConfig
 
 SUNRISE_ACTION_TOPIC = "/sunrise/mission_controller/action"
