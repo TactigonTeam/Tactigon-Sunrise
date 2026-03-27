@@ -265,7 +265,7 @@
         "type": "ros2_subscribe",
         "id": "nNp$FM2ul#~Wc-Z9ttuE",
         "x": 690,
-        "y": 190,
+        "y": 350,
         "fields": {
           "var_name": {
             "id": "7GAn@#d_;|R8y;.iYz%_"
@@ -380,7 +380,7 @@
         "type": "ros2_subscribe",
         "id": "4^6aZe-8_P2t:e4ax~d3",
         "x": 690,
-        "y": 370,
+        "y": 530,
         "fields": {
           "var_name": {
             "id": "JF^;BrJJ|ujW|Fj|e/ZI"
@@ -692,6 +692,108 @@
                                                       "id": "!6IY3ML!p;5R2;)(f!F0",
                                                       "fields": {
                                                         "TEXT": "pick from position stock"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "variables_set",
+                            "id": "{))(_2VUumMt^qs]YXgi",
+                            "fields": {
+                              "VAR": {
+                                "id": "N)W$d!a:HX$Mq}j[SR]y"
+                              }
+                            },
+                            "inputs": {
+                              "VALUE": {
+                                "block": {
+                                  "type": "ros2_message_Intent",
+                                  "id": "pr!vItEp+!9g_4!m,E8y",
+                                  "inputs": {
+                                    "type": {
+                                      "shadow": {
+                                        "type": "ros2_message_Intent_type",
+                                        "id": "s|F0V%zB13}B_SgrrP+5",
+                                        "fields": {
+                                          "type": "REPEAT"
+                                        }
+                                      }
+                                    },
+                                    "payload": {
+                                      "block": {
+                                        "type": "dict_to_json",
+                                        "id": "Bzji+qD4+iRSX[X6.:`A",
+                                        "inputs": {
+                                          "dict": {
+                                            "shadow": {
+                                              "type": "dict_builder",
+                                              "id": "5-CI_8oLG=d;;(D;R)-O"
+                                            },
+                                            "block": {
+                                              "type": "dict_builder",
+                                              "id": "]LC;H`wMGig2}+p*7cST",
+                                              "inputs": {
+                                                "PAIRS": {
+                                                  "block": {
+                                                    "type": "dict_pair",
+                                                    "id": "G,s1C?qm[X^,st+h*-1t",
+                                                    "inputs": {
+                                                      "dict_key": {
+                                                        "shadow": {
+                                                          "type": "text",
+                                                          "id": "-97t98W{4G3XRhtwI[*e",
+                                                          "fields": {
+                                                            "TEXT": "robot"
+                                                          }
+                                                        }
+                                                      },
+                                                      "dict_value": {
+                                                        "shadow": {
+                                                          "type": "text",
+                                                          "id": "%$X{0y[B$i9r!rGSQF.?",
+                                                          "fields": {
+                                                            "TEXT": "comau_robot"
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    "next": {
+                                                      "block": {
+                                                        "type": "dict_pair",
+                                                        "id": "f7DDye^/Z#GWf-pTS.00",
+                                                        "inputs": {
+                                                          "dict_key": {
+                                                            "shadow": {
+                                                              "type": "text",
+                                                              "id": "m=A#OBf#w`tO}EAZ[M+N",
+                                                              "fields": {
+                                                                "TEXT": "skill"
+                                                              }
+                                                            }
+                                                          },
+                                                          "dict_value": {
+                                                            "shadow": {
+                                                              "type": "text",
+                                                              "id": "M]*3_RMI5O98{`Y/M-[H",
+                                                              "fields": {
+                                                                "TEXT": "solder_1"
+                                                              }
+                                                            }
+                                                          }
+                                                        }
                                                       }
                                                     }
                                                   }
@@ -1391,7 +1493,7 @@
                             "type": "controls_if",
                             "id": "BO_F682H7rhp^e2xwV?0",
                             "extraState": {
-                              "elseIfCount": 1
+                              "elseIfCount": 2
                             },
                             "inputs": {
                               "IF0": {
@@ -1622,6 +1724,127 @@
                                                         "id": "8WmQ[~Sgk7+6PDDW}cJ}",
                                                         "fields": {
                                                           "TEXT": "place"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "IF2": {
+                                "block": {
+                                  "type": "logic_compare",
+                                  "id": "J^2l?vK?~jyG[2J6{4(z",
+                                  "fields": {
+                                    "OP": "EQ"
+                                  },
+                                  "inputs": {
+                                    "A": {
+                                      "block": {
+                                        "type": "get_dict_property",
+                                        "id": "iAs}CmIyUv7~#VJ}vWI3",
+                                        "inputs": {
+                                          "key": {
+                                            "shadow": {
+                                              "type": "text",
+                                              "id": "/HO93Bj|BB@*+{**fVqx",
+                                              "fields": {
+                                                "TEXT": "gesture"
+                                              }
+                                            }
+                                          },
+                                          "dictionary": {
+                                            "block": {
+                                              "type": "variables_get",
+                                              "id": "FS?l$-NJ^boeV0qMZjq)",
+                                              "fields": {
+                                                "VAR": {
+                                                  "id": ",ujY67Tlmet6oR~3.tD."
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "B": {
+                                      "block": {
+                                        "type": "text",
+                                        "id": "KGd:49TcOi;q)N;UV@=E",
+                                        "fields": {
+                                          "TEXT": "circle"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "DO2": {
+                                "block": {
+                                  "type": "variables_set",
+                                  "id": "^-N#qn0;px$o_IU0gIiy",
+                                  "fields": {
+                                    "VAR": {
+                                      "id": "iynZ@jbKJ#so]|L5G($y"
+                                    }
+                                  },
+                                  "inputs": {
+                                    "VALUE": {
+                                      "block": {
+                                        "type": "dict_builder",
+                                        "id": "aAB_3zx,a+FyzN)vhVAO",
+                                        "inputs": {
+                                          "PAIRS": {
+                                            "block": {
+                                              "type": "dict_pair",
+                                              "id": "dH+jKeRebC5W[}Q;g9K{",
+                                              "inputs": {
+                                                "dict_key": {
+                                                  "shadow": {
+                                                    "type": "text",
+                                                    "id": "rSo3ioyTm::py?X{}w3e",
+                                                    "fields": {
+                                                      "TEXT": "robot"
+                                                    }
+                                                  }
+                                                },
+                                                "dict_value": {
+                                                  "shadow": {
+                                                    "type": "text",
+                                                    "id": "A,X24Y2=5k=!,r(x#uF5",
+                                                    "fields": {
+                                                      "TEXT": "comau_robot"
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "dict_pair",
+                                                  "id": "mElZ8w]M^23SD~Y^:;k1",
+                                                  "inputs": {
+                                                    "dict_key": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "{}P2Bo}Mk[n~ht|4jU]*",
+                                                        "fields": {
+                                                          "TEXT": "skill"
+                                                        }
+                                                      }
+                                                    },
+                                                    "dict_value": {
+                                                      "shadow": {
+                                                        "type": "text",
+                                                        "id": "i4~g*@G(cDs%y9~m^BCx",
+                                                        "fields": {
+                                                          "TEXT": "solder_1"
                                                         }
                                                       }
                                                     }

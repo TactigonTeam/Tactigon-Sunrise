@@ -1,0 +1,4 @@
+{
+    "command_topic": "/comau_joint_action",
+    "response_topic": "/comau_joint_action_result"
+}

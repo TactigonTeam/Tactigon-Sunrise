@@ -1,0 +1,52 @@
+{
+    "t_speech": [
+      {
+        "hotwords": [
+          {
+            "word": "pick",
+            "boost": 1
+          },
+          {
+            "word": "place",
+            "boost": 1
+          }
+        ],
+        "children": {
+          "t_speech": [
+            {
+              "hotwords": [
+                {
+                  "word": "position",
+                  "boost": 1
+                }
+              ],
+              "children": {
+                "t_speech": [
+                  {
+                    "hotwords": [
+                      {
+                        "word": "star",
+                        "boost": 1
+                      },
+                      {
+                        "word": "circle",
+                        "boost": 1
+                      },
+                      {
+                        "word": "square",
+                        "boost": 1
+                      }
+                    ],
+                    "children": null
+                  }
+                ],
+                "feedback": ""
+              }
+            }
+          ],
+          "feedback": ""
+        }
+      }
+    ],
+    "feedback": ""
+  }

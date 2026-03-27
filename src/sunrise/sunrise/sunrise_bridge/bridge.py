@@ -12,14 +12,20 @@
 #********************************************************************************
 
 import json
+import wave
+import time
+
+from pyaudio import PyAudio, paContinue
 from os import path
 from rclpy.node import Node
 
 from sunrise_msgs.msg import Action, Intent
 
-from sunrise.sunrise_bridge.models import SunriseBridgeConfig, MappingType, GestureMapping, TouchMapping
+from sunrise.sunrise_bridge.models import SunriseBridgeConfig, MappingType, GestureMapping, TouchMapping, TranscriptionMapping
 
-from tactigon_gear import TSkin, Gesture, Touch
+from tactigon_gear.tskin_socket import TSkinSocket, TSkinConfig, SocketConfig
+from tactigon_gear.models.tskin import Touch, Gesture
+from tactigon_gear.models.audio import Transcription
 
 class SunriseBridge(Node):
     tskin_connection: bool
@@ -31,6 +37,8 @@ class SunriseBridge(Node):
         self.config_path = config_path
         self.config = self.load_config(config_path)
 
+        self.pa = PyAudio()
+
         self.get_logger().debug(f"Creating Action publisher on {self.config.action_topic}")
         self.action_publisher = self.create_publisher(Action, self.config.action_topic, 10)
 
@@ -39,7 +47,7 @@ class SunriseBridge(Node):
 
         self.get_logger().info("Creating Tactigon Skin instance and timer")
         self.tskin_connection = False
-        self.tskin = TSkin(self.config.tskin_config)
+        self.tskin = TSkinSocket(self.config.tskin_config, self.config.socket_config)
         self.get_logger().debug("Tactigon Skin created!")
         self.tskin.start()
         self.get_logger().debug("Tactigon Skin started")
@@ -56,6 +64,10 @@ class SunriseBridge(Node):
     def _get_mapping_from_touch(self, touch: Touch) -> TouchMapping | None:
         return next((tm for tm in self.config.touchs if tm.touch == touch.one_finger.name or tm.touch == touch.two_finger.name), None)
     
+    def _get_mapping_from_transcription(self, transcription: Transcription) -> TranscriptionMapping | None:
+        self.get_logger().info(f"TST: {'_'.join((hw.word for hw in transcription.path))}")
+        return next((tm for tm in self.config.transcriptions if tm.command == "_".join((hw.word for hw in transcription.path))), None)
+        
     def _send_action(self, payload: dict):
         a = Action()
         a.type = Action.GESTURE
@@ -78,7 +90,7 @@ class SunriseBridge(Node):
         self.get_logger().info(f"Sending Intent {i}")
         self.intent_publisher.publish(i)
 
-    def _send_payload_by_mapping(self, mapping: GestureMapping | TouchMapping, payload: dict):
+    def _send_payload_by_mapping(self, mapping: GestureMapping | TouchMapping | TranscriptionMapping, payload: dict):
         payload["mapping"] = mapping.mapping.name
 
         if mapping.mapping == MappingType.ACTION:
@@ -87,6 +99,8 @@ class SunriseBridge(Node):
             self._send_teach_intent(payload)
         elif mapping.mapping in [MappingType.REPEAT_SKILL, MappingType.REPEAT_TASK]:
             self._send_repeat_intent(payload)
+        elif mapping.mapping == MappingType.SPEECH:
+            self.tskin.listen(self.config.speech)
 
     def _do_tskin_job(self):
         if self.tskin_connection != self.tskin.connected:
@@ -104,6 +118,8 @@ class SunriseBridge(Node):
         
         gesture = self.tskin.gesture
         touch = self.tskin.touch
+        text_so_far = self.tskin.text_so_far
+        transcription = self.tskin.transcription
 
         if gesture:
             gesture_mapping = self._get_mapping_from_gesture(gesture)
@@ -123,6 +139,37 @@ class SunriseBridge(Node):
             else:
                 self.get_logger().warn(f"No mapping for touch {payload}")
 
+        if text_so_far:
+            self.get_logger().info(f"Text so far: {text_so_far}")
+
+        if transcription:
+            self.get_logger().info(f"Got transcription {transcription}")
+            transcription_mapping = self._get_mapping_from_transcription(transcription)
+            payload = transcription.toJSON()
+            self.get_logger().info(f"Got transcription mapping {transcription_mapping}")
+
+            if transcription_mapping:
+                self.play("./start_job_confirmation.wav")
+                self._send_payload_by_mapping(transcription_mapping, payload)
+            
+    def play(self, filename: str):
+        with wave.open(filename, "rb") as f:
+            def callback(in_data, frame_count, time_info, status):
+                data = f.readframes(frame_count)
+                return (data, paContinue)
+
+            audio_stream = self.pa.open(
+                format=self.pa.get_format_from_width(f.getsampwidth()),
+                channels=f.getnchannels(),
+                rate=f.getframerate(),
+                output=True,
+                stream_callback=callback
+            )
+
+            while audio_stream.is_active():
+                time.sleep(0.5)
+
+            audio_stream.close()
 
     def destroy_node(self):
         self.tskin.join(5)

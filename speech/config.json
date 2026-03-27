@@ -1,0 +1,7 @@
+{
+    "model": "deepspeech-0.9.3-models.tflite",
+    "scorer": "sunrise.scorer",
+    "beam_width": 1024,
+    "voice_timeout": 5,
+    "silence_timeout": 3
+}

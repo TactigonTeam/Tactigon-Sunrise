@@ -15,3 +15,4 @@ from enum import Enum
 
 class RobotDefinition(Enum):
     BRACCIO_ROBOT = "braccio_robot"
+    COMAU_ROBOT = "comau_robot"

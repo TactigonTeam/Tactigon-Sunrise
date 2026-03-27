@@ -133,7 +133,6 @@ class Ros2Process(Process):
                     node_action: NodeAction = self._in.recv()
                     action = node_action.action
                     payload = node_action.payload
-
                     if action == NodeActions.ADD_PUBLISHER:
                         node.add_publisher(
                             payload.get("topic", ""), 
@@ -156,7 +155,6 @@ class Ros2Process(Process):
                         node.unsubscribe(payload.get("topic", ""))
 
                 # time.sleep(node.TICK)
-
             node.destroy_node()
         except Exception as e:
             print(e)

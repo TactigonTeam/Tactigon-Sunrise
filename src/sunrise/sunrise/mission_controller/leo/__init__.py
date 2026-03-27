@@ -115,13 +115,28 @@ class LEO:
             msg_data = {}
             self._logger.debug(f"Step items {step.payload_fields.items()}")
             for key, value in step.payload_fields.items():
-                msg_data[key] = value.default
-                if not value.override and key in skill.payload:
-                    msg_data[key] = skill.payload[key]
+                self._logger.debug(f"LOADING: {key}, {value}")
+                self._logger.debug(f"SKILL: {skill}")
+
+                if value.is_list:
+                    if value.override and key in skill.payload:
+                        self._logger.debug(f"OVERRIDE LIST: {skill.payload[key]}")
+                        typed_value = [value.payload_type(**v) for v in skill.payload[key]]
+                    else:
+                        typed_value = [value.payload_type(value.default)]
+                else:
+                    if value.override and key in skill.payload:
+                        self._logger.debug(f"OVERRIDE: {skill.payload[key]}")
+                        typed_value = value.payload_type(skill.payload[key])
+                    else:
+                        typed_value = value.payload_type(value.default)
+
+                self._logger.debug(f"FINAL: {typed_value}")
+                msg_data[key] = typed_value
             
             self._logger.debug(f"Student -> Sending msg to {robot.name} with payload {msg_data}")
             msg: RosMessageTypes = command.command_topic_type(**msg_data) # type: ignore
-            
+            self._logger.debug(f"Student -> Sending msg {msg}")
             pub.publish(msg)
             # self._topic_response_event.clear()
             # self._topic_response = (command.command_topic, StepErrorEnum.UNDEFINED)

@@ -27,18 +27,24 @@ class RosMessage:
 @dataclass
 class CommandStepField:
     default: Any
+    payload_type: RosMessageTypes
+    is_list: bool = False
     override: bool = False
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
             default=json.get("default", None),
+            payload_type=get_message_type_by_name(json.get("payload_type", "String")),
+            is_list=json.get("is_list", False),
             override=json.get("override", False),
         )
     
     def toJSON(self) -> dict:
         return dict(
             default=self.default,
+            payload_type=self.payload_type.__name__,
+            is_list=self.is_list,
             override=self.override,
         )
 
