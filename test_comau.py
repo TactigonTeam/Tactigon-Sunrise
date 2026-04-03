@@ -21,9 +21,8 @@ from rclpy.node import Node
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QPushButton
 from PyQt5.QtCore import QTimer
 
-from sunrise_msgs.msg import Intent, Action
+from sunrise_msgs.msg import Intent, Action, BraccioJointCommand, BraccioResponse
 from comau_msgs.msg import ActionResult, JointPose
-from braccio_ros_msgs.msg import BraccioJointCommand, BraccioResponse
 
 class TestNode(Node):
     def __init__(self):

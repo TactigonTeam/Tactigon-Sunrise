@@ -20,9 +20,9 @@ from rclpy.logging_service import LoggingSeverity
 from action_msgs.msg import GoalStatus
 from comau_msgs.action import ExecuteJointTrajectory
 from comau_msgs.msg import ActionResult
-from braccio_ros_msgs.msg import BraccioJointCommand
+from sunrise_msgs.msg import BraccioJointCommand
 
-from sunrise_comau.models import ComauConfig
+from sunrise.sunrise_comau.models import ComauConfig
 
 class ComauRos(Node):
     config: ComauConfig
@@ -135,14 +135,4 @@ class ComauRos(Node):
             )
 
     def destroy_node(self):
-        self.get_logger().info("Shutting down Braccio Simple Controller Node...")
-        if self.braccio and self.braccio.connected:
-            self.get_logger().info("Sending Braccio to home position...")
-            try:
-                self.braccio.home()
-            except Exception as e:
-                self.get_logger().warn(f"Could not send Braccio to home: {e}")
-            finally:
-                self.get_logger().info("Cleaning up Braccio connection...")
-                self.braccio.stop(5)
         Node.destroy_node(self)

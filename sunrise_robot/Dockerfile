@@ -33,12 +33,12 @@ RUN ln -s \
     /usr/include/joint_limits
 
 # ── Create workspace ─────────────────────────────────────────
-ENV ROS_WS=/ros2_humble
+ENV ROS_WS=/comau_driver
 WORKDIR ${ROS_WS}
 
 RUN mkdir -p src
 
-# ── Copia il repo locale invece di clonarlo da GitHub ────────
+# ── Copy COMAU driver ────────
 COPY COMAU-ROS2-DRIVER/comau_ros2_client/ src/
 
 # ── rosdep install ────────────────────────────────────────────
@@ -46,14 +46,12 @@ RUN rosdep update --include-eol-distros && \
     rosdep install --from-paths src --ignore-src -r -y \
       --skip-keys "Boost rviz2 joint_state_publisher_gui" || true
 
-# ── Build in due passate ──────────────────────────────────────
+# ── Build package --------──────────────────────────────────────
 SHELL ["/bin/bash", "-c"]
 RUN source /opt/vulcanexus/humble/setup.bash && \
-    colcon build \
-      --packages-skip comau_bringup && \
-    source /ros2_humble/install/setup.bash && \
-    colcon build \
-      --packages-select comau_bringup
+    colcon build --packages-skip comau_bringup && \
+    source ./install/setup.bash && \
+    colcon build --packages-select comau_bringup
 
 # ── Entrypoint driver (robot reale) ──────────────────────────
 COPY entrypoint.sh /entrypoint.sh

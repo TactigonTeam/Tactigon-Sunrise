@@ -19,6 +19,22 @@
 
 services:
 
+  sunrise:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sunrise
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    environment:
+      - ROS_DOMAIN_ID=0
+      - SDL_AUDIODRIVER=dummy
+    devices:
+      - /dev:/dev
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+
   comau_driver:
     build:
       context: ./sunrise_robot

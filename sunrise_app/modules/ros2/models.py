@@ -14,8 +14,7 @@
 from rclpy.node import QoSProfile
 from std_msgs.msg import String, Int16, Int32, UInt16, UInt32, Bool, Byte, Float32, Float64, Int8, UInt8, Int64, UInt64, ColorRGBA
 from rcl_interfaces.msg import Log
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
-from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse, BraccioJointCommand
+from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList, BraccioCommand, BraccioResponse, BraccioJointCommand
 from comau_msgs.msg import ActionResult
 
 from dataclasses import dataclass, field

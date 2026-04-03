@@ -39,6 +39,8 @@ setup(
         'console_scripts': [
             'mission_controller = sunrise.mission_controller.main:main',
             'sunrise_bridge = sunrise.sunrise_bridge.main:main',
+            'sunrise_braccio = sunrise.sunrise_braccio.main:main',
+            'sunrise_comau = sunrise.sunrise_comau.main:main',
         ],
     },
 )

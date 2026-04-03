@@ -1,18 +1,19 @@
 #!/bin/bash
+
 # ============================================================
 #  COMAU ROS2 Driver – Launcher
-#  Gestisce il container Docker e le operazioni sul robot
 # ============================================================
 
 xhost +local:docker
 
-DRIVER_CONTAINER_NAME="comau_ros2"
-CONTAINER_SIM_NAME="comau_ros2_sim"
-SPEECH_CONTAINER_NAME="tactigon_speech_socket"
-IMAGE_NAME="comau_ros2_driver:humble"
-ROBOT_TYPE="racer7-14"
+SUNRISE_CONTAINER="sunrise"
+DRIVER_CONTAINER="comau_ros2"
+SPEECH_CONTAINER="tactigon_speech_socket"
 
-# ── Colori ────────────────────────────────────────────────────
+DRIVER_SETUP="source /opt/vulcanexus/humble/setup.bash && source /comau_driver/install/setup.bash"
+SUNRISE_SETUP="source /opt/vulcanexus/jazzy/setup.bash && source /sunrise/install/setup.bash"
+
+# ── Colors ──────────────────────────────────────────────────
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -20,185 +21,148 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# ── Utility ───────────────────────────────────────────────────
+# ── Generic helpers ─────────────────────────────────────────
 print_header() {
-    echo -e "\n${BOLD}${CYAN}╔══════════════════════════════════════╗${NC}"
-    echo -e "${BOLD}${CYAN}║     COMAU ROS2 Driver – Launcher     ║${NC}"
-    echo -e "${BOLD}${CYAN}║          Robot: ${ROBOT_TYPE}           ║${NC}"
-    echo -e "${BOLD}${CYAN}╚══════════════════════════════════════╝${NC}\n"
+    echo -e "\n${BOLD}${CYAN}=== Sunrise Launcher ===${NC}\n"
 }
 
 container_running() {
-    docker ps --format '{{.Names}}' | grep -q "^${1}$"
+    docker ps --format '{{.Names}}' | grep -q "^$1$"
 }
 
 container_exists() {
-    docker ps -a --format '{{.Names}}' | grep -q "^${1}$"
+    docker ps -a --format '{{.Names}}' | grep -q "^$1$"
 }
 
-show_status() {
-    echo -e "${BOLD}Stato containers:${NC}"
-    if container_running "${DRIVER_CONTAINER_NAME}"; then
-        echo -e "  ${GREEN}● RUNNING${NC} – ${DRIVER_CONTAINER_NAME} (robot reale)"
-    elif container_exists "${DRIVER_CONTAINER_NAME}"; then
-        echo -e "  ${RED}● STOPPED${NC} – ${DRIVER_CONTAINER_NAME}"
-    else
-        echo -e "  ${RED}● NON ESISTE${NC} – ${DRIVER_CONTAINER_NAME}"
+docker_start() {
+    local service=$1
+    local name=$2
+
+    echo -e "${YELLOW}Starting $name...${NC}"
+
+    if container_running "$name"; then
+        echo -e "${GREEN}Already running.${NC}"
+        return
     fi
-    if container_running "${SPEECH_CONTAINER_NAME}"; then
-        echo -e "  ${GREEN}● RUNNING${NC} – ${SPEECH_CONTAINER_NAME}"
-    elif container_exists "${SPEECH_CONTAINER_NAME}"; then
-        echo -e "  ${RED}● STOPPED${NC} – ${SPEECH_CONTAINER_NAME}"
-    else
-        echo -e "  ${RED}● NON ESISTE${NC} – ${SPEECH_CONTAINER_NAME}"
-    fi
-    echo ""
+
+    docker compose up -d "$service"
+    echo -e "${GREEN}Started.${NC}"
 }
 
-# ── Gestione container reale ──────────────────────────────────
+docker_stop() {
+    local service=$1
+    local name=$2
 
-build_image() {
-    echo -e "${YELLOW}🔨  Build dell'immagine Docker (può richiedere diversi minuti)...${NC}"
-    docker compose build
-    echo -e "${GREEN}✔  Build completata.${NC}"
+    echo -e "${YELLOW}Stopping $name...${NC}"
+
+    docker compose stop "$service"
+    docker compose rm -f "$service"
+
+    echo -e "${GREEN}Stopped.${NC}"
 }
 
-start_driver() {
-    echo -e "${YELLOW}▶  Avvio driver COMAU (robot reale)...${NC}"
-    if container_running "${DRIVER_CONTAINER_NAME}"; then
-        echo -e "${GREEN}✔  Il container è già in esecuzione.${NC}"
-        return 0
-    fi
-    docker compose up -d comau_driver
-    echo -e "${GREEN}✔  Container avviato.${NC}"
+docker_exec_ros() {
+    local setup=$1
+    local container=$2
+    local cmd=$3
+
+    docker exec -it "$container" bash -c "$setup && $cmd"
 }
 
-stop_driver() {
-    echo -e "${YELLOW}■  Arresto driver...${NC}"
-    docker compose stop comau_driver
-    docker compose rm -f comau_driver
-    echo -e "${GREEN}✔  Container fermato.${NC}"
+# ── ROS Commands ────────────────────────────────────────────
+
+run_sunrise_node() {
+    local node=$1
+    local config=$2
+
+    echo -e "${YELLOW}Running Sunrise node: $node${NC}"
+
+    docker_exec_ros "$SUNRISE_SETUP" \
+        "$SUNRISE_CONTAINER" \
+        "ros2 run sunrise $node $config"
 }
 
-start_speech() {
-    echo -e "${YELLOW}▶  Avvio speech${NC}"
-    if container_running "${SPEECH_CONTAINER_NAME}"; then
-        echo -e "${GREEN}✔  Il container è già in esecuzione.${NC}"
-        return 0
-    fi
-    docker compose up -d speech
-    echo -e "${GREEN}✔  Container avviato.${NC}"
+call_tcp_service() {
+    local value=$1
+
+    docker_exec_ros "$DRIVER_SETUP" \
+        "$DRIVER_CONTAINER" \
+        "ros2 service call /tcpip_conn_manager comau_msgs/srv/OpenConnection \"open_connection: $value\""
 }
 
-stop_speech() {
-    echo -e "${YELLOW}■  Arresto speech...${NC}"
-    docker compose stop speech
-    docker compose rm -f speech
-    echo -e "${GREEN}✔  Container fermato.${NC}"
-}
-
-open_connection() {
-    echo -e "${YELLOW}🔌  Apertura connessione TCP/IP con il robot...${NC}"
-    if ! container_running "${DRIVER_CONTAINER_NAME}"; then
-        echo -e "${RED}✖  Container non in esecuzione. Avvialo con l'opzione 2.${NC}"
-        return 1
-    fi
-    docker exec "${DRIVER_CONTAINER_NAME}" bash -c \
-        "source /opt/vulcanexus/humble/setup.bash && \
-         source /ros2_humble/install/setup.bash && \
-         ros2 service call /tcpip_conn_manager comau_msgs/srv/OpenConnection \
-         \"open_connection: true\""
-}
-
-close_connection() {
-    echo -e "${YELLOW}🔌  Chiusura connessione TCP/IP con il robot...${NC}"
-    if ! container_running; then
-        echo -e "${RED}✖  Il container non è in esecuzione.${NC}"
-        return 1
-    fi
-    docker exec "${DRIVER_CONTAINER_NAME}" bash -c \
-        "source /opt/vulcanexus/humble/setup.bash && \
-         source /ros2_humble/install/setup.bash && \
-         ros2 service call /tcpip_conn_manager comau_msgs/srv/OpenConnection \
-         \"open_connection: false\""
-}
-
-read_robot_status() {
-    echo -e "${YELLOW}📡  Lettura stato robot (Ctrl+C per uscire)...${NC}"
-    if ! container_running "${DRIVER_CONTAINER_NAME}"; then
-        echo -e "${RED}✖  Container non in esecuzione. Avvialo con l'opzione 2.${NC}"
-        return 1
-    fi
-    docker exec -it "${DRIVER_CONTAINER_NAME}" bash -c \
-        "source /opt/vulcanexus/humble/setup.bash && \
-         source /ros2_humble/install/setup.bash && \
-         ros2 topic echo /robot_status"
+echo_robot_status() {
+    docker_exec_ros "$DRIVER_SETUP" \
+        "$DRIVER_CONTAINER" \
+        "ros2 topic echo /robot_status"
 }
 
 start_joint_gui() {
-    echo -e "${YELLOW}🎮  Avvio joint_state_publisher_gui...${NC}"
-    docker exec -it "${DRIVER_CONTAINER_NAME}" bash -c "
-        source /opt/vulcanexus/humble/setup.bash && \
-        source /ros2_humble/install/setup.bash && \
-        ros2 run joint_state_publisher_gui joint_state_publisher_gui
-    "
+    docker_exec_ros "$DRIVER_SETUP" \
+        "$DRIVER_CONTAINER" \
+        "ros2 run joint_state_publisher_gui joint_state_publisher_gui"
 }
 
-show_logs() {
-    docker logs -f "{{.Names}}" | grep -q "^${1}$"
+# ── Status ──────────────────────────────────────────────────
+
+show_status() {
+    echo -e "${BOLD}Container status:${NC}"
+
+    for c in "$SUNRISE_CONTAINER" "$DRIVER_CONTAINER" "$SPEECH_CONTAINER"; do
+        if container_running "$c"; then
+            echo -e "  ${GREEN}● RUNNING${NC} – $c"
+        elif container_exists "$c"; then
+            echo -e "  ${RED}● STOPPED${NC} – $c"
+        else
+            echo -e "  ${RED}● NOT EXISTING${NC} – $c"
+        fi
+    done
+
+    echo ""
 }
 
-open_shell() {
-    docker exec -it "{{.Names}}" bash | grep -q "^${1}$"
-}
-
-# ── Menu principale ───────────────────────────────────────────
+# ── Menu ────────────────────────────────────────────────────
 while true; do
     print_header
     show_status
 
-    echo -e "${BOLD}  Gestione immagine${NC}"
-    echo "   1) Build immagine Docker"
+    echo "1) Build containers"
+    echo "2) Start Sunrise container"
+    echo "3) Stop Sunrise container"
+    echo "4) Start Driver"
+    echo "5) Stop Driver"
+    echo "6) Open TCP connection"
+    echo "7) Close TCP connection"
+    echo "8) Robot status"
+    echo "9) Start Speech"
+    echo "10) Stop Speech"
     echo ""
-    echo -e "${BOLD}  Robot reale${NC}"
-    echo "   2) Avvia driver (robot reale)"
-    echo "   3) Ferma driver"
-    echo "   4) Apri connessione TCP/IP"
-    echo "   5) Chiudi connessione TCP/IP"
-    echo "   6) Leggi /robot_status"
+    echo "11) Run sunrise_bridge"
+    echo "12) Run mission_controller"
+    echo "13) Run sunrise_comau"
     echo ""
-    echo -e "${BOLD}  TSkin${NC}"
-    echo "   7) Avvia Speech"
-    echo "   8) Ferma Speech"
-    echo ""
-    # echo -e "${BOLD}  Debug${NC}"
-    # echo "   9) Log driver container"
-    # echo "   10) Shell driver container"
-    # echo "   11) Log driver container"
-    # echo "   12) Shell driver container"
-    echo ""
-    echo "   0) Esci"
-    echo ""
-    echo -n "  Scelta: "
-    read -r choice
+    echo "0) Exit"
+
+    read -rp "Choice: " choice
 
     case $choice in
-        1) build_image ;;
-        2) start_driver ;;
-        3) stop_driver ;;
-        4) open_connection ;;
-        5) close_connection ;;
-        6) read_robot_status ;;
-        7) start_speech ;;
-        8) stop_speech ;;
-        # 9) show_logs "${DRIVER_CONTAINER_NAME}";;
-        # 10) open_shell "${DRIVER_CONTAINER_NAME}";;
-        # 11) show_logs "${SPEECH_CONTAINER_NAME}";;
-        # 12) open_shell "${SPEECH_CONTAINER_NAME}";;
-        0) echo -e "\n${GREEN}Arrivederci!${NC}\n"; exit 0 ;;
-        *) echo -e "${RED}Scelta non valida.${NC}" ;;
+        1) docker compose build ;;
+        2) docker_start sunrise "$SUNRISE_CONTAINER" ;;
+        3) docker_stop sunrise "$SUNRISE_CONTAINER" ;;
+        4) docker_start comau_driver "$DRIVER_CONTAINER" ;;
+        5) docker_stop comau_driver "$DRIVER_CONTAINER" ;;
+        6) call_tcp_service true ;;
+        7) call_tcp_service false ;;
+        8) echo_robot_status ;;
+        9) docker_start speech "$SPEECH_CONTAINER" ;;
+        10) docker_stop speech "$SPEECH_CONTAINER" ;;
+
+        11) run_sunrise_node sunrise_bridge "./config/sunrise_bridge.json" ;;
+        12) run_sunrise_node mission_controller "./config/mission_controller.json" ;;
+        13) run_sunrise_node sunrise_comau "./config/sunrise_comau.json" ;;
+
+        0) exit 0 ;;
+        *) echo -e "${RED}Invalid choice${NC}" ;;
     esac
 
-    echo -e "\n${CYAN}Premi INVIO per tornare al menu...${NC}"
-    read -r
+    read -rp "Press ENTER to continue..."
 done

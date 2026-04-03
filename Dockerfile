@@ -1,47 +1,54 @@
-FROM ros:jazzy-ros-core
+# ============================================================
+#  SUNRISE – Docker Image
+#  Base: ROS 2 Jazzy (Ubuntu 24.04)
+# ============================================================
+FROM eprosima/vulcanexus:jazzy-base
 
-# Env per evitare blocchi con apt
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PIP_BREAK_SYSTEM_PACKAGES=1
-
-# Installazione dipendenze di sistema
-RUN apt-get update && apt-get install -y \
+# ── System dependencies ──────────────────────────────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    python3-colcon-common-extensions \
+    python3-rosdep \
     python3-pip \
-    iproute2 \
-    net-tools \
-    bash \
-    pkg-config \
+    python3-dev \
     build-essential \
+    libboost-all-dev \
+    python3-pyaudio \
+    bluetooth \
+    bluez \
+    libbluetooth-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./config/sunrise_app/fastdds.xml /root/fastdds.xml
-ENV FASTRTPS_DEFAULT_PROFILES_FILE=/root/fastdds.xml
-ENV ROS_DOMAIN_ID=0
+# ── Python packages ──────────────────────────────────────────
+RUN python3 -m pip install --no-cache-dir --break-system-packages tactigon-gear==5.5.2
 
-# Directory dell'app
-WORKDIR /app
+# ── Create workspace ─────────────────────────────────────────
+ENV ROS_WS=/sunrise
+WORKDIR ${ROS_WS}
 
-# Copia del codice
-COPY ./sunrise_app /app/sunrise_app
-COPY ./sunrise_app.py /app/sunrise_app.py
+RUN mkdir -p src
+RUN mkdir -p src/comau_msgs
+RUN mkdir -p config
+RUN mkdir -p data
 
-# Volume per persistenza dati
-VOLUME ["/data"]
+# ── Copy Sunrise code ─────────────────────────────────────────
+COPY src/ src/
+COPY config/ config/
+COPY data/ data/
 
-RUN mkdir -p /data/config
-COPY ./config/sunrise_app /data/config
+# ── Copy COMAU msgs dependecy ─────────────────────────────────
+COPY sunrise_robot/COMAU-ROS2-DRIVER/comau_ros2_client/comau_msgs/ src/comau_msgs/
 
-# Installazione dipendenze Python
-RUN pip install \
-    flask==3.0.3 \
-    flask-socketio==5.5.1 \
-    gevent==24.2.1 \
-    gevent-websocket==0.10.1 \
-    requests \
-    paho-mqtt
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Porta esposta
-EXPOSE 5123
+SHELL ["/bin/bash", "-c"]
+RUN source /opt/vulcanexus/jazzy/setup.bash && \
+    colcon build --packages-select comau_msgs && \
+    source ./install/setup.bash && \
+    colcon build --packages-select sunrise_msgs && \
+    colcon build --packages-select camera_tracking && \
+    colcon build --packages-select sunrise
 
-# Comando di avvio
-CMD ["python3", "sunrise_app.py"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]

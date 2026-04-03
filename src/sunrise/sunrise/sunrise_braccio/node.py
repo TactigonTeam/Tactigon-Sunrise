@@ -17,10 +17,9 @@ from rclpy.node import Node
 from rclpy.logging_service import LoggingSeverity
 import time
 from tactigon_arduino_braccio import Braccio, Wrist, Gripper
-from braccio_ros_msgs.msg import BraccioCommand
-from braccio_ros_msgs.msg import BraccioResponse
+from sunrise_msgs.msg import BraccioCommand, BraccioResponse
 
-from braccio_ros.models import BraccioConfig
+from sunrise.sunrise_braccio.models import BraccioConfig
 
 class BraccioRos(Node):
     config: BraccioConfig
