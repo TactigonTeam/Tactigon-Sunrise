@@ -1,0 +1,71 @@
+# Configurazione Integration Service per bridge ROS2-FIWARE (Dynamic Mode)
+# File: ros2_fiware_bridge.yaml
+
+systems:
+  # Configurazione ROS2 con Dynamic System Handle
+  ros2:
+    type: ros2_dynamic
+    namespace: "/"
+    node_name: "integration_service_ros2"
+    domain: 0
+    # Pacchetti ROS2 da utilizzare per i tipi dinamici
+    using: 
+      - std_msgs/String
+      - std_msgs
+      - geometry_msgs
+      - sensor_msgs
+
+  # Configurazione FIWARE
+  fiware:
+    type: fiware
+    host: orion  # Nome del servizio docker (verrà risolto tramite DNS interno)
+    port: 1026
+
+# Definizione delle rotte di comunicazione
+routes:
+  ros2_to_fiware: { from: ros2, to: fiware }
+  fiware_to_ros2: { from: fiware, to: ros2 }
+
+# Definizione dei topic
+topics:
+  # Topic da ROS2 a FIWARE
+  hello_fiware:
+    type: "std_msgs/String"
+    route: ros2_to_fiware
+    remap:
+      fiware: 
+        type: HelloWorld
+        # L'attributo 'data' di std_msgs/String viene mappato su FIWARE
+        attributes:
+          - data: data
+
+  # Topic da FIWARE a ROS2
+  hello_ros2:
+    type: "std_msgs/String"
+    route: fiware_to_ros2
+    remap:
+      fiware:
+        type: HelloWorld
+        attributes:
+          - data: data
+
+  # Esempio con geometry_msgs
+  robot_position:
+    type: "geometry_msgs/Pose"
+    route: ros2_to_fiware
+    remap:
+      fiware:
+        type: RobotPosition
+        attributes:
+          - position: position
+          - orientation: orientation
+
+  # Topic per comandi al robot da FIWARE a ROS2
+  robot_command:
+    type: "std_msgs/String"
+    route: fiware_to_ros2
+    remap:
+      fiware:
+        type: RobotCommand
+        attributes:
+          - data: command
