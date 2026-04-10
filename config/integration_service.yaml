@@ -1,0 +1,90 @@
+systems:
+  ros2:
+    type: ros2_dynamic
+  fiware:
+    type: fiware
+    host: 127.0.0.1
+    port: 1026
+
+routes:
+  ros2_to_fiware: { from: ros2, to: fiware }
+
+topics:
+  /hello_fiware:
+    type: "std_msgs/msg/String"
+    route: ros2_to_fiware
+
+
+  # /sunrise/telemetry/setup_time:
+  #   type: "std_msgs/msg/Float64"
+  #   route: ros2_to_fiware
+  #   remap:
+  #     fiware:
+  #       id: "urn:ngsi-ld:Robot:Comau01"
+  #       type: "Robot"
+  #       attributes:
+  #         - data: setup_time
+
+
+#   /sunrise/telemetry/job_success_rate:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: job_success_rate
+
+#   /sunrise/telemetry/retries:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: retries
+
+#   /sunrise/telemetry/downtime:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: downtime
+
+#   /sunrise/telemetry/time_to_recall_db:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: time_to_recall_db
+
+#   /sunrise/telemetry/ventilator_manufactured:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: ventilator_manufactured
+
+#   /sunrise/telemetry/defect_ventilator:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: defect_ventilator
+
+#   /sunrise/telemetry/job_recall_number:
+#     type: "std_msgs/msg/Float64"
+#     route: ros2_to_fiware
+#     remap:
+#       fiware:
+#         type: "Robot"
+#         attributes:
+#           - data: job_recall_number
