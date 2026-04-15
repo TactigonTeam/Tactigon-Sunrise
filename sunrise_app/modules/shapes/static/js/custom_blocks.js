@@ -809,8 +809,7 @@ import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
-from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
+from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList, BraccioCommand, BraccioResponse
 from sunrise_app.modules.shapes.extension import ShapesPostAction, LoggingQueue
 from sunrise_app.modules.zion.extension import ZionInterface, Scope, AlarmSearchStatus, AlarmSeverity
 from sunrise_app.modules.ros2.extension import Ros2Interface

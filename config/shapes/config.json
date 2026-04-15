@@ -3,7 +3,7 @@
     "id": "5309b6df742c4eaf81bd5562819a325a",
     "name": "Sunrise App - teach task",
     "created_on": "2025-11-14T18:31:58.712429",
-    "modified_on": "2025-11-21T13:04:13.060460",
+    "modified_on": "2026-03-27T13:52:54.751935",
     "description": "",
     "readonly": false,
     "ros2_config": {
@@ -75,6 +75,53 @@
           "function": "_sunrise_mission_controller_log",
           "payload_reference": "log",
           "message_type": "Log",
+          "qos_profile": 10
+        }
+      ]
+    },
+    "mqtt_config": null
+  },
+  {
+    "id": "154aeecfe9474e31bd9fb6b65ecc54e5",
+    "name": "Sunrise app - solder skill",
+    "created_on": "2026-03-27T13:01:06.264273",
+    "modified_on": "2026-03-27T14:15:04.908355",
+    "description": "",
+    "readonly": false,
+    "ros2_config": {
+      "node_name": "Sunrise app - solder skill",
+      "publishers": [
+        {
+          "topic": "/sunrise/mission_controller/action",
+          "message_type": "Action",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise/mission_controller/intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        }
+      ],
+      "subscriptions": [
+        {
+          "topic": "/sunrise/mission_controller/log",
+          "function": "_sunrise_mission_controller_log",
+          "payload_reference": "log",
+          "message_type": "Log",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/sunrise_app/bridge/intent",
+          "function": "_sunrise_app_bridge_intent",
+          "payload_reference": "tactigon_intent",
+          "message_type": "Intent",
+          "qos_profile": 10
+        },
+        {
+          "topic": "/camera_tracking/pointing",
+          "function": "_camera_tracking_pointing",
+          "payload_reference": "pointing",
+          "message_type": "Marker",
           "qos_profile": 10
         }
       ]

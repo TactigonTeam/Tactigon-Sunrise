@@ -8,8 +8,7 @@ import json
 from numbers import Number
 from datetime import datetime
 from std_msgs.msg import String, Bool, Byte, Char, Float64, Int64, UInt64, ColorRGBA
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
-from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
+from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList, BraccioCommand, BraccioResponse
 from sunrise_app.modules.shapes.extension import ShapesPostAction, LoggingQueue
 from sunrise_app.modules.zion.extension import ZionInterface, Scope, AlarmSearchStatus, AlarmSeverity
 from sunrise_app.modules.ros2.extension import Ros2Interface
@@ -144,6 +143,8 @@ def intent_to_map(intent):
             intent_map = {'robot': 'braccio_robot', 'skill': 'pick'}
         elif payload.get('gesture', None) == 'down':
             intent_map = {'robot': 'braccio_robot', 'skill': 'place'}
+        elif payload.get('gesture', None) == 'circle':
+            intent_map = {'robot': 'comau_robot', 'skill': 'solder_1'}
     return intent_map
 
 
@@ -155,6 +156,7 @@ def _sunrise_app_bridge_intent(logging_queue: LoggingQueue):
     else:
         debug(logging_queue, 'Create a repeat intent')
         create_intent = Intent(type=Intent.REPEAT, payload=json.dumps({'task': 'pick from position stock'}))
+        create_intent = Intent(type=Intent.REPEAT, payload=json.dumps({'robot': 'comau_robot', 'skill': 'solder_1'}))
 
 def sunrise_app_setup(
         zion: Optional[ZionInterface],
@@ -175,10 +177,6 @@ def sunrise_app_close(
     global pointing, markers, log, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map, intent, intent_map
     pass
 
-def _camera_tracking_pointing(logging_queue: LoggingQueue):
-    global pointing, markers, log, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map, intent, intent_map
-    create_action = Action(type=Action.MARKER, payload=json.dumps((marker_to_x_y(pointing.get('id', None)))))
-
 def sunrise_app_function(
         zion: Optional[ZionInterface],
         ros2: Optional[Ros2Interface],
@@ -193,6 +191,10 @@ def sunrise_app_function(
         ros2_publish(ros2, '/sunrise/mission_controller/intent', create_intent)
         create_intent = None
 
+
+def _camera_tracking_pointing(logging_queue: LoggingQueue):
+    global pointing, markers, log, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map, intent, intent_map
+    create_action = Action(type=Action.MARKER, payload=json.dumps((marker_to_x_y(pointing.get('id', None)))))
 
 def _sunrise_mission_controller_log(logging_queue: LoggingQueue):
     global pointing, markers, log, create_action, payload, tactigon_intent, create_intent, x, marker_id, marker_map, intent, intent_map

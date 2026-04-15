@@ -14,8 +14,8 @@
 from rclpy.node import QoSProfile
 from std_msgs.msg import String, Int16, Int32, UInt16, UInt32, Bool, Byte, Float32, Float64, Int8, UInt8, Int64, UInt64, ColorRGBA
 from rcl_interfaces.msg import Log
-from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
-from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
+from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList, BraccioCommand, BraccioResponse, BraccioJointCommand
+from comau_msgs.msg import ActionResult
 
 from dataclasses import dataclass, field
 from enum import Enum
@@ -24,7 +24,7 @@ from typing import Any
 StrMessageTypes = String | Int64 | Bool | Float64
 InterfacesMessageTypes = Log
 SunriseMessageTypes = Action | Intent | Point2D | Marker | MarkerList
-BraccioMessageTypes = BraccioCommand | BraccioResponse
+BraccioMessageTypes = BraccioCommand | BraccioResponse | BraccioJointCommand | ActionResult
 RosMessageTypes = StrMessageTypes | InterfacesMessageTypes | SunriseMessageTypes | BraccioMessageTypes
 
 def get_message_type_by_name(name: str) -> RosMessageTypes:
@@ -45,7 +45,7 @@ class RosMessage:
     topic: str
     msg: RosMessageTypes
 
-class NodeActions(Enum):
+class NodeActions(str, Enum):
     ADD_PUBLISHER = "add_publisher"
     ADD_SUBSCRIPTION = "add_subscriber"
     PUBLISH = "publish"
@@ -76,7 +76,7 @@ class NodeAction:
             NodeActions.PUBLISH,
             payload
         )
-    
+   
     @classmethod
     def Unsubscribe(cls, payload: dict):
         return cls(

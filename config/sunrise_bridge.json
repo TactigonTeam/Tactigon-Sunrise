@@ -1,16 +1,21 @@
 {
     "tskin_config": {
-        "address": "C0:83:3F:39:21:57",
+        "address": "C0:83:2A:34:25:38",
         "hand": "right",
         "name": "Tactigon",
         "touch_config": null,
         "gesture_config": {
-            "model_path": "/home/robot/projects/tactigon/Tactigon-Sunrise/data/models/MODEL_01_R/model.pickle",
-            "encoder_path": "/home/robot/projects/tactigon/Tactigon-Sunrise/data/models/MODEL_01_R/encoder.pickle",
+            "model_path": "./data/models/MODEL_01_R/model.pickle",
+            "encoder_path": "./data/models/MODEL_01_R/encoder.pickle",
             "name": "test",
             "created_at": "2025-11-14T12:40:01.108512",
             "gestures": null
         }
+    },
+    "socket_config": {
+        "host": "127.0.0.1",
+        "port": 50007,
+        "ping": 5
     },
     "intent_topic": "/sunrise_app/bridge/intent",
     "action_topic": "/sunrise_app/bridge/action",
@@ -35,7 +40,69 @@
         },
         {
             "touch": "TWO_FINGER_TAP",
+            "mapping": "speech"
+        }
+    ],
+    "transcriptions":[
+        {
+            "command": "run_job_one",
+            "mapping": "repeat_task"
+        },
+        {
+            "command": "start_job_two",
             "mapping": "repeat_task"
         }
-    ]
+    ],
+    "speech": {
+        "t_speech": [
+            {
+                "hotwords": [
+                    {
+                        "word": "start",
+                        "boost": 1
+                    },
+                    {
+                        "word": "run",
+                        "boost": 1
+                    }
+                ],
+                "children": {
+                    "t_speech": [
+                        {
+                            "hotwords": [
+                                {
+                                    "word": "job",
+                                    "boost": 1
+                                }
+                            ],
+                            "children": {
+                                "t_speech": [
+                                    {
+                                        "hotwords": [
+                                            {
+                                                "word": "one",
+                                                "boost": 1
+                                            },
+                                            {
+                                                "word": "two",
+                                                "boost": 1
+                                            },
+                                            {
+                                                "word": "three",
+                                                "boost": 1
+                                            }
+                                        ],
+                                        "children": null
+                                    }
+                                ],
+                                "feedback": ""
+                            }
+                        }
+                    ],
+                    "feedback": ""
+                }
+            }
+        ],
+        "feedback": ""
+    }
 }

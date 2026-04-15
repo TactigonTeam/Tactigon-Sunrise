@@ -14,12 +14,13 @@
 from std_msgs.msg import String, Int64, Float64, Bool
 from rcl_interfaces.msg import Log
 from sunrise_msgs.msg import Action, Intent, Point2D, Marker, MarkerList
-from braccio_ros_msgs.msg import BraccioCommand, BraccioResponse
+from sunrise_msgs.msg import BraccioCommand, BraccioResponse, BraccioJointCommand
+from comau_msgs.msg import ActionResult, JointPose
 
 StdMessageTypes = String | Int64 | Bool | Float64
 InterfaceMessageTypes = Log
 SunriseMessageTypes = Action | Intent | Point2D | Marker | MarkerList
-BraccioMessageTypes = BraccioCommand | BraccioResponse
+BraccioMessageTypes = BraccioCommand | BraccioResponse | BraccioJointCommand | ActionResult | JointPose
 RosMessageTypes = StdMessageTypes | InterfaceMessageTypes | SunriseMessageTypes | BraccioMessageTypes
 
 def get_message_type_by_name(name: str) -> RosMessageTypes:

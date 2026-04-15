@@ -202,7 +202,7 @@ class MissionController(Node):
             state = MachineState.REPEAT
 
         payload: dict[str, Any] = json.loads(intent.payload)
-        self.info(f"{payload}")
+        self.debug(f"Received payload: {payload}")
 
         if self.state[1] == state:
             updated_payload = self.state[2]

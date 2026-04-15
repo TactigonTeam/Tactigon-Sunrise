@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="racer7-14">
+
+  <!--load racer7-14 -->
+  <xacro:include filename="$(find racer7-14_description)/urdf/racer7-14/racer7-14.urdf.xacro" />
+
+  <xacro:racer7-14_description/>
+
+  <!-- Import robot ros2_control description -->
+  <xacro:include filename="$(find racer7-14_description)/ros2_control/racer7-14.ros2_control.xacro" />
+  <xacro:robot_ros2_control name="racer7-14"/>
+  
+  <link name="world" />
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "base_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+</robot>

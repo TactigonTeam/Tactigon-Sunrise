@@ -32,13 +32,15 @@ setup(
     license='TODO: License declaration',
     extras_require={
         'test': [
-            'pytest',
+            'pytest'
         ],
     },
     entry_points={
         'console_scripts': [
             'mission_controller = sunrise.mission_controller.main:main',
             'sunrise_bridge = sunrise.sunrise_bridge.main:main',
+            'sunrise_braccio = sunrise.sunrise_braccio.main:main',
+            'sunrise_comau = sunrise.sunrise_comau.main:main',
         ],
     },
 )
