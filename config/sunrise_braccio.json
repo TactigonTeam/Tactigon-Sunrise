@@ -1,5 +1,5 @@
 {
     "address": "E2:48:72:F0:CC:D6",
-    "command_topic": "/braccio_ros/command",
-    "response_topic": "/braccio_ros/response"
+    "command_topic": "/robot/braccio/command",
+    "response_topic": "robot/braccio/response"
 }

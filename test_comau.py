@@ -30,10 +30,10 @@ class TestNode(Node):
 
         self.intent_pub = self.create_publisher(Intent, "/sunrise/mission_controller/intent", 10)
         self.action_pub = self.create_publisher(Action, "/sunrise/mission_controller/action", 10)
-        self.braccio_pub = self.create_publisher(BraccioJointCommand, "/comau_joint_action", 10)
+        self.braccio_pub = self.create_publisher(BraccioJointCommand, "/robot/comau/action", 10)
         self.braccio_sub = self.create_subscription(
             ActionResult,
-            "/comau_joint_action_result",
+            "/robot/comau/action_result",
             self.braccio_response_callback,
             10
         )

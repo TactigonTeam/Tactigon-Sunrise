@@ -29,10 +29,10 @@ class TestNode(Node):
 
         self.intent_pub = self.create_publisher(Intent, "/sunrise/mission_controller/intent", 10)
         self.action_pub = self.create_publisher(Action, "/sunrise/mission_controller/action", 10)
-        self.braccio_pub = self.create_publisher(BraccioCommand, "/braccio_ros/command", 10)
+        self.braccio_pub = self.create_publisher(BraccioCommand, "/robot/braccio/command", 10)
         self.braccio_sub = self.create_subscription(
             BraccioResponse,
-            "/braccio_ros/response",
+            "robot/braccio/response",
             self.braccio_response_callback,
             10
         )
