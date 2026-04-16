@@ -6,9 +6,9 @@
             "commands": [
                 {
                     "command_name": "pick",
-                    "command_topic": "/braccio_ros/command",
+                    "command_topic": "/robot/braccio/command",
                     "command_topic_type": "BraccioCommand",
-                    "response_topic": "/braccio_ros/response",
+                    "response_topic": "robot/braccio/response",
                     "response_topic_type": "BraccioResponse",
                     "steps": [
                         {
@@ -99,9 +99,9 @@
                 },
                 {
                     "command_name": "place",
-                    "command_topic": "/braccio_ros/command",
+                    "command_topic": "/robot/braccio/command",
                     "command_topic_type": "BraccioCommand",
-                    "response_topic": "/braccio_ros/response",
+                    "response_topic": "robot/braccio/response",
                     "response_topic_type": "BraccioResponse",
                     "steps": [
                         {
@@ -197,9 +197,9 @@
             "commands": [
                 {
                     "command_name": "move",
-                    "command_topic": "/comau_joint_action",
+                    "command_topic": "/robot/comau/action",
                     "command_topic_type": "BraccioJointCommand",
-                    "response_topic": "/comau_joint_action",
+                    "response_topic": "/robot/comau/action",
                     "response_topic_type": "ActionResult",
                     "steps": [
                         {

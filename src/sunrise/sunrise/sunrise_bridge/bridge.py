@@ -19,7 +19,7 @@ from pyaudio import PyAudio, paContinue
 from os import path
 from rclpy.node import Node
 
-from sunrise_msgs.msg import Action, Intent
+from sunrise_msgs.msg import Action, Intent, Gesture as Gesture_msg, Transcription as Transcription_msg
 
 from sunrise.sunrise_bridge.models import SunriseBridgeConfig, MappingType, GestureMapping, TouchMapping, TranscriptionMapping
 
@@ -38,6 +38,9 @@ class SunriseBridge(Node):
         self.config = self.load_config(config_path)
 
         self.pa = PyAudio()
+
+        self.gesture_publisher = self.create_publisher(Gesture_msg, "/human/body/1/gesture", 10)
+        self.live_speech_publisher = self.create_publisher(Transcription_msg, "/human/voices/1/livespeech", 10)
 
         self.get_logger().debug(f"Creating Action publisher on {self.config.action_topic}")
         self.action_publisher = self.create_publisher(Action, self.config.action_topic, 10)
@@ -122,6 +125,11 @@ class SunriseBridge(Node):
         transcription = self.tskin.transcription
 
         if gesture:
+            g = Gesture_msg()
+            g.type = 0
+            g.payload = gesture.gesture
+            self.gesture_publisher.publish(g)
+
             gesture_mapping = self._get_mapping_from_gesture(gesture)
             payload = gesture.toJSON()
             
@@ -131,6 +139,11 @@ class SunriseBridge(Node):
                 self.get_logger().warn(f"No mapping for gesture {payload}")
 
         if touch:
+            g = Gesture_msg()
+            g.type = 1
+            g.payload = touch.one_finger or touch.two_finger
+            self.gesture_publisher.publish(g)
+
             touch_mapping = self._get_mapping_from_touch(touch)
             payload = touch.toJSON()
             
@@ -140,9 +153,17 @@ class SunriseBridge(Node):
                 self.get_logger().warn(f"No mapping for touch {payload}")
 
         if text_so_far:
+            t = Transcription_msg()
+            t.text_so_far = text_so_far
+            self.live_speech_publisher.publish(t)
+
             self.get_logger().info(f"Text so far: {text_so_far}")
 
         if transcription:
+            t = Transcription_msg()
+            t.transcription = transcription.text
+            self.live_speech_publisher.publish(t)
+
             self.get_logger().info(f"Got transcription {transcription}")
             transcription_mapping = self._get_mapping_from_transcription(transcription)
             payload = transcription.toJSON()

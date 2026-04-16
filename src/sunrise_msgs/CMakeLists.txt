@@ -7,6 +7,8 @@ find_package(std_msgs REQUIRED)
 find_package(comau_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Gesture.msg"
+  "msg/Transcription.msg"
   "msg/Action.msg"
   "msg/Intent.msg"
   "msg/Point2D.msg"

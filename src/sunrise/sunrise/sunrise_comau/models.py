@@ -2,14 +2,14 @@ from dataclasses import dataclass
 
 @dataclass
 class ComauConfig:
-    command_topic: str = "/comau_joint_action"
-    response_topic: str = "/comau_joint_action_result"
+    command_topic: str = "/robot/comau/action"
+    response_topic: str = "/robot/comau/action_result"
 
     @classmethod
     def FromJSON(cls, json: dict):
         return cls(
-            json.get("command_topic", "/comau_joint_action"),
-            json.get("response_topic", "/comau_joint_action_result"),
+            json.get("command_topic", "/robot/comau/action"),
+            json.get("response_topic", "/robot/comau/action_result"),
         )
     
     def toJSON(self) -> dict:
