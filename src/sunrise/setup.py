@@ -26,10 +26,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='robot',
+    maintainer='Stefano Barbareschi',
     maintainer_email='developer@nextind.eu',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='sunrise',
+    license='Apache 2.0',
     extras_require={
         'test': [
             'pytest'

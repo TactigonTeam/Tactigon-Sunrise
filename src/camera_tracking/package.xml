@@ -3,9 +3,8 @@
 <package format="3">
     <name>camera_tracking</name>
     <version>0.0.1</version>
-    <description>TODO: Package description</description>
-    <maintainer email="banjo@todo.todo">banjo</maintainer>
-    <license>TODO: License declaration</license>
+    <description>Track user pointing</description>
+    <license>Apache 2.0</license>
 
     <depend>rclpy</depend>
     <depend>example_interfaces</depend>
