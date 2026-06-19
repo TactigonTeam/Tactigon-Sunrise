@@ -15,13 +15,13 @@ import sys
 import rclpy
 from rclpy.logging import get_logger
 
-from sunrise.sunrise_bridge.bridge import SunriseBridge
+from sunrise.sunrise_tactigon.node import TactigonNode
 
 def main(args=None):
     config_path = sys.argv[1] if len(sys.argv) > 1 else None
 
     if not config_path:
-        get_logger("sunrise_bridge").error("Cannot start Sunrise Bridge node. Config file path is missing")
+        get_logger("tactigon_node").error("Cannot start Sunrise Tactigon node. Config file path is missing")
         return
     
     spin_node(config_path, args)
@@ -29,7 +29,7 @@ def main(args=None):
 def spin_node(config_path: str, args=None):
     rclpy.init(args=args)
 
-    node = SunriseBridge(config_path)
+    node = TactigonNode(config_path)
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
@@ -37,8 +37,3 @@ def spin_node(config_path: str, args=None):
     node.destroy_node()
 
     rclpy.try_shutdown()
-
-if __name__ == "__main__":
-    spin_node(
-        "./config/sunrise_bridge.json"
-    )

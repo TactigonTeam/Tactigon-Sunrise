@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Python packages ──────────────────────────────────────────
-RUN python3 -m pip install --no-cache-dir --break-system-packages tactigon-gear==5.5.2
+RUN python3 -m pip install --no-cache-dir --break-system-packages tactigon-gear==5.5.2 PyQt5
 
 # ── Create workspace ─────────────────────────────────────────
 ENV ROS_WS=/sunrise

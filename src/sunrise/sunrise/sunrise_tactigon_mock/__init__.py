@@ -11,9 +11,3 @@
 # Stefano Barbareschi
 #********************************************************************************
 
-# Fields
-string text_so_far
-string transcription
-string[] path
-float64 time
-bool timeout

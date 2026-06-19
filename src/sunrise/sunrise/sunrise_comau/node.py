@@ -16,6 +16,15 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 from rclpy.logging_service import LoggingSeverity
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
+
+# QoS for robot command topics: guarantee delivery, keep only the latest command
+ROBOT_CMD_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=1
+)
 
 from action_msgs.msg import GoalStatus
 from comau_msgs.action import ExecuteJointTrajectory
@@ -48,9 +57,9 @@ class ComauRos(Node):
 
         self.get_logger().debug(f"Create response topic {self.config.response_topic}")
         self.move_result_pub = self.create_publisher(
-            ActionResult, 
+            ActionResult,
             self.config.response_topic,
-            10
+            ROBOT_CMD_QOS
         )
 
         self.get_logger().debug(f"Create command topic {self.config.command_topic}")
@@ -58,7 +67,7 @@ class ComauRos(Node):
             BraccioJointCommand,
             self.config.command_topic,
             self.command_callback,
-            10
+            ROBOT_CMD_QOS
         )
 
         self.get_logger().info(f"Braccio Communication Node started")

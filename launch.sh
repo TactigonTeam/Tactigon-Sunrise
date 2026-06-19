@@ -159,9 +159,11 @@ while true; do
     echo "11) Start db+grafana+fiware"
     echo "12) Stop db+grafana+fiware"
     echo ""
-    echo "20) Run sunrise_bridge"
-    echo "21) Run mission_controller"
-    echo "22) Run sunrise_comau"
+    echo "20) Run Sunrise Tactigon node"
+    echo "21) Run Sunrise Tactigon mock node"N
+    echo "22) Run Sunrise Bridge node"
+    echo "23) Run Sunrise Mission Controller node"
+    echo "24) Run Sunrise Comau node"
     echo ""
     echo "0) Exit"
 
@@ -181,9 +183,11 @@ while true; do
         11) docker_start_fiware ;;
         12) docker_stop_fiware ;;
 
-        20) run_sunrise_node sunrise_bridge "./config/sunrise_bridge.json" ;;
-        21) run_sunrise_node mission_controller "./config/mission_controller.json" ;;
-        22) run_sunrise_node sunrise_comau "./config/sunrise_comau.json" ;;
+        20) run_sunrise_node sunrise_tactigon "./config/sunrise_tactigon.json" ;;
+        21) run_sunrise_node sunrise_tactigon_mock  ;;
+        22) run_sunrise_node sunrise_bridge "./config/sunrise_bridge.json" ;;
+        23) run_sunrise_node mission_controller "./config/mission_controller.json" ;;
+        24) run_sunrise_node sunrise_comau "./config/sunrise_comau.json" ;;
 
         0) exit 0 ;;
         *) echo -e "${RED}Invalid choice${NC}" ;;

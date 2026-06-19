@@ -16,16 +16,26 @@ import wave
 import time
 
 from pyaudio import PyAudio, paContinue
-from os import path
 from rclpy.node import Node
+from rclpy.qos import QoSPresetProfiles, QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
 
+from std_msgs.msg import String
 from sunrise_msgs.msg import Action, Intent, Gesture as Gesture_msg, Transcription as Transcription_msg
+
+# QoS for high-frequency sensor data: must match SENSOR_DATA QoS used by sunrise_tactigon publishers
+SENSOR_QOS = QoSPresetProfiles.SENSOR_DATA.value
+# QoS for reliable command/event messages: guarantee delivery, no durability persistence needed
+RELIABLE_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=10
+)
 
 from sunrise.sunrise_bridge.models import SunriseBridgeConfig, MappingType, GestureMapping, TouchMapping, TranscriptionMapping
 
-from tactigon_gear.tskin_socket import TSkinSocket, TSkinConfig, SocketConfig
-from tactigon_gear.models.tskin import Touch, Gesture
-from tactigon_gear.models.audio import Transcription
+from tactigon_gear.models.tskin import Touch, Gesture, OneFingerGesture, TwoFingerGesture
+from tactigon_gear.models.audio import Transcription, HotWord
 
 class SunriseBridge(Node):
     tskin_connection: bool
@@ -39,22 +49,16 @@ class SunriseBridge(Node):
 
         self.pa = PyAudio()
 
-        self.gesture_publisher = self.create_publisher(Gesture_msg, "/human/body/1/gesture", 10)
-        self.live_speech_publisher = self.create_publisher(Transcription_msg, "/human/voices/1/livespeech", 10)
+        self.gesture_subscription = self.create_subscription(Gesture_msg, "/human/body/person1/gesture", self._on_gesture, SENSOR_QOS)
+        self.live_speech_subscription = self.create_subscription(Transcription_msg, "/human/voices/person1/livespeech", self._on_transcription, SENSOR_QOS)
+        self.speech_request_publisher = self.create_publisher(String, "/human/voice/person1/stream", RELIABLE_QOS)
 
         self.get_logger().debug(f"Creating Action publisher on {self.config.action_topic}")
-        self.action_publisher = self.create_publisher(Action, self.config.action_topic, 10)
+        self.action_publisher = self.create_publisher(Action, self.config.action_topic, RELIABLE_QOS)
 
         self.get_logger().debug(f"Creating Intent publisher on {self.config.action_topic}")
-        self.intent_publisher = self.create_publisher(Intent, self.config.intent_topic, 10)
+        self.intent_publisher = self.create_publisher(Intent, self.config.intent_topic, RELIABLE_QOS)
 
-        self.get_logger().info("Creating Tactigon Skin instance and timer")
-        self.tskin_connection = False
-        self.tskin = TSkinSocket(self.config.tskin_config, self.config.socket_config)
-        self.get_logger().debug("Tactigon Skin created!")
-        self.tskin.start()
-        self.get_logger().debug("Tactigon Skin started")
-        self.tskin_job = self.create_timer(0.02, self._do_tskin_job)
         self.get_logger().info("Created!")
 
     def load_config(self, config_path: str) -> SunriseBridgeConfig:
@@ -103,32 +107,39 @@ class SunriseBridge(Node):
         elif mapping.mapping in [MappingType.REPEAT_SKILL, MappingType.REPEAT_TASK]:
             self._send_repeat_intent(payload)
         elif mapping.mapping == MappingType.SPEECH:
-            self.tskin.listen(self.config.speech)
+            self.speech_request_publisher.publish(String())
 
-    def _do_tskin_job(self):
-        if self.tskin_connection != self.tskin.connected:
-            if self.tskin.connected:
-                self.get_logger().info(f"TSkin connected -> {self.tskin.config.address} on hand {self.tskin.config.hand}")
-            else:
-                self.get_logger().warn(f"TSkin disconnected -> {self.tskin.config.address} on hand {self.tskin.config.hand}")
+    def _on_gesture(self, message: Gesture_msg):
+        if message.type == 1: # touch
+            touch = None
+            for t in OneFingerGesture:
+                if t.name == message.payload:
+                    touch = Touch(
+                        t,
+                        TwoFingerGesture.NONE,
+                        0,
+                        0,
+                    )
 
-            self.tskin_connection = self.tskin.connected
-
-        if not self.tskin.connected:
-            return
-        
-        self.get_logger().debug(f"TSkin connected -> {self.tskin.config.address} on hand {self.tskin.config.hand}")
-        
-        gesture = self.tskin.gesture
-        touch = self.tskin.touch
-        text_so_far = self.tskin.text_so_far
-        transcription = self.tskin.transcription
-
-        if gesture:
-            g = Gesture_msg()
-            g.type = 0
-            g.payload = gesture.gesture
-            self.gesture_publisher.publish(g)
+            for t in TwoFingerGesture:
+                if t.name == message.payload:
+                    touch = Touch(
+                        OneFingerGesture.NONE,
+                        t,
+                        0,
+                        0,
+                    )
+                    
+            if touch:
+                touch_mapping = self._get_mapping_from_touch(touch)
+                payload = touch.toJSON()
+                
+                if touch_mapping:
+                    self._send_payload_by_mapping(touch_mapping, payload)
+                else:
+                    self.get_logger().warn(f"No mapping for touch {payload}")
+        else:
+            gesture = Gesture(message.payload, 0, 0, 0)
 
             gesture_mapping = self._get_mapping_from_gesture(gesture)
             payload = gesture.toJSON()
@@ -138,31 +149,17 @@ class SunriseBridge(Node):
             else:
                 self.get_logger().warn(f"No mapping for gesture {payload}")
 
-        if touch:
-            g = Gesture_msg()
-            g.type = 1
-            g.payload = touch.one_finger or touch.two_finger
-            self.gesture_publisher.publish(g)
+    def _on_transcription(self, message: Transcription_msg):
+        
+        self.get_logger().info(f"Text so far: {message.text_so_far}")
 
-            touch_mapping = self._get_mapping_from_touch(touch)
-            payload = touch.toJSON()
-            
-            if touch_mapping:
-                self._send_payload_by_mapping(touch_mapping, payload)
-            else:
-                self.get_logger().warn(f"No mapping for touch {payload}")
-
-        if text_so_far:
-            t = Transcription_msg()
-            t.text_so_far = text_so_far
-            self.live_speech_publisher.publish(t)
-
-            self.get_logger().info(f"Text so far: {text_so_far}")
-
-        if transcription:
-            t = Transcription_msg()
-            t.transcription = transcription.text
-            self.live_speech_publisher.publish(t)
+        if message.transcription:
+            transcription = Transcription(
+                message.transcription,
+                [HotWord(word) for word in message.path],
+                message.time,
+                message.timeout
+            )
 
             self.get_logger().info(f"Got transcription {transcription}")
             transcription_mapping = self._get_mapping_from_transcription(transcription)
@@ -193,5 +190,4 @@ class SunriseBridge(Node):
             audio_stream.close()
 
     def destroy_node(self):
-        self.tskin.join(5)
         Node.destroy_node(self)

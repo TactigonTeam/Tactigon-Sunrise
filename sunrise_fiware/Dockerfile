@@ -47,6 +47,9 @@ RUN git clone https://github.com/eProsima/ROS2-SH.git
 RUN git clone https://github.com/eProsima/FIWARE-SH.git
 RUN git clone https://github.com/eProsima/WebSocket-SH.git
 
+COPY src/sunrise_msgs ${IS_WORKSPACE}/src/sunrise_msgs
+COPY sunrise_robot/COMAU-ROS2-DRIVER/comau_ros2_client/comau_msgs ${IS_WORKSPACE}/src/comau_msgs
+
 WORKDIR ${IS_WORKSPACE}
 RUN /bin/bash -c "source /opt/vulcanexus/humble/setup.bash && \
     colcon build --merge-install --cmake-args \
@@ -55,8 +58,8 @@ RUN /bin/bash -c "source /opt/vulcanexus/humble/setup.bash && \
     -DBUILD_FASTDDS_EXAMPLES=OFF \
     --install-base /opt/is"
 
-COPY ros2_entrypoint.sh /ros2_entrypoint.sh
-COPY is_entrypoint.sh /is_entrypoint.sh
+COPY sunrise_fiware/ros2_entrypoint.sh /ros2_entrypoint.sh
+COPY sunrise_fiware/is_entrypoint.sh /is_entrypoint.sh
 
 ENV IS_PREFIX_PATH=/opt/is
 ENV IS_ROS2_PREFIX_PATH=/opt/ros/humble
@@ -65,7 +68,7 @@ RUN chmod +x /ros2_entrypoint.sh /is_entrypoint.sh
 
 RUN mkdir -p /config
 
-COPY config/*.yaml /config/
+COPY sunrise_fiware/config/*.yaml /config/
 
 WORKDIR /config
 

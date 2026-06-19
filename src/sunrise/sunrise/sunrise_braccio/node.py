@@ -15,9 +15,18 @@ import json
 import rclpy
 from rclpy.node import Node
 from rclpy.logging_service import LoggingSeverity
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
 import time
 from tactigon_arduino_braccio import Braccio, Wrist, Gripper
 from sunrise_msgs.msg import BraccioCommand, BraccioResponse
+
+# QoS for robot command topics: guarantee delivery, keep only the latest command
+ROBOT_CMD_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=1
+)
 
 from sunrise.sunrise_braccio.models import BraccioConfig
 
@@ -48,9 +57,9 @@ class BraccioRos(Node):
 
         self.get_logger().debug(f"Create response topic {self.config.response_topic}")
         self.move_result_pub = self.create_publisher(
-            BraccioResponse, 
+            BraccioResponse,
             self.config.response_topic,
-            10
+            ROBOT_CMD_QOS
         )
 
         self.get_logger().debug(f"Create command topic {self.config.command_topic}")
@@ -58,7 +67,7 @@ class BraccioRos(Node):
             BraccioCommand,
             self.config.command_topic,
             self.command_callback,
-            10
+            ROBOT_CMD_QOS
         )
 
         self.get_logger().info(f"Braccio Communication Node started")

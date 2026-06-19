@@ -41,6 +41,8 @@ setup(
             'sunrise_bridge = sunrise.sunrise_bridge.main:main',
             'sunrise_braccio = sunrise.sunrise_braccio.main:main',
             'sunrise_comau = sunrise.sunrise_comau.main:main',
+            'sunrise_tactigon = sunrise.sunrise_tactigon.main:main',
+            'sunrise_mock = sunrise.sunrise_tactigon_mock.main:main'
         ],
     },
 )

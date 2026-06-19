@@ -30,10 +30,14 @@
       environment:
         - ROS_DOMAIN_ID=0
         - SDL_AUDIODRIVER=dummy
+        - DISPLAY=${DISPLAY}
+        - QT_X11_NO_MITSHM=1
       devices:
         - /dev:/dev
       volumes:
         - /var/run/dbus:/var/run/dbus
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - ${HOME}/.Xauthority:/root/.Xauthority:rw
 
     tactigon-speech-socket:
       build:
@@ -69,22 +73,25 @@
     sunrise-timescaledb:
       image: timescale/timescaledb:latest-pg17
       container_name: sunrise-timescaledb
+      hostname: sunrise-timescaledb
       restart: always
       environment:
-        - POSTGRES_USER=admin
-        - POSTGRES_PASSWORD=admin
-        - POSTGRES_DB=sunrise_db
+        - POSTGRES_USER=orion
+        - POSTGRES_PASSWORD=orion
+        - POSTGRES_HOST_AUTH_METHOD=trust
       networks:
         - fiware_network
       ports:
         - "5432:5432"
+      command: ["postgres", "-c", "log_statement=all"]
       volumes:
         - timescale_data:/home/postgres/pgdata/data
       healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U admin -d sunrise_db"]
-        interval: 10s
-        timeout: 5s
+        test: ["CMD-SHELL", "pg_isready -U orion"]
+        interval: 15s
+        timeout: 15s
         retries: 5
+        start_period: 60s
 
 
     sunrise-mintaka:
@@ -106,9 +113,9 @@
         - ENDPOINTS_HEALTH_ENABLED=true
         - DATASOURCES_DEFAULT_HOST=sunrise-timescaledb
         - DATASOURCES_DEFAULT_PORT=5432
-        - DATASOURCES_DEFAULT_USERNAME=admin
-        - DATASOURCES_DEFAULT_PASSWORD=admin
-        - DATASOURCES_DEFAULT_DATABASE=sunrise_db
+        - DATASOURCES_DEFAULT_USERNAME=orion
+        - DATASOURCES_DEFAULT_PASSWORD=orion
+        - DATASOURCES_DEFAULT_DATABASE=orion
         - LOGGERS_LEVEL_ROOT=TRACE
 
     sunrise-grafana:
@@ -120,7 +127,9 @@
       networks:
         - fiware_network
       depends_on:
-        - sunrise-timescaledb
+        - sunrise-mintaka
+      environment:
+        - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
       volumes:
         - grafana_data:/var/lib/grafana
         - ./grafana/datasources:/etc/grafana/provisioning/datasources
@@ -130,48 +139,45 @@
     mongodb:
       image: mongo:4.4
       container_name: fiware-mongodb
+      hostname: mongodb
       networks:
         - fiware_network
+      ports:
+        - "27017:27017"
+      command: --bind_ip_all
       volumes:
         - mongodb_data:/data/db
-      command: --nojournal
-      healthcheck:
-        test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
 
-    # FIWARE Orion Context Broker
+    # FIWARE Orion-LD Context Broker
     fiware-orion:
-      image: fiware/orion:latest
+      image: fiware/orion-ld:latest
       container_name: fiware-orion
+      hostname: orion
       depends_on:
-        mongodb:
-          condition: service_healthy
+        - mongodb
+        - sunrise-timescaledb
       networks:
         - fiware_network
       ports:
         - "1026:1026"
-      command: -dbURI mongodb://mongodb:27017 -logLevel DEBUG
-      healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:1026/version"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
+      command: -dbhost mongodb -logLevel DEBUG # -t 0-255 -kt 0-2000
       environment:
-        - ORION_LOG_LEVEL=DEBUG
         - ORIONLD_TROE=TRUE
         - ORIONLD_TROE_HOST=sunrise-timescaledb
         - ORIONLD_TROE_PORT=5432
-        - ORIONLD_TROE_USER=admin
-        - ORIONLD_TROE_PWD=admin
-        - ORIONLD_TROE_DB=sunrise_db
+        - ORIONLD_TROE_USER=orion
+        - ORIONLD_TROE_PWD=orion
+        - ORIONLD_MONGO_HOST=mongodb
+      healthcheck:
+        test: curl --fail -s http://localhost:1026/version || exit 1
+        interval: 30s
+        retries: 15
 
     # Integration Service con Dynamic ROS2 e FIWARE System Handles
     integration-service:
       build:
-        context: ./sunrise_fiware
-        dockerfile: Dockerfile
+        context: .
+        dockerfile: sunrise_fiware/Dockerfile
       container_name: integration-service
       depends_on:
         fiware-orion:
@@ -185,7 +191,7 @@
         - is_workspace:/is_ws
       environment:
         - ROS_DOMAIN_ID=0
-        - FIWARE_HOST=fiware-orion
+        - FIWARE_HOST=localhost
         - FIWARE_PORT=1026
       stdin_open: true
       tty: true

@@ -14,77 +14,22 @@ topics:
     type: "std_msgs/msg/String"
     route: ros2_to_fiware
 
+  /sunrise_app/bridge/intent:
+    type: "sunrise_msgs/msg/Intent"
+    route: ros2_to_fiware
 
-  # /sunrise/telemetry/setup_time:
-  #   type: "std_msgs/msg/Float64"
-  #   route: ros2_to_fiware
-  #   remap:
-  #     fiware:
-  #       id: "urn:ngsi-ld:Robot:Comau01"
-  #       type: "Robot"
-  #       attributes:
-  #         - data: setup_time
+  /sunrise_app/bridge/action:
+    type: "sunrise_msgs/msg/Action"
+    route: ros2_to_fiware
 
+  /camera_tracking/pointing:
+    type: "sunrise_msgs/msg/Marker"
+    route: ros2_to_fiware
 
-#   /sunrise/telemetry/job_success_rate:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: job_success_rate
+  /human/body/person1/gesture:
+    type: "sunrise_msgs/msg/Gesture"
+    route: ros2_to_fiware
 
-#   /sunrise/telemetry/retries:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: retries
-
-#   /sunrise/telemetry/downtime:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: downtime
-
-#   /sunrise/telemetry/time_to_recall_db:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: time_to_recall_db
-
-#   /sunrise/telemetry/ventilator_manufactured:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: ventilator_manufactured
-
-#   /sunrise/telemetry/defect_ventilator:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: defect_ventilator
-
-#   /sunrise/telemetry/job_recall_number:
-#     type: "std_msgs/msg/Float64"
-#     route: ros2_to_fiware
-#     remap:
-#       fiware:
-#         type: "Robot"
-#         attributes:
-#           - data: job_recall_number
+  /human/voices/person1/livespeech:
+    type: "sunrise_msgs/msg/Transcription"
+    route: ros2_to_fiware
