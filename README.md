@@ -17,6 +17,7 @@
 5. [Robot Tasks](#5-robot-tasks)
 6. [Off-the-Shelf Capabilities](#6-off-the-shelf-capabilities)
 7. [Architecture and Components](#7-architecture-and-components)
+7.1. [Sunrise App — Visual Programming Interface](#71-sunrise-app--visual-programming-interface)
 8. [ROS 2 / Vulcanexus Interfaces](#8-ros-2--vulcanexus-interfaces)
 9. [FIWARE Interfaces](#9-fiware-interfaces)
 10. [DDS NGSI-LD Integration](#10-dds-ngsi-ld-integration)
@@ -156,6 +157,82 @@ The following capabilities can be used independently or together:
 ```
 
 ![Sunrise Architecture](docs/img/sunrise_architecture.jpg)
+
+---
+
+## 7.1 Sunrise App — Visual Programming Interface
+
+**Sunrise App** is a browser-based **visual workflow builder** that allows operators and integrators to create automation programs without writing code. Programs — called *Shapes* — are constructed by connecting logical blocks in a drag-and-drop editor and react in real time to `Action` and `Intent` messages emitted by the `mission_controller`.
+
+### Overview
+
+| Property | Value |
+|---|---|
+| **Entry point** | `python sunrise_app.py [-A address] [-P port]` |
+| **Default address** | `http://0.0.0.0:5123` |
+| **Technology** | Flask + gevent WebSocket server, Jinja2 templates |
+| **Program storage** | `config/shapes/programs/<uuid>/program.py` |
+| **Program catalog** | `config/shapes/config.json` |
+
+### How It Works
+
+Each *Shape* (program) is a Python module that the Sunrise App loads and executes in a dedicated background thread. The visual editor generates the `program.py` file from the block graph. A program must implement two entry-point functions:
+
+| Function | Purpose |
+|---|---|
+| `sunrise_app_setup(zion, ros2, mqtt, log)` | Called once at startup; used to initialize state, configure connections, or send an initial command |
+| `sunrise_app_function(zion, ros2, mqtt, log)` | Called in a tight loop while the program is running; contains the main workflow logic |
+
+Event-driven blocks add extra handler functions (e.g., `_camera_tracking_pointing(log)`) that are invoked automatically whenever a subscribed ROS 2 topic receives a new message.
+
+### Integrations Available in a Shape
+
+| Integration | Description |
+|---|---|
+| **ROS 2** | Subscribe to and publish any `sunrise_msgs` or `std_msgs` topic (Action, Intent, BraccioCommand, Marker, String, Float64, …) |
+| **MQTT** | Subscribe to and publish MQTT topics; useful for connecting to PLCs or external IoT systems |
+| **Zion IoT Bridge** | Read device telemetry, read/write device attributes, query/create device alarms on an AWS IoT Core–backed platform |
+| **Debug log** | Stream structured log messages (DEBUG / INFO / WARNING / ERROR) to the browser console in real time |
+
+### Program Lifecycle
+
+```
+Browser (editor)
+     │  save / deploy
+     ▼
+config/shapes/programs/<uuid>/program.py
+     │
+     ▼  ShapesApp.run_shape()
+ShapeThread (background thread)
+     │
+     ├─ sunrise_app_setup(...)        ← called once
+     │
+     └─ loop: sunrise_app_function(...)   ← called continuously
+              │
+              └─ on ROS 2 message → handler_function(...)
+```
+
+The program can be started, stopped, and inspected live from the browser UI. A real-time debug console shows log output from `log.debug()`, `log.info()`, etc.
+
+### Shipped Example Programs
+
+The repository ships pre-built Shapes under `config/shapes/programs/`:
+
+| Program | Description |
+|---|---|
+| **Sunrise App — teach task** | Subscribes to `/camera_tracking/pointing`; publishes `Action` and `Intent` messages to `mission_controller` to drive the teach-and-repeat workflow from camera pointing events |
+
+### Running Sunrise App
+
+```bash
+# Activate the Python environment (or use the Docker container)
+source .env/bin/activate
+
+# Start the web server
+python sunrise_app.py --address 0.0.0.0 --port 5123
+```
+
+Open `http://localhost:5123` in a browser to access the Shapes editor.
 
 ---
 
